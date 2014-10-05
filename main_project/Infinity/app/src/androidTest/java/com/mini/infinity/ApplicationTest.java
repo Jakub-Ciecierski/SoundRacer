@@ -1,4 +1,4 @@
-package com.example.mini.infinity;
+package com.mini.infinity;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

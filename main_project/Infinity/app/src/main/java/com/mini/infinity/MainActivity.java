@@ -1,4 +1,4 @@
-package com.example.mini.infinity;
+package com.mini.infinity;
 
 import android.app.Activity;
 import android.os.Bundle;
