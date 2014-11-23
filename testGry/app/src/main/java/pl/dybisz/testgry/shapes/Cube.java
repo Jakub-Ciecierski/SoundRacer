@@ -31,14 +31,14 @@ public class Cube{
         List of vertices describing triangle.
      */
     static float verticesCoordinates[] = {   // in counterclockwise order:
-            -1,-1,6,
-            1,-1,6,
-            1,1,6,
-            -1,1,6,
-            -1,-1,4,
-            1,-1,4,
-            1,1,4,
-            -1,1,4
+            -1,-1,22,
+            1,-1,22,
+            1,1,22,
+            -1,1,22,
+            -1,-1,20,
+            1,-1,20,
+            1,1,20,
+            -1,1,20
     };
     /*
         Color of our Triangle: [0] Red, [1] Green, [2] Blue, [3] Alpha

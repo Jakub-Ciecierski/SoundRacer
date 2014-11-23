@@ -9,11 +9,9 @@ import java.nio.FloatBuffer;
 import pl.dybisz.testgry.util.ShadersController;
 
 /**
- * Class consists of full set of methods to draw rectangle using OpenGl ES 2.0 .
- * It encapsulates shaders creation, program linking and drawing.
- * Created by dybisz on 2014-11-23.
+ * Created by user on 2014-11-23.
  */
-public class Triangle {
+public class Line {
     /*
         Buffer to pass array of vertices into dalvik machine.
      */
@@ -26,22 +24,23 @@ public class Triangle {
     /*
         List of vertices describing triangle.
      */
-    static float verticesCoordinates[] = {   // in counterclockwise order:
-            0.0f, 0.622008459f, 0.5f, // top
-            -0.5f, -0.311004243f, 0.5f, // bottom left
-            0.5f, -0.311004243f, 0.5f  // bottom right
-    };
+     float verticesCoordinates[];/* = {   // in counterclockwise order:
+            0.0f, 0.0f, 0.5f, // top
+            1.0f, 0.0f, 0.5f, // bottom left
+
+    };*/
     /*
-        Color of our Triangle: [0] Red, [1] Green, [2] Blue, [3] Alpha
-        saturation.
-     */
-    float color[] = {1.0f, 1.0f, 1.0f, 0.5f};
+       Color of our Triangle: [0] Red, [1] Green, [2] Blue, [3] Alpha
+       saturation.
+    */
+    //float color[] = {1.0f, 0.0f, 0.0f, 1.0f};
+    float[] color;
     /*
-        Vertex shader code.
-     */
+       Vertex shader code.
+    */
     private final String vertexShader =
             "uniform mat4 uMVPMatrix;"+
-            "attribute vec4 vPosition;" +
+                    "attribute vec4 vPosition;" +
                     "void main() {" +
                     "  gl_Position = uMVPMatrix * vPosition;" +
                     "}";
@@ -63,7 +62,9 @@ public class Triangle {
     int mvpId;
     //float[] mvpMatrix = new float[16];
 
-    public Triangle() {
+    public Line(float[] color, float[] vertices) {
+        this.color = color;
+        this.verticesCoordinates = vertices;
         /* Vertices array buffer: create, fill out and set start position to 0 */
         vertexBuffer = ByteBuffer.allocateDirect(verticesCoordinates.length * 4)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer().put(verticesCoordinates);
@@ -74,10 +75,12 @@ public class Triangle {
                 ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, vertexShader),
                 ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader));
 
+
     }
-    public Triangle (int program,float[] triangleVertices) {
+    public Line (int program,float[] triangleVertices) {
         programId = program;
     }
+
 
     public void draw(float[] mvpMatrix) {
         /* Use compiled program to refer shaders attributes/uniforms */
@@ -105,7 +108,7 @@ public class Triangle {
         GLES20.glUniform4fv(uniformColorId, 1, color, 0);
 
         // Draw the triangle
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
+        GLES20.glDrawArrays(GLES20.GL_LINES, 0, 2);
 
         /* Safe bullshit */
         GLES20.glDisableVertexAttribArray(attributePositionId);

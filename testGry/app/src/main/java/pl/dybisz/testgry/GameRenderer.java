@@ -13,6 +13,7 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import pl.dybisz.testgry.shapes.Line;
 import pl.dybisz.testgry.shapes.Triangle;
 import pl.dybisz.testgry.shapes.Cube;
 import static android.opengl.GLES20.GL_ARRAY_BUFFER;
@@ -47,6 +48,9 @@ import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static android.opengl.GLES20.glViewport;
+import static android.util.FloatMath.cos;
+import static android.util.FloatMath.sin;
+import static android.util.FloatMath.sqrt;
 
 /**
  * Created by user on 2014-11-22.
@@ -65,6 +69,11 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private float[] mViewMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
     private Cube cube;
+    private Line xLine;
+    private Line yLine;
+    private Line zLine;
+    private Line[] webX = new Line[100];
+    private Line[] webY = new Line[100];
 
 //    float[] tableVerticesWithTriangles = {
 //// Triangle 1
@@ -99,6 +108,29 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         cube = new Cube();
+        xLine = new Line(new float[]{1.0f, 0.0f,0.0f,1.0f},
+                new float[]{0f,0f,20f,
+                            80f,0f,20f});
+        yLine = new Line(new float[]{1f, 1.0f,0f,1.0f},
+                new float[]{0f,0f,20f,
+                            0f,80f,20f});
+        zLine = new Line(new float[]{0.0f, 0.0f,1.0f,0.0f},
+                new float[]{0f,0f,20f,
+                            0f,0f,100f});
+        int X=-50;
+        int Y=-50;
+        for(int i=0;i<100;i++){
+            webX[i] = new Line(new float[]{1f, 1.0f,1.0f,1.0f},
+                new float[]{-200f,0f,X,
+                        200f,0f,X});
+            X+=2;
+        }
+        for(int i=0;i<100;i++){
+            webY[i] = new Line(new float[]{1f, 1.0f,1.0f,1.0f},
+                    new float[]{Y,0f,-200f,
+                            Y,0f,200f});
+            Y+=2;
+        }
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
@@ -106,7 +138,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
         glViewport(0, 0, width, height);
         float ratio = (float) width / height;
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1,1, 200);
+        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1,1, 100);
         //Matrix.orthoM(mProjectionMatrix,0, -ratio, ratio, -1,1,-1,1);
     }
 
@@ -116,8 +148,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 //        Matrix.setLookAtM(mViewMatrix, 0,0,0,-3,0f,0f,0f,0f,1.0f,0.0f);
 //        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 //
-        long time = SystemClock.uptimeMillis() % 4000L;
-        float angle = 0.0009f * ((int) time);
+
 //        Matrix.setRotateM(mRotationMatrix, 0, angle, 0, 0, 1.0f);
 //
 //        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
@@ -125,14 +156,29 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 //        int mMVPMatrixHandle = glGetUniformLocation(PROGRAM_ID, "u_Matrix");
 //        glUniformMatrix4fv(mMVPMatrixHandle, 1, false, scratch, 0);
 //
+        float[] scratch = new float[16];
+        long time = SystemClock.uptimeMillis();
+        float z = 0.00045f * ((int) time);
+        //float x = sqrt(16-z*z);
+        //Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mViewMatrix, 0,angle,angle,-5 , angle, angle, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0,10*cos(z),5,(sin(z) > 180) ? (-10*sin(z) + 20) : (10*sin(z)+ 20) , 0, 0, 21, 0f, 1.0f, 0.0f);
 
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+       // Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
 
 
         glClear(GL_COLOR_BUFFER_BIT);
         cube.draw(mMVPMatrix);
+        xLine.draw(mMVPMatrix);
+        yLine.draw(mMVPMatrix);
+        zLine.draw(mMVPMatrix);
+        for(int i=0;i<100;i++){
+            webX[i].draw(mMVPMatrix);
+        }
+        for(int i=0;i<100;i++){
+            webY[i].draw(mMVPMatrix);
+        }
     }
 }
