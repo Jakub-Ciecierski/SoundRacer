@@ -61,10 +61,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private int uColorLocation;
     private int aPositionLocation;
     private int counter = 0;
-    private float[] mProjectionMatrix = {1,0,0,0,
-            0,1,0,0,
-            0,0,1,0,
-            0,0,0,1};
+    private float[] mProjectionMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
     private Triangle triangle;
@@ -109,8 +106,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
         glViewport(0, 0, width, height);
         float ratio = (float) width / height;
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
-
+        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1,1, 7);
+        //Matrix.orthoM(mProjectionMatrix,0, -ratio, ratio, -1,1,-1,1);
     }
 
     @Override
@@ -119,8 +116,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 //        Matrix.setLookAtM(mViewMatrix, 0,0,0,-3,0f,0f,0f,0f,1.0f,0.0f);
 //        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 //
-//        long time = SystemClock.uptimeMillis() % 4000L;
-//        float angle = 0.090f * ((int) time);
+        long time = SystemClock.uptimeMillis() % 4000L;
+        float angle = 0.0009f * ((int) time);
 //        Matrix.setRotateM(mRotationMatrix, 0, angle, 0, 0, 1.0f);
 //
 //        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
@@ -128,7 +125,14 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 //        int mMVPMatrixHandle = glGetUniformLocation(PROGRAM_ID, "u_Matrix");
 //        glUniformMatrix4fv(mMVPMatrixHandle, 1, false, scratch, 0);
 //
+        // Set the camera position (View matrix)
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0,-1 , 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+
+        // Calculate the projection and view transformation
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+
+
         glClear(GL_COLOR_BUFFER_BIT);
-        triangle.draw(mProjectionMatrix);
+        triangle.draw(mMVPMatrix);
     }
 }
