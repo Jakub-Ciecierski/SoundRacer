@@ -14,7 +14,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import pl.dybisz.testgry.shapes.Triangle;
-
+import pl.dybisz.testgry.shapes.Cube;
 import static android.opengl.GLES20.GL_ARRAY_BUFFER;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_COMPILE_STATUS;
@@ -64,7 +64,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private float[] mProjectionMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
-    private Triangle triangle;
+    private Cube cube;
 
 //    float[] tableVerticesWithTriangles = {
 //// Triangle 1
@@ -98,7 +98,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-        triangle = new Triangle();
+        cube = new Cube();
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
@@ -106,7 +106,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
         glViewport(0, 0, width, height);
         float ratio = (float) width / height;
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1,1, 7);
+        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1,1, 200);
         //Matrix.orthoM(mProjectionMatrix,0, -ratio, ratio, -1,1,-1,1);
     }
 
@@ -126,13 +126,13 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 //        glUniformMatrix4fv(mMVPMatrixHandle, 1, false, scratch, 0);
 //
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0,-1 , 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0,angle,angle,-5 , angle, angle, 0f, 0f, 1.0f, 0.0f);
 
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
 
         glClear(GL_COLOR_BUFFER_BIT);
-        triangle.draw(mMVPMatrix);
+        cube.draw(mMVPMatrix);
     }
 }
