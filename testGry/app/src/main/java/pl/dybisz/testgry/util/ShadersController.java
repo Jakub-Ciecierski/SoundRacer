@@ -14,7 +14,7 @@ import static android.opengl.GLES20.glGetShaderiv;
 import static android.opengl.GLES20.glLinkProgram;
 
 /**
- * Created by user on 2014-11-23.
+ * Created by dybisz on 2014-11-23.
  */
 public abstract class ShadersController {
     public static int loadShader(int type, String shaderCode) {

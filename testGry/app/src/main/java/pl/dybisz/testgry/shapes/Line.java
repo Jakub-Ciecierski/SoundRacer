@@ -9,7 +9,7 @@ import java.nio.FloatBuffer;
 import pl.dybisz.testgry.util.ShadersController;
 
 /**
- * Created by user on 2014-11-23.
+ * Created by dybisz on 2014-11-23.
  */
 public class Line {
     /*

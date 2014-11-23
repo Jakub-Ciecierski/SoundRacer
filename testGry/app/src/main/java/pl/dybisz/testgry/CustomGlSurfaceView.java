@@ -4,7 +4,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 
 /**
- * Created by user on 2014-11-23.
+ * Created by dybisz on 2014-11-23.
  */
 public class CustomGlSurfaceView extends GLSurfaceView {
     public CustomGlSurfaceView(Context context) {
