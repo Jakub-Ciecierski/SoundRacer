@@ -27,9 +27,9 @@ public class Triangle {
         List of vertices describing triangle.
      */
     static float verticesCoordinates[] = {   // in counterclockwise order:
-            0.0f, 0.622008459f, 0.0f, // top
-            -0.5f, -0.311004243f, 0.0f, // bottom left
-            0.5f, -0.311004243f, 0.0f  // bottom right
+            0.0f, 0.622008459f, -3f, // top
+            -0.5f, -0.311004243f, -3f, // bottom left
+            0.5f, -0.311004243f, -3f  // bottom right
     };
     /*
         Color of our Triangle: [0] Red, [1] Green, [2] Blue, [3] Alpha
