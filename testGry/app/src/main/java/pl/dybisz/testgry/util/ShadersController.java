@@ -17,6 +17,24 @@ import static android.opengl.GLES20.glLinkProgram;
  * Created by dybisz on 2014-11-23.
  */
 public abstract class ShadersController {
+    /*
+        Standard vertex shader code.
+     */
+    public static final String vertexShader =
+            "uniform mat4 uMVPMatrix;"+
+                    "attribute vec4 vPosition;" +
+                    "void main() {" +
+                    "  gl_Position = uMVPMatrix * vPosition;" +
+                    "}";
+    /*
+        Standard fragment shader code.
+     */
+    public static final String fragmentShader =
+            "precision mediump float;" +
+                    "uniform vec4 vColor;" +
+                    "void main() {" +
+                    "  gl_FragColor = vColor;" +
+                    "}";
     public static int loadShader(int type, String shaderCode) {
         /* Create and verify */
         int shaderId = GLES20.glCreateShader(type);
