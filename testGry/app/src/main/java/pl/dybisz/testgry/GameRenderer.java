@@ -13,6 +13,7 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import pl.dybisz.testgry.shapes.Line;
 import pl.dybisz.testgry.shapes.Triangle;
 
 import static android.opengl.GLES20.GL_ARRAY_BUFFER;
@@ -65,6 +66,9 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private float[] mViewMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
     private Triangle triangle;
+    private Line xLine;
+    private Line yLine;
+    private Line zLine;
 
 //    float[] tableVerticesWithTriangles = {
 //// Triangle 1
@@ -99,6 +103,15 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         triangle = new Triangle();
+        xLine = new Line(new float[]{1.0f, 0.0f,0.0f,1.0f},
+                new float[]{0f,0f,0f,
+                            1f,0f,0f});
+        yLine = new Line(new float[]{0.0f, 1.0f,0.0f,1.0f},
+                new float[]{0f,0f,0f,
+                            0f,1f,0f});
+        zLine = new Line(new float[]{0.0f, 0.0f,1.0f,0.0f},
+                new float[]{0f,0f,0f,
+                            0f,0f,1f});
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
@@ -106,7 +119,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
         glViewport(0, 0, width, height);
         float ratio = (float) width / height;
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1,1, 7);
+        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1,1, 200);
         //Matrix.orthoM(mProjectionMatrix,0, -ratio, ratio, -1,1,-1,1);
     }
 
@@ -116,8 +129,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 //        Matrix.setLookAtM(mViewMatrix, 0,0,0,-3,0f,0f,0f,0f,1.0f,0.0f);
 //        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 //
-        long time = SystemClock.uptimeMillis() % 4000L;
-        float angle = 0.0009f * ((int) time);
+
 //        Matrix.setRotateM(mRotationMatrix, 0, angle, 0, 0, 1.0f);
 //
 //        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
@@ -125,14 +137,23 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 //        int mMVPMatrixHandle = glGetUniformLocation(PROGRAM_ID, "u_Matrix");
 //        glUniformMatrix4fv(mMVPMatrixHandle, 1, false, scratch, 0);
 //
+        float[] scratch = new float[16];
+        long time = SystemClock.uptimeMillis() % 4000L;
+        float angle = 0.09f * ((int) time);
+        //Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0,-1 , 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0,0, 0,-1, 0f, 0f, 0f, 0.0f, 1.0f, 0.0f);
 
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+       // Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
 
 
         glClear(GL_COLOR_BUFFER_BIT);
         triangle.draw(mMVPMatrix);
+        xLine.draw(mMVPMatrix);
+        yLine.draw(mMVPMatrix);
+        zLine.draw(mMVPMatrix);
+
     }
 }
