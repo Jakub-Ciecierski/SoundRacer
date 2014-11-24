@@ -10,14 +10,14 @@ public class CartesianCoordinates {
 
     public CartesianCoordinates() {
         xLine = new Line(new float[]{1.0f, 0.0f, 0.0f, 1.0f},
-                new float[]{0f, 0f, 20f,
-                        80f, 0f, 20f});
-        yLine = new Line(new float[]{1f, 1.0f, 0f, 1.0f},
-                new float[]{0f, 0f, 20f,
-                        0f, 80f, 20f});
+                new float[]{-50f, 0f, 0f,
+                        50f, 0f, 0f});
+        yLine = new Line(new float[]{0f, 1.0f, 0f, 1.0f},
+                new float[]{0f, -50f, 0f,
+                        0f, 50f, 0f});
         zLine = new Line(new float[]{0.0f, 0.0f, 1.0f, 0.0f},
-                new float[]{0f, 0f, 20f,
-                        0f, 0f, 100f});
+                new float[]{0f, 0f, -50f,
+                        0f, 0f, 50f});
     }
 
     public void draw(float[] mMVPMatrix) {
