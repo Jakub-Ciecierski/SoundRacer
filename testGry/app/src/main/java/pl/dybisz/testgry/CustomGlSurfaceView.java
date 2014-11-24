@@ -2,10 +2,10 @@ package pl.dybisz.testgry;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 import android.view.MotionEvent;
 
-import pl.dybisz.testgry.util.Camera;
+import pl.dybisz.testgry.util.CustomCamera;
+import pl.dybisz.testgry.util.EulerAnglesCamera;
 
 /**
  * Created by dybisz on 2014-11-23.
@@ -66,11 +66,16 @@ public class CustomGlSurfaceView extends GLSurfaceView {
                     dy = dy * -1 ;
                 }
 
-//                mRenderer.setAngle(
-//                        mRenderer.getAngle() +
-//                                ((dx + dy) * TOUCH_SCALE_FACTOR);  // = 180.0f / 320
-//                requestRender();
-                Camera.rotateEyeXZPlane(dx * TOUCH_SCALE_FACTOR);
+////                mRenderer.setAngle(
+////                        mRenderer.getAngle() +
+////                                ((dx + dy) * TOUCH_SCALE_FACTOR);  // = 180.0f / 320
+////                requestRender();
+                CustomCamera.rotate(dx * TOUCH_SCALE_FACTOR, dy * TOUCH_SCALE_FACTOR);
+
+//                float mouseSensitivity = 10f;
+//                EulerAnglesCamera.rotate(dx / mouseSensitivity, dy / mouseSensitivity);
+
+
         }
 
         previousX = x;

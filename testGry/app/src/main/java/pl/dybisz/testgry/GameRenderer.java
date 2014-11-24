@@ -8,13 +8,14 @@ import android.opengl.Matrix;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import pl.dybisz.testgry.util.Camera;
 import pl.dybisz.testgry.shapes.CartesianCoordinates;
 import pl.dybisz.testgry.shapes.HeightMap;
 
 import pl.dybisz.testgry.shapes.Cube;
 import pl.dybisz.testgry.shapes.RoadPrototype;
 import pl.dybisz.testgry.shapes.Web;
+import pl.dybisz.testgry.util.CustomCamera;
+import pl.dybisz.testgry.util.EulerAnglesCamera;
 
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 
@@ -77,10 +78,10 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
 
         glClear(GL_COLOR_BUFFER_BIT);
-        cube.draw(Camera.getCameraMatrix(mProjectionMatrix));
+        cube.draw(CustomCamera.getCameraMatrix(mProjectionMatrix));
         //web.draw(mMVPMatrix);
-        cartesianCoordinates.draw(Camera.getCameraMatrix(mProjectionMatrix));
-        roadPrototype.draw(Camera.getCameraMatrix(mProjectionMatrix));
+        cartesianCoordinates.draw(CustomCamera.getCameraMatrix(mProjectionMatrix));
+        roadPrototype.draw(CustomCamera.getCameraMatrix(mProjectionMatrix));
 
     }
 }
