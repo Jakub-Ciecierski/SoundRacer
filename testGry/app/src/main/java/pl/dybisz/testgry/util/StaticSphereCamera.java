@@ -12,9 +12,9 @@ import static android.util.FloatMath.sin;
  * and view matrix.
  * Created by dybisz on 2014-11-24.
  */
-public abstract class CustomCamera {
+public abstract class StaticSphereCamera {
     private static float[] cameraMatrix = new float[16];
-    private static float[] eyeCoordinates = {0f, 0f, 0f};
+    private static float[] eyeCoordinates = {0.1f, 0.1f, 0.1f};
     private static float[] lookAtCoordinates = {0f, 0f, 0f};
     private static float[] upVectorCoordinates = {0f, 1f, 0f};
     private static float xAngle = 0;
@@ -24,7 +24,7 @@ public abstract class CustomCamera {
      * If one wants just to move the eye by some vector,
      * eyeCoordinates should remain 0.
      */
-    private static float[] eyeShifts = {0f, 5f, -10f};
+    private static float[] eyeShifts = {0f, 0f, -10f};
     private static float radiusOfView = 10;
 
     public static void rotate(float dx, float dy) {
@@ -50,12 +50,18 @@ public abstract class CustomCamera {
      */
     private static void updateMatrixInformation() {
         Matrix.setLookAtM(cameraMatrix, 0,
-                radiusOfView * eyeCoordinates[0] + eyeShifts[0],
+               radiusOfView * eyeCoordinates[0] + eyeShifts[0],
                 radiusOfView * eyeCoordinates[1] + eyeShifts[1],
                 radiusOfView * eyeCoordinates[2] + eyeShifts[2],
                 lookAtCoordinates[0], lookAtCoordinates[1], lookAtCoordinates[2],
                 upVectorCoordinates[0], upVectorCoordinates[1], upVectorCoordinates[2]);
     }
 
+    public static float getRadiusOfView() {
+        return radiusOfView;
+    }
 
+    public static void setRadiusOfView(float radiusOfView) {
+        StaticSphereCamera.radiusOfView = radiusOfView;
+    }
 }

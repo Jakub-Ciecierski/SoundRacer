@@ -14,8 +14,7 @@ import pl.dybisz.testgry.shapes.HeightMap;
 import pl.dybisz.testgry.shapes.Cube;
 import pl.dybisz.testgry.shapes.RoadPrototype;
 import pl.dybisz.testgry.shapes.Web;
-import pl.dybisz.testgry.util.CustomCamera;
-import pl.dybisz.testgry.util.EulerAnglesCamera;
+import pl.dybisz.testgry.util.StaticSphereCamera;
 
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 
@@ -78,10 +77,10 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
 
         glClear(GL_COLOR_BUFFER_BIT);
-        cube.draw(CustomCamera.getCameraMatrix(mProjectionMatrix));
+        cube.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
         //web.draw(mMVPMatrix);
-        cartesianCoordinates.draw(CustomCamera.getCameraMatrix(mProjectionMatrix));
-        roadPrototype.draw(CustomCamera.getCameraMatrix(mProjectionMatrix));
+        cartesianCoordinates.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
+        roadPrototype.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
 
     }
 }
