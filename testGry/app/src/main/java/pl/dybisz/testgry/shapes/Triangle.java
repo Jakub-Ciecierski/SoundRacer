@@ -58,8 +58,24 @@ public class Triangle {
                 ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
 
     }
-    public Triangle (int program,float[] triangleVertices) {
+
+    /**
+     * Constructor uses pre-compiled program to draw and color triangle. It helps when One needs
+     * apply one set of shaders to many triangles.
+     *
+     * @param color
+     * @param triangleVertices
+     * @param program
+     */
+    public Triangle(float[] color, float[] triangleVertices,int program) {
+        this.color = color;
+        this.verticesCoordinates = triangleVertices;
         programId = program;
+
+         /* Vertices array buffer: create, fill out and set start position to 0 */
+        vertexBuffer = ByteBuffer.allocateDirect(verticesCoordinates.length * 4)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(verticesCoordinates);
+        vertexBuffer.position(0);
     }
 
     public void draw(float[] mvpMatrix) {

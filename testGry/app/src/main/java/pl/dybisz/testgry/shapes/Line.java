@@ -24,7 +24,7 @@ public class Line {
     /*
         List of vertices describing triangle.
      */
-     float verticesCoordinates[];/* = {   // in counterclockwise order:
+    float verticesCoordinates[];/* = {   // in counterclockwise order:
             0.0f, 0.0f, 0.5f, // top
             1.0f, 0.0f, 0.5f, // bottom left
 
@@ -60,8 +60,24 @@ public class Line {
 
 
     }
-    public Line (int program,float[] triangleVertices) {
+
+    /**
+     * Constructor accepts (beside standart arguments) a program id, which saves time
+     * when more lines are going to be drawn using the same shaders.ł
+     *
+     * @param program
+     * @param triangleVertices
+     * @param color
+     */
+    public Line( float[] color, float[] triangleVertices, int program) {
+        this.verticesCoordinates = triangleVertices;
+        this.color = color;
         programId = program;
+
+         /* Vertices array buffer: create, fill out and set start position to 0 */
+        vertexBuffer = ByteBuffer.allocateDirect(verticesCoordinates.length * 4)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(verticesCoordinates);
+        vertexBuffer.position(0);
     }
 
 

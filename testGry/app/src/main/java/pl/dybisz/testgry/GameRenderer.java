@@ -9,6 +9,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import pl.dybisz.testgry.shapes.CartesianCoordinates;
+import pl.dybisz.testgry.shapes.Cone;
 import pl.dybisz.testgry.shapes.HeightMap;
 
 import pl.dybisz.testgry.shapes.Cube;
@@ -33,6 +34,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private float[] cartesianMatrix = new float[16];
     private Cube cube;
     private Web web;
+    private Cone cone;
     private CartesianCoordinates cartesianCoordinates;
     private RoadPrototype roadPrototype;
 
@@ -48,8 +50,9 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         heightMap = new HeightMap();
         cube = new Cube();
+
         //web = new Web();
-        cartesianCoordinates = new CartesianCoordinates();
+        cartesianCoordinates = new CartesianCoordinates(new float[] {0.0f,0.0f,0.0f});
         roadPrototype = new RoadPrototype();
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
