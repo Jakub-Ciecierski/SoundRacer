@@ -9,45 +9,57 @@ import java.nio.FloatBuffer;
 import pl.dybisz.testgry.util.ShadersController;
 
 /**
+ * Class represents line object in the 3D space.
+ * <p></p>
  * Created by dybisz on 2014-11-23.
  */
 public class Line {
-    /*
-        Buffer to pass array of vertices into dalvik machine.
-     */
-    private FloatBuffer vertexBuffer;
-    /*
-        Constant describes how many coordinates we need to take from
-        verticesCoordinates array to describe one vertex.
+    /**
+     * Constant describes how many coordinates we need to take from
+     * verticesCoordinates array to describe one vertex.
      */
     static final int COORDINATES_PER_VERTEX = 3;
-    /*
-        List of vertices describing triangle.
+    /**
+     * Buffer to pass array of vertices into native heap.
      */
-    float verticesCoordinates[];/* = {   // in counterclockwise order:
-            0.0f, 0.0f, 0.5f, // top
-            1.0f, 0.0f, 0.5f, // bottom left
-
-    };*/
-    /*
-       Color of our Triangle: [0] Red, [1] Green, [2] Blue, [3] Alpha
-       saturation.
-    */
-    //float color[] = {1.0f, 0.0f, 0.0f, 1.0f};
+    private FloatBuffer vertexBuffer;
+    /**
+     * List of vertices describing triangle.
+     */
+    float verticesCoordinates[];
+    /**
+     * Color of the line in the for: {r,g,b,a}.
+     */
     float[] color;
-
-    /*
-        Set of handles to OpenGL ES objects
+    /**
+     * Id of compiled openGL program, which will be used to rendering.
      */
     int programId;
+    /**
+     * Id of shader vPosition attribute.
+     */
     int attributePositionId;
+    /**
+     * Id of shader vColor uniform.
+     */
     int uniformColorId;
+    /**
+     * Id of shader uMVPMatrix matrix.
+     */
     int mvpId;
-    //float[] mvpMatrix = new float[16];
-
+    /**
+     * Constructor automatically compile openGL program using standard shaders code:
+     * {@link pl.dybisz.testgry.util.ShadersController#vertexShader vertexShader} and
+     * {@link pl.dybisz.testgry.util.ShadersController#fragmentShader fragmentShader}.
+     *
+     * @param color    Color of the line in the form: {r,g,b,a}.
+     * @param vertices Start and end points in the form: {xStart, yStart, zStart, xEnd, yEnd, zEnd}.
+     */
     public Line(float[] color, float[] vertices) {
+        /* Fill out fields */
         this.color = color;
         this.verticesCoordinates = vertices;
+
         /* Vertices array buffer: create, fill out and set start position to 0 */
         vertexBuffer = ByteBuffer.allocateDirect(verticesCoordinates.length * 4)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer().put(verticesCoordinates);
@@ -62,15 +74,15 @@ public class Line {
     }
 
     /**
-     * Constructor accepts (beside standart arguments) a program id, which saves time
+     * Constructor accepts (beside standard arguments) a program id, which saves time
      * when more lines are going to be drawn using the same shaders.ł
      *
-     * @param program
-     * @param triangleVertices
-     * @param color
+     * @param program  Id of openGL program.
+     * @param vertices Start and end points in the form: {xStart, yStart, zStart, xEnd, yEnd, zEnd}.
+     * @param color    Color of the line in the form: {r,g,b,a}.
      */
-    public Line( float[] color, float[] triangleVertices, int program) {
-        this.verticesCoordinates = triangleVertices;
+    public Line(float[] color, float[] vertices, int program) {
+        this.verticesCoordinates = vertices;
         this.color = color;
         programId = program;
 
@@ -80,7 +92,14 @@ public class Line {
         vertexBuffer.position(0);
     }
 
-
+    /**
+     * Main draw methods of the line. It loads {@link #programId programId} and by
+     * acquiring all needed attributes/uniforms from shaders it assigns them values
+     * and call appropriate oGL draw method.
+     *
+     * @param mvpMatrix Matrix used to project Line on the 3D scene.
+     *                  Most commonly camera matrix.
+     */
     public void draw(float[] mvpMatrix) {
         /* Use compiled program to refer shaders attributes/uniforms */
         GLES20.glUseProgram(programId);
