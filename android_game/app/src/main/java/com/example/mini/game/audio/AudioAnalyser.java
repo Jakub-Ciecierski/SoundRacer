@@ -71,6 +71,7 @@ public class AudioAnalyser {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.i("Analyze","Starting analyzing audio");
                 // load up the mp3
                 loadMP3();
                 boolean done = false;
@@ -89,6 +90,8 @@ public class AudioAnalyser {
                             // write sample to audio tracker
                             audioTrack.write(sample, 0, sample.length);
 
+                            // TODO spectral performance
+                            /*
                             // compute spectral flux
                             float[] samples = new float[sampleSize];
                             // convert to float
@@ -106,6 +109,7 @@ public class AudioAnalyser {
                             for (int i = 0; i < spectrum.length; i++)
                                 flux += (spectrum[i] - lastSpectrum[i]);
                             spectralFlux.add(flux);
+                            */
                         }
                         semaphore.release();
                     }catch(InterruptedException e) {e.printStackTrace();}
@@ -113,6 +117,7 @@ public class AudioAnalyser {
                 // cleanup the mp3 and release audio resources
                 cleanupMP3();
                 audioTrack.release();
+                Log.i("Analyze","Finishing analyzing audio");
             }
         }).start();
     }
@@ -126,28 +131,29 @@ public class AudioAnalyser {
      */
     public void rewindAudio(int rewindTime) {
         try {
-            Log.i("Marker", "Rewind Pressed");
+            Log.i("Rewind", "Rewind Pressed");
             this.pauseAudio();
 
             semaphore.acquire();
-            Log.i("Marker","Rewind Pressed after acquire");
+            Log.i("Rewind","Rewind Pressed after acquire");
 
-            Thread.sleep(500);
+            //Thread.sleep(100);
 
-            int rewindFrames = (int) (rewindTime / MsPerSample);
+            // number of samples to rewind
+            int rewindSamples = (int) (rewindTime / MsPerSample);
 
             // get current frame position
-            int currentFrame = this.audioTrack.getPlaybackHeadPosition();
+            int currentSample = this.audioTrack.getPlaybackHeadPosition();
 
             // if position is bellow 0, set it to 0
-            int setPosition = currentFrame - rewindFrames;
+            int setPosition = currentSample - rewindSamples;
             if (setPosition < 0) {
                 setPosition = 0;
             }
 
-            Log.i("Marker","AudioTrack Rewinding frames: " + Integer.toString(rewindFrames));
-            Log.i("Marker","AudioTrack Current: " + Integer.toString(currentFrame));
-            Log.i("Marker","AudioTrack Rewinding to: " + Integer.toString(setPosition));
+            Log.i("Rewind","AudioTrack Rewinding frames: " + Integer.toString(rewindSamples));
+            Log.i("Rewind","AudioTrack Current: " + Integer.toString(currentSample));
+            Log.i("Rewind", "AudioTrack Rewinding to: " + Integer.toString(setPosition));
 
             // discard the data that has been decoded so far
             this.audioTrack.flush();
@@ -157,7 +163,7 @@ public class AudioAnalyser {
             seekTo(seekTo);
 
             // decode the audio that we wish to replay
-            int bufferSize = rewindFrames*2;
+            int bufferSize = rewindSamples*2;
             short[] sample = new short[bufferSize];
             int ret = decodeMP3(bufferSize * 2, sample);
 
@@ -175,13 +181,18 @@ public class AudioAnalyser {
 
             // write it to audio buffer
             this.playAudio();
+
             this.audioTrack.write(reservedSample, 0, reservedSample.length);
+
+            // wait until all frames have been played out
+            int current = this.audioTrack.getPlaybackHeadPosition();
+            while(current < rewindSamples) {
+                current = this.audioTrack.getPlaybackHeadPosition();
+            }
+            Log.i("Rewind","Finishing");
 
             // seek back to desired position
             seekTo(seekTo);
-
-            // TODO exit when reversed audio has been played out
-            Thread.sleep(rewindTime);
 
             // set play back rate to normal
             this.audioTrack.pause();
@@ -224,10 +235,11 @@ public class AudioAnalyser {
      *      Spectral flux
      */
     public List<Float> analyzeEntireAudio() {
+        this.cleanupMP3();
         this.loadMP3();
         boolean done = false;
         List<Float> spectralFlux = new ArrayList<Float>( );
-
+        FFT fft = new FFT(sampleSize, 44100);
         while(!done) {
             short[] sample = new short[sampleSize];
 
@@ -240,7 +252,6 @@ public class AudioAnalyser {
             }
 
             // FFT
-            FFT fft = new FFT(sampleSize, 44100);
             float[] samples = new float[sampleSize];
             // convert to float
             for (int i = 0; i < sample.length; i++) {

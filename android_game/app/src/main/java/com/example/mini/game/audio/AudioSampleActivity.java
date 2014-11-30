@@ -77,6 +77,7 @@ public class AudioSampleActivity extends ActionBarActivity {
     }
 
     public void drawGraph(View view)  {
+        Log.i("Graph","Starting analyzing audio to draw graph");
         List<Float> spectralFlux = audioAnalyser.analyzeEntireAudio();
 
         GraphView.GraphViewData[] data = new GraphView.GraphViewData[spectralFlux.size()];
@@ -95,6 +96,8 @@ public class AudioSampleActivity extends ActionBarActivity {
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayout);
         layout.addView(graphView);
+
+        Log.i("Graph","Finished");
     }
 
     public void startMusic(View view) throws Exception {
