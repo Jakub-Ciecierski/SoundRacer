@@ -35,6 +35,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private Cube cube;
     private CartesianCoordinates cartesianCoordinates;
     private SetOfButtons movementButtons;
+    private RoadPrototype road;
 
     public GameRenderer(Context context) {
         this.context = context;
@@ -42,9 +43,10 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-        cube = new Cube();
+        //cube = new Cube();
         cartesianCoordinates = new CartesianCoordinates(new float[] {0.0f,0.0f,0.0f});
         movementButtons = new SetOfButtons(context);
+        road = new RoadPrototype();
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
@@ -56,12 +58,19 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 1, 100);
         Matrix.orthoM(mOrthogonalMatrix,0, -ratio, ratio, -1,1,-1,1);
     }
-
+    private int count = 0;
     @Override
     public void onDrawFrame(GL10 gl10) {
+        count++;
         glClear(GL_COLOR_BUFFER_BIT);
-        cube.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
+        //cube.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
         cartesianCoordinates.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
+        if(count == 3) {
+            road.switchFrame();
+            count =0;
+        }
+        road.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
         movementButtons.draw(mOrthogonalMatrix);
+
     }
 }
