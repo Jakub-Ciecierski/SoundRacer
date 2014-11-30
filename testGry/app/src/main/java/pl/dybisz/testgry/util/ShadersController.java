@@ -21,7 +21,7 @@ public abstract class ShadersController {
         Standard vertex shader code.
      */
     public static final String vertexShader =
-            "uniform mat4 uMVPMatrix;"+
+            "uniform mat4 uMVPMatrix;" +
                     "attribute vec4 vPosition;" +
                     "void main() {" +
                     "  gl_Position = uMVPMatrix * vPosition;" +
@@ -35,6 +35,31 @@ public abstract class ShadersController {
                     "void main() {" +
                     "  gl_FragColor = vColor;" +
                     "}";
+    /*
+        Texture vertex shader code.
+     */
+    public static final String textureVertexShader =
+           "uniform mat4 u_Matrix;\n" +
+                   "attribute vec4 a_Position;\n" +
+                   "attribute vec2 a_TextureCoordinates;\n" +
+                   "varying vec2 v_TextureCoordinates;\n" +
+                   "void main()\n" +
+                   "{\n" +
+                   "v_TextureCoordinates = a_TextureCoordinates;\n" +
+                   "gl_Position = u_Matrix * a_Position;\n" +
+                   "}";
+    /*
+        Texture fragment shader code.
+     */
+    public static final String textureFragmentShader =
+           "precision mediump float;\n" +
+                   "uniform sampler2D u_TextureUnit;\n" +
+                   "varying vec2 v_TextureCoordinates;\n" +
+                   "void main()\n" +
+                   "{\n" +
+                   "gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);\n" +
+                   "}";
+
     public static int loadShader(int type, String shaderCode) {
         /* Create and verify */
         int shaderId = GLES20.glCreateShader(type);
