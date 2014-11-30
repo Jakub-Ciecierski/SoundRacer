@@ -36,24 +36,7 @@ public class Triangle {
         saturation.
      */
     float color[] = {1.0f, 1.0f, 1.0f, 0.5f};
-    /*
-        Vertex shader code.
-     */
-    private final String vertexShader =
-            "uniform mat4 uMVPMatrix;"+
-            "attribute vec4 vPosition;" +
-                    "void main() {" +
-                    "  gl_Position = uMVPMatrix * vPosition;" +
-                    "}";
-    /*
-        Fragment shader code.
-     */
-    private final String fragmentShader =
-            "precision mediump float;" +
-                    "uniform vec4 vColor;" +
-                    "void main() {" +
-                    "  gl_FragColor = vColor;" +
-                    "}";
+
     /*
         Set of handles to OpenGL ES objects
      */
@@ -69,14 +52,30 @@ public class Triangle {
                 .order(ByteOrder.nativeOrder()).asFloatBuffer().put(verticesCoordinates);
         vertexBuffer.position(0);
 
-        /* Compile shaders and program for THIS triangle */
+        /* Compile standard shaders and program for THIS triangle */
         programId = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, vertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader));
+                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.vertexShader),
+                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
 
     }
-    public Triangle (int program,float[] triangleVertices) {
+
+    /**
+     * Constructor uses pre-compiled program to draw and color triangle. It helps when One needs
+     * apply one set of shaders to many triangles.
+     *
+     * @param color
+     * @param triangleVertices
+     * @param program
+     */
+    public Triangle(float[] color, float[] triangleVertices,int program) {
+        this.color = color;
+        this.verticesCoordinates = triangleVertices;
         programId = program;
+
+         /* Vertices array buffer: create, fill out and set start position to 0 */
+        vertexBuffer = ByteBuffer.allocateDirect(verticesCoordinates.length * 4)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(verticesCoordinates);
+        vertexBuffer.position(0);
     }
 
     public void draw(float[] mvpMatrix) {

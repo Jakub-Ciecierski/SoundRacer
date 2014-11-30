@@ -31,14 +31,14 @@ public class Cube{
         List of vertices describing triangle.
      */
     static float verticesCoordinates[] = {   // in counterclockwise order:
-            -1,-1,22,
-            1,-1,22,
-            1,1,22,
-            -1,1,22,
-            -1,-1,20,
-            1,-1,20,
-            1,1,20,
-            -1,1,20
+            -1,-1,-1,
+            1,-1,-1,
+            1,1,-1,
+            -1,1,-1,
+            -1,-1,1,
+            1,-1,1,
+            1,1,1,
+            -1,1,1
     };
     /*
         Color of our Triangle: [0] Red, [1] Green, [2] Blue, [3] Alpha
@@ -46,24 +46,7 @@ public class Cube{
      */
     private short drawOrder[] ={0,1,2,0,2,3,1,5,2,5,6,2,6,5,4,6,4,7,4,0,3,4,3,7,7,3,2,2,6,7,1,0,4,1,4,5};
     float color[] = {0, 1.0f, 0.5f, 1.0f};
-    /*
-        Vertex shader code.
-     */
-    private final String vertexShader =
-            "uniform mat4 uMVPMatrix;"+
-                    "attribute vec4 vPosition;" +
-                    "void main() {" +
-                    "  gl_Position = uMVPMatrix * vPosition;" +
-                    "}";
-    /*
-        Fragment shader code.
-     */
-    private final String fragmentShader =
-            "precision mediump float;" +
-                    "uniform vec4 vColor;" +
-                    "void main() {" +
-                    "  gl_FragColor = vColor;" +
-                    "}";
+
     /*
         Set of handles to OpenGL ES objects
      */
@@ -91,10 +74,10 @@ public class Cube{
         drawListBuffer = dlb.asShortBuffer();
         drawListBuffer.put(drawOrder);
         drawListBuffer.position(0);
-        /* Compile shaders and program for THIS triangle */
+        /* Compile standard shaders and program for THIS triangle */
         programId = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, vertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader));
+                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.vertexShader),
+                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
 
     }
     public Cube (int program,float[] triangleVertices) {
