@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.mini.game.audio.AudioSampleActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Music"
+        android:id="@+id/startMusicButton"
+        android:onClick="startMusic"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pause"
+        android:id="@+id/pauseMusicButton"
+        android:layout_alignTop="@+id/startMusicButton"
+        android:layout_toRightOf="@+id/startMusicButton"
+        android:layout_toEndOf="@+id/startMusicButton"
+        android:onClick="pauseMusic"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rewind"
+        android:id="@+id/rewindButton"
+        android:layout_alignTop="@+id/pauseMusicButton"
+        android:layout_toRightOf="@+id/pauseMusicButton"
+        android:layout_toEndOf="@+id/pauseMusicButton"
+        android:onClick="rewindMusic"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/startMusicButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:id="@+id/linearLayout"
+        android:weightSum="1">
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Draw Graph"
+        android:id="@+id/graphButton"
+        android:layout_toEndOf="@+id/pauseMusicButton"
+        android:layout_below="@+id/startMusicButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:onClick="drawGraph"/>
+
+
+</RelativeLayout>

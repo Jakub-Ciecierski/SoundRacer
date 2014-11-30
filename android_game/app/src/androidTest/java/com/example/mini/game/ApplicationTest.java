@@ -1,4 +1,4 @@
-package com.example.mini.android_game;
+package com.example.mini.game;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

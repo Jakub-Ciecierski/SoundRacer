@@ -1,6 +1,5 @@
-package com.example.mini.android_game;
+package com.example.mini.game;
 
-import android.opengl.GLSurfaceView;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,21 +7,21 @@ import android.view.MenuItem;
 
 
 public class MainActivity extends ActionBarActivity {
-    private GLSurfaceView glSurfaceView;
-    private boolean rendererSet = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
-        glSurfaceView = new GLSurfaceView(this);
-        setContentView(glSurfaceView);
+        setContentView(R.layout.activity_main);
     }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -36,12 +35,5 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-    protected void inPause()
-    {
-        super.onPause();
-        if(rendererSet){
-            glSurfaceView.onPause();
-        }
     }
 }
