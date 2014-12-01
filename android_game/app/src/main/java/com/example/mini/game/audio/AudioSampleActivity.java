@@ -1,5 +1,6 @@
 package com.example.mini.game.audio;
 
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import com.example.mini.game.graphview.GraphView;
 import com.example.mini.game.graphview.GraphViewSeries;
 import com.example.mini.game.graphview.LineGraphView;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -77,7 +79,6 @@ public class AudioSampleActivity extends ActionBarActivity {
     }
 
     public void drawGraph(View view)  {
-        Log.i("Graph","Starting analyzing audio to draw graph");
         List<Float> spectralFlux = audioAnalyser.analyzeEntireAudio();
 
         GraphView.GraphViewData[] data = new GraphView.GraphViewData[spectralFlux.size()];
@@ -96,8 +97,6 @@ public class AudioSampleActivity extends ActionBarActivity {
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayout);
         layout.addView(graphView);
-
-        Log.i("Graph","Finished");
     }
 
     public void startMusic(View view) throws Exception {

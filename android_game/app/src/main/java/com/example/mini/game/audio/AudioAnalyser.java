@@ -3,10 +3,12 @@ package com.example.mini.game.audio;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.os.Environment;
 import android.util.Log;
 
 import com.example.mini.game.audio.analysis.FFT;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -42,6 +44,13 @@ public class AudioAnalyser {
      * @param sampleRate
      */
     AudioAnalyser(String filePath, int sampleSize, int sampleRate) {
+        File file = new File(filePath);
+        if(!file.exists()) {
+            Log.w("AudioAnalyser","File: " + filePath + " does not exist");
+        } else {
+            Log.i("AudioAnalyser","Creating instance of AudioAnalyser");
+        }
+
         // path to audio file
         this.filePath = filePath;
 
@@ -71,7 +80,7 @@ public class AudioAnalyser {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.i("Analyze","Starting analyzing audio");
+                Log.i("AudioAnalyser","Starting analyzing buffered audio");
                 // load up the mp3
                 loadMP3();
                 boolean done = false;
@@ -238,6 +247,10 @@ public class AudioAnalyser {
         this.cleanupMP3();
         this.loadMP3();
         boolean done = false;
+
+        Log.i("AudioAnalyser","Starting analyzing entire audio...");
+        long startTime = System.currentTimeMillis();
+
         List<Float> spectralFlux = new ArrayList<Float>( );
         FFT fft = new FFT(sampleSize, 44100);
         while(!done) {
@@ -270,6 +283,11 @@ public class AudioAnalyser {
             spectralFlux.add(flux);
         }
         this.cleanupMP3();
+
+        long endTime = System.currentTimeMillis();
+        long delta = endTime - startTime;
+        Log.i("AudioAnalyser","Finished analyzing entire audio after: " + Long.toString(delta) + " milliseconds");
+
         return spectralFlux;
     }
 
