@@ -5,8 +5,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import pl.dybisz.testgry.util.StaticSphereCamera;
-
 /**
  * Created by user on 2014-11-25.
  */

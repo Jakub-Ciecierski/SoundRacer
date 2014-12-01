@@ -1,6 +1,7 @@
 package pl.dybisz.testgry;
 
 import android.content.Context;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
@@ -8,20 +9,14 @@ import android.opengl.Matrix;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import pl.dybisz.testgry.shapes.Button;
-import pl.dybisz.testgry.shapes.CartesianCoordinates;
-import pl.dybisz.testgry.shapes.Cone;
-import pl.dybisz.testgry.shapes.HeightMap;
+import pl.dybisz.testgry.shapes.complex.CartesianCoordinates;
 
-import pl.dybisz.testgry.shapes.Cube;
-import pl.dybisz.testgry.shapes.RoadPrototype;
-import pl.dybisz.testgry.shapes.Web;
-import pl.dybisz.testgry.util.StaticSphereCamera;
-import pl.dybisz.testgry.util.screenMovement.SetOfButtons;
+import pl.dybisz.testgry.shapes.basic.Cube;
+import pl.dybisz.testgry.shapes.complex.GameBoard;
+import pl.dybisz.testgry.shapes.complex.Road;
+import pl.dybisz.testgry.util.camera.StaticSphereCamera;
+import pl.dybisz.testgry.shapes.complex.SetOfButtons;
 
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
-
-import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glViewport;
 
@@ -32,10 +27,10 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private final Context context;
     private float[] mProjectionMatrix = new float[16];
     private float[] mOrthogonalMatrix = new float[16];
-    private Cube cube;
     private CartesianCoordinates cartesianCoordinates;
     private SetOfButtons movementButtons;
-    private RoadPrototype road;
+    private GameBoard gameBoard;
+
 
     public GameRenderer(Context context) {
         this.context = context;
@@ -44,9 +39,13 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         //cube = new Cube();
+        GLES20.glEnable( GLES20.GL_DEPTH_TEST );
+        GLES20.glDepthFunc( GLES20.GL_LEQUAL );
+        GLES20.glDepthMask(true);
+
         cartesianCoordinates = new CartesianCoordinates(new float[] {0.0f,0.0f,0.0f});
         movementButtons = new SetOfButtons(context);
-        road = new RoadPrototype();
+        gameBoard = new GameBoard();
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
@@ -62,14 +61,19 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl10) {
         count++;
-        glClear(GL_COLOR_BUFFER_BIT);
+        //glClear(GL_COLOR_BUFFER_BIT);
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClearDepthf(1.0f);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         //cube.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
+
+//        if(count == 3) {
+//           gameBoard.switchFrame();
+//            count =0;
+//        }
+        //road.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
+        gameBoard.render(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
         cartesianCoordinates.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
-        if(count == 3) {
-            road.switchFrame();
-            count =0;
-        }
-        road.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
         movementButtons.draw(mOrthogonalMatrix);
 
     }

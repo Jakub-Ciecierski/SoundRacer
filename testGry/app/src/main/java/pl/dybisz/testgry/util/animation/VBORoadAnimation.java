@@ -1,4 +1,6 @@
-package pl.dybisz.testgry.util;
+package pl.dybisz.testgry.util.animation;
+
+import pl.dybisz.testgry.util.mathematics.Vector3;
 
 import static android.util.FloatMath.sin;
 
@@ -9,6 +11,7 @@ public class VBORoadAnimation {
     private final static int COMPONENTS_PER_VERTEX = 3;
     private final static float SIN_ARGUMENT_MULTIPLIER = 0.5f;
     private final static float SIN_VALUE_MULTIPLIER = 1.0f;
+    private final static float LEVITATION_HEIGHT = 1.3f;
     private final int arrayOfVerticesLength;
     private float currentTime = 0.0f;
     private float helpCounter =0.0f;
@@ -23,7 +26,7 @@ public class VBORoadAnimation {
         this.arrayOfVerticesLength =  verticesPerBorder * 2 * COMPONENTS_PER_VERTEX;
     }
 
-    public float[] generateVerticesAfterOneFrame(float[] oldVertices) {
+    public float[] generateNextFrame(float[] oldVertices) {
         /* Copy everything beside first 2 vertices */
         float[] newVertices = new float[arrayOfVerticesLength];
         System.arraycopy(oldVertices,2 * COMPONENTS_PER_VERTEX, newVertices, 0,
@@ -32,11 +35,13 @@ public class VBORoadAnimation {
         /* Add 2 new vertices */
         // Left border x, y ,z
         newVertices[arrayOfVerticesLength - 6] = 0.0f;
-        newVertices[arrayOfVerticesLength - 5] = SIN_VALUE_MULTIPLIER*sin(SIN_ARGUMENT_MULTIPLIER*currentTime);
+        newVertices[arrayOfVerticesLength - 5] = SIN_VALUE_MULTIPLIER*sin(SIN_ARGUMENT_MULTIPLIER*currentTime)
+                                                    + LEVITATION_HEIGHT;
         newVertices[arrayOfVerticesLength - 4] = timeUnitLength * helpCounter;
         // Right border x,y,z
         newVertices[arrayOfVerticesLength - 3] = roadWidth;
-        newVertices[arrayOfVerticesLength - 2] = SIN_VALUE_MULTIPLIER*sin(SIN_ARGUMENT_MULTIPLIER*currentTime);
+        newVertices[arrayOfVerticesLength - 2] = SIN_VALUE_MULTIPLIER*sin(SIN_ARGUMENT_MULTIPLIER*currentTime)
+                                                    + LEVITATION_HEIGHT;
         newVertices[arrayOfVerticesLength - 1] = timeUnitLength * helpCounter;
         // Update current time
         currentTime += 0.5;
@@ -54,11 +59,13 @@ public class VBORoadAnimation {
         for (int i = 0; i < arrayOfVerticesLength; ) {
             // Left border x, y ,z
             vertices[i++] = 0.0f;
-            vertices[i++] = SIN_VALUE_MULTIPLIER*sin(SIN_ARGUMENT_MULTIPLIER*currentTime);
+            vertices[i++] = SIN_VALUE_MULTIPLIER*sin(SIN_ARGUMENT_MULTIPLIER*currentTime)
+                            + LEVITATION_HEIGHT;
             vertices[i++] = timeUnitLength * helpCounter;
             // Right border x,y,z
             vertices[i++] = roadWidth;
-            vertices[i++] = SIN_VALUE_MULTIPLIER*sin(SIN_ARGUMENT_MULTIPLIER*currentTime);
+            vertices[i++] = SIN_VALUE_MULTIPLIER*sin(SIN_ARGUMENT_MULTIPLIER*currentTime)
+                            + LEVITATION_HEIGHT;
             vertices[i++] = timeUnitLength * helpCounter;
             // Update current time
             currentTime += 0.5;
@@ -67,5 +74,9 @@ public class VBORoadAnimation {
         }
 
         return vertices;
+    }
+
+    public void generateNextFrame(Vector3 translation) {
+        translation.setZ(translation.getZ() - timeUnitLength);
     }
 }

@@ -1,4 +1,4 @@
-package pl.dybisz.testgry.shapes;
+package pl.dybisz.testgry.shapes.basic;
 
 /**
  * Created by Łukasz on 2014-11-23.

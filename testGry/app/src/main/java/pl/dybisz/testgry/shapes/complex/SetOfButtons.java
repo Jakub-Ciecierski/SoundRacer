@@ -1,12 +1,11 @@
-package pl.dybisz.testgry.util.screenMovement;
+package pl.dybisz.testgry.shapes.complex;
 
 import android.content.Context;
 import android.opengl.GLES20;
-import android.util.Log;
 
 
 import pl.dybisz.testgry.R;
-import pl.dybisz.testgry.shapes.Button;
+import pl.dybisz.testgry.shapes.basic.Button;
 import pl.dybisz.testgry.util.MoveType;
 import pl.dybisz.testgry.util.ShadersController;
 import pl.dybisz.testgry.util.TexturesLoader;

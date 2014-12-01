@@ -1,4 +1,6 @@
-package pl.dybisz.testgry.shapes;
+package pl.dybisz.testgry.shapes.basic;
+
+import pl.dybisz.testgry.shapes.complex.CartesianCoordinates;
 
 import static android.util.FloatMath.sqrt;
 
@@ -36,12 +38,12 @@ public class Arrow {
     private float[] color;
     /**
      * Line component of the arrow.
-     * See {@link pl.dybisz.testgry.shapes.Line} for more information.
+     * See {@link pl.dybisz.testgry.shapes.basic.Line} for more information.
      */
     private Line line;
     /**
      * Arrowhead component of the arrow.
-     * See {@link pl.dybisz.testgry.shapes.Cone} for more information.
+     * See {@link pl.dybisz.testgry.shapes.basic.Cone} for more information.
      */
     private Cone arrowhead;
 
@@ -49,7 +51,7 @@ public class Arrow {
      * @param start     Start point of the arrow in the form: {x,y,z}.
      * @param end       End point of the arrow in the form: {x,y,z}.
      * @param color     Color of the arrow in the form: {r,g,b,a}.
-     * @param type      Type of axis. See {@link pl.dybisz.testgry.shapes.CartesianCoordinates.axes}.
+     * @param type      Type of axis. See {@link pl.dybisz.testgry.shapes.complex.CartesianCoordinates.axes}.
      * @param programId Id of compiled openGL program.
      */
     public Arrow(float[] start, float[] end, float[] color, CartesianCoordinates.axes type, int programId) {
@@ -72,7 +74,7 @@ public class Arrow {
     /**
      * Method helps matching transformation of the arrowhead to proper axis.
      *
-     * @param type Type of axis. See {@link pl.dybisz.testgry.shapes.CartesianCoordinates.axes}.
+     * @param type Type of axis. See {@link pl.dybisz.testgry.shapes.complex.CartesianCoordinates.axes}.
      */
     private void applyTransformationOnArrowhead(CartesianCoordinates.axes type) {
         switch (type) {

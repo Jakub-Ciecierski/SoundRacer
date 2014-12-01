@@ -1,8 +1,7 @@
-package pl.dybisz.testgry.shapes;
+package pl.dybisz.testgry.shapes.basic;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -11,8 +10,6 @@ import java.nio.ShortBuffer;
 import java.util.Arrays;
 
 import pl.dybisz.testgry.util.MoveType;
-import pl.dybisz.testgry.util.StaticSphereCamera;
-import pl.dybisz.testgry.util.TexturesLoader;
 
 import static java.lang.Math.abs;
 

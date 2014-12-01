@@ -1,4 +1,4 @@
-package pl.dybisz.testgry.util;
+package pl.dybisz.testgry.util.camera;
 
 import android.opengl.Matrix;
 

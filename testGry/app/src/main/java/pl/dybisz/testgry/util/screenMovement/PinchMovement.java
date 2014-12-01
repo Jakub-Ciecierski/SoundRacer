@@ -1,9 +1,8 @@
 package pl.dybisz.testgry.util.screenMovement;
 
-import android.util.Log;
 import android.view.ScaleGestureDetector;
 
-import pl.dybisz.testgry.util.StaticSphereCamera;
+import pl.dybisz.testgry.util.camera.StaticSphereCamera;
 
 /**
  * Created by user on 2014-11-25.

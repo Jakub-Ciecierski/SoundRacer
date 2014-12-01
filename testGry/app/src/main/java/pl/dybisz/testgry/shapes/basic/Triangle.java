@@ -1,4 +1,4 @@
-package pl.dybisz.testgry.shapes;
+package pl.dybisz.testgry.shapes.basic;
 
 import android.opengl.GLES20;
 

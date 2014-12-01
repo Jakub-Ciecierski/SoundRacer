@@ -1,7 +1,8 @@
-package pl.dybisz.testgry.shapes;
+package pl.dybisz.testgry.shapes.complex;
 
 import android.opengl.GLES20;
 
+import pl.dybisz.testgry.shapes.basic.Arrow;
 import pl.dybisz.testgry.util.ShadersController;
 
 /**
@@ -62,7 +63,7 @@ public class CartesianCoordinates {
         /* Pass information about position, color and program to manage rendering for each arrow */
         xAxis = new Arrow(
                 origin,
-                new float[]{DEFAULT_AXES_LENGTH, 0, 0},
+                new float[]{/*DEFAULT_AXES_LENGTH*/30, 0, 0},
                 new float[]{1.0f, 0.0f, 0.0f, 1.0f},
                 axes.X_AXIS,
                 programId);
@@ -74,7 +75,7 @@ public class CartesianCoordinates {
                 programId);
         zAxis = new Arrow(
                 origin,
-                new float[]{0, 0, DEFAULT_AXES_LENGTH},
+                new float[]{0, 0, /*DEFAULT_AXES_LENGTH*/100},
                 new float[]{0.0f, 0.0f, 1.0f, 1.0f},
                 axes.Z_AXIS,
                 programId);

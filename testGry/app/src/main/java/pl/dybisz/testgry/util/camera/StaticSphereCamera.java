@@ -1,7 +1,8 @@
-package pl.dybisz.testgry.util;
+package pl.dybisz.testgry.util.camera;
 
 import android.opengl.Matrix;
 
+import pl.dybisz.testgry.util.MoveType;
 import pl.dybisz.testgry.util.mathematics.Vector3;
 
 import static android.util.FloatMath.cos;

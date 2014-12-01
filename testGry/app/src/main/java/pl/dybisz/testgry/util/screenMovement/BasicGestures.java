@@ -3,8 +3,9 @@ package pl.dybisz.testgry.util.screenMovement;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import pl.dybisz.testgry.shapes.complex.SetOfButtons;
 import pl.dybisz.testgry.util.MoveType;
-import pl.dybisz.testgry.util.StaticSphereCamera;
+import pl.dybisz.testgry.util.camera.StaticSphereCamera;
 
 /**
  * Created by user on 2014-11-25.

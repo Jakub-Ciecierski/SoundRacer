@@ -1,12 +1,14 @@
-package pl.dybisz.testgry.shapes;
+package pl.dybisz.testgry.shapes.basic;
 
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import pl.dybisz.testgry.util.ShadersController;
+import pl.dybisz.testgry.util.mathematics.Vector3;
 
 /**
  * Class represents line object in the 3D space.
@@ -48,6 +50,14 @@ public class Line {
      */
     int mvpId;
     /**
+     * Additional translation.
+     */
+    Vector3 translations = new Vector3(0f, 0f, 0f);
+    /**
+     * To... my God...
+     */
+    private float originalPositionZ;
+    /**
      * Constructor automatically compile openGL program using standard shaders code:
      * {@link pl.dybisz.testgry.util.ShadersController#vertexShader vertexShader} and
      * {@link pl.dybisz.testgry.util.ShadersController#fragmentShader fragmentShader}.
@@ -69,8 +79,6 @@ public class Line {
         programId = ShadersController.createProgram(
                 ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.vertexShader),
                 ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
-
-
     }
 
     /**
@@ -90,6 +98,23 @@ public class Line {
         vertexBuffer = ByteBuffer.allocateDirect(verticesCoordinates.length * 4)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer().put(verticesCoordinates);
         vertexBuffer.position(0);
+    }
+
+    /**
+     * When we are about to draw vast amount of lines, it is good(in terms of memory saving)
+     * to pass the same FloatBuffer to each arrow and then just translate them according
+     * to our wish.
+     *
+     * @param color        Color of the line.
+     * @param vertexBuffer Buffer with vertices for shader.
+     * @param program      Id of out shader program.
+     */
+    public Line(float[] color, FloatBuffer vertexBuffer, Vector3 translations, int program) {
+        this.programId = program;
+        this.color = color;
+        this.vertexBuffer = vertexBuffer;
+        this.translations = translations;
+        this.originalPositionZ = translations.getZ();
     }
 
     /**
@@ -120,7 +145,9 @@ public class Line {
         /*stride*/  0, vertexBuffer);
 
         // Pass the projection and view transformation to the shader
-        GLES20.glUniformMatrix4fv(mvpId, 1, false, mvpMatrix, 0);
+        float[] scratch = new float[16];
+        Matrix.translateM(scratch, 0, mvpMatrix, 0, translations.getX(), translations.getY(), translations.getZ());
+        GLES20.glUniformMatrix4fv(mvpId, 1, false, scratch, 0);
 
         /* Set vColor to our color float table */
         GLES20.glUniform4fv(uniformColorId, 1, color, 0);
@@ -130,5 +157,15 @@ public class Line {
 
         /* Safe bullshit */
         GLES20.glDisableVertexAttribArray(attributePositionId);
+    }
+
+    public void setTranslationsZ(float newZ) {
+       translations.setZ(newZ);
+    }
+    public float getTranslationsZ() {
+        return translations.getZ();
+    }
+    public float getOriginalPositionZ() {
+        return originalPositionZ;
     }
 }
