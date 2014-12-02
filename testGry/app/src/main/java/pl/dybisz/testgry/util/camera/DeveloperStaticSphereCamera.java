@@ -14,7 +14,7 @@ import static android.util.FloatMath.sqrt;
  * and view matrix.
  * Created by dybisz on 2014-11-24.
  */
-public abstract class StaticSphereCamera {
+public abstract class DeveloperStaticSphereCamera {
     private static float[] cameraMatrix = new float[16];
 
     private static Vector3 eyeCoordinates = new Vector3(0.1f, 3.0f, -20.0f);
@@ -76,9 +76,7 @@ public abstract class StaticSphereCamera {
     public static float[] getCameraMatrix(float[] projectionMatrix) {
         float[] scratch = new float[16];
         updateMatrixInformation();
-
         Matrix.multiplyMM(scratch, 0, projectionMatrix, 0, cameraMatrix, 0);
-        //Matrix.translateM(scratch,0,cameraTranslation[0], cameraTranslation[1], cameraTranslation[2]);
         return scratch;
     }
 
@@ -105,7 +103,7 @@ public abstract class StaticSphereCamera {
     }
 
     public static void setRadiusOfView(float radiusOfView) {
-        StaticSphereCamera.radiusOfView = radiusOfView;
+        DeveloperStaticSphereCamera.radiusOfView = radiusOfView;
         // Just to update coordinates:
         rotate(0, 0);
     }

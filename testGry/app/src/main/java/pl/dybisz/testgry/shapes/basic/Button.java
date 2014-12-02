@@ -31,6 +31,7 @@ public class Button {
     private MoveType buttonType;
     private float texture[];
     private int textureId;
+    private int textureId2;
 
     public Button(float[] upperLeft, float[] bottomRight, MoveType buttonType, int textureId, int program) {
         this.program = program;
@@ -46,7 +47,7 @@ public class Button {
         System.arraycopy(scaling, 0, mScale, 0, mScale.length);
     }
 
-    public void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix, int texture) {
          /* Use compiled program to refer shaders attributes/uniforms */
         GLES20.glUseProgram(program);
 
@@ -74,7 +75,7 @@ public class Button {
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 
         /* Bind our loaded texture to this unit */
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture);
 
         /* Set unit sampler in shader to use this unit */
         GLES20.glUniform1i(u_TextureSamplerHandle, 0);
@@ -176,4 +177,21 @@ public class Button {
         vertices[10] = bottomRight[1] + height;
         vertices[11] = 0.0f;
     }
+
+
+    //TODO metody do poprawki
+    public void switchTexture(int textureId) {
+        this.textureId = textureId;
+    }
+
+    public int getTextureId(){
+        return textureId;
+    }
+
+    public void addSecondTexture(int tex) {
+        this.textureId2 = tex;
+
+    }
+
+
 }
