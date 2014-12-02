@@ -66,7 +66,7 @@ public class RenderedObstacleBuffer {
             }
         }
         storedObstacles.removeAll(returnArrayList);
-        Log.i("RENDERED_OBSTACLE_BUFFER", "returned free obstacles: " + returnArrayList.size());
+        ///Log.i("RENDERED_OBSTACLE_BUFFER", "returned free obstacles: " + returnArrayList.size());
         return returnArrayList;
     }
 

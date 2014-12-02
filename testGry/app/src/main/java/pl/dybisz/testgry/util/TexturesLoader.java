@@ -20,7 +20,7 @@ public class TexturesLoader {
 
         if (textureObjectIds[0] == 0) {
 
-                Log.w("Texture loader", "Could not generate a new OpenGL texture object.");
+            Log.w("Texture loader", "Could not generate a new OpenGL texture object.");
 
             return 0;
         }
@@ -34,7 +34,7 @@ public class TexturesLoader {
 
         if (bitmap == null) {
 
-                Log.w("BITMAP NULLLLLLL", "Resource ID " + resourceId + " could not be decoded.");
+            Log.w("BITMAP NULLLLLLL", "Resource ID " + resourceId + " could not be decoded.");
 
 
             GLES20.glDeleteTextures(1, textureObjectIds, 0);
@@ -61,4 +61,25 @@ public class TexturesLoader {
         return textureObjectIds[0];
     }
 
+    public static float[] generateUvForTriangleStrip(int verticesPerBorder) {
+        float[] texture = new float[verticesPerBorder * 2 * 2];
+        float oneStep = 1 / (float)verticesPerBorder;
+        float offSet = 0;
+        for (int i = 0; i < texture.length; ) {
+            // Vertex 1
+            texture[i++] = offSet * oneStep;
+            texture[i++] = 1.0f;
+            texture[i++] = offSet * oneStep;
+            texture[i++] = 0.0f;
+            print("offset: " + offSet + " vertex_botom: " + texture[i-4] +" " + texture[i-3]
+                    + "vertex_up:" + texture[i-2] + " " + texture[i-1] + "oneStep: " + oneStep );
+            offSet++;
+        }
+
+        return texture;
+    }
+
+    private static void print(String s) {
+        Log.i("",s);
+    }
 }

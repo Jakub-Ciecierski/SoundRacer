@@ -24,7 +24,7 @@ import static android.opengl.GLES20.glViewport;
  * Created by user on 2014-11-22.
  */
 public class GameRenderer implements GLSurfaceView.Renderer {
-    private final Context context;
+    public static Context context;
     private float[] mProjectionMatrix = new float[16];
     private float[] mOrthogonalMatrix = new float[16];
     private CartesianCoordinates cartesianCoordinates;
@@ -65,13 +65,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GLES20.glClearDepthf(1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        //cube.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
 
-//        if(count == 3) {
-//           gameBoard.switchFrame();
-//            count =0;
-//        }
-        //road.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
         gameBoard.render(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
         cartesianCoordinates.draw(StaticSphereCamera.getCameraMatrix(mProjectionMatrix));
         movementButtons.draw(mOrthogonalMatrix);

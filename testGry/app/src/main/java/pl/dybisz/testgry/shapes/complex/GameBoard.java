@@ -38,12 +38,12 @@ public class GameBoard {
      * Tells {@link #render(float[]) render method} whether draw
      * {@link #lattice lattice} or not.
      */
-    private static final boolean LATTICE_RENDERING = true;
+    private static final boolean LATTICE_RENDERING = false;
     /**
      * Represents a need for animation of the {@link #lattice} or not.
      * See {@link #switchFrame()} method's body.
      */
-    private static final boolean LATTICE_ANIMATION = true;
+    private static final boolean LATTICE_ANIMATION = false;
     /**
      * Tells when to call {@link #switchFrame()} method to
      * proceed with animation.
