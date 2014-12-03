@@ -47,7 +47,6 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         cartesianCoordinates = new CartesianCoordinates(new float[]{0.0f, 0.0f, 0.0f});
         movementButtons = new SetOfButtons(context);
         gameBoard = new GameBoard();
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
     @Override
