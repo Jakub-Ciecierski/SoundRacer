@@ -1,6 +1,7 @@
-package pl.dybisz.testgry.shapes.complex;
+package com.example.mini.game.shapes.complex;
 
-import pl.dybisz.testgry.util.mathematics.Vector3;
+
+import com.example.mini.game.util.mathematics.Vector3;
 
 /**
  * Class represents objects concerning player's movement,

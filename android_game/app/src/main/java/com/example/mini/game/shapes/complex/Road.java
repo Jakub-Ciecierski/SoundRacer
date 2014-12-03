@@ -1,18 +1,18 @@
-package pl.dybisz.testgry.shapes.complex;
+package com.example.mini.game.shapes.complex;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import com.example.mini.game.GameRenderer;
+import com.example.mini.game.R;
+import com.example.mini.game.util.ShadersController;
+import com.example.mini.game.util.TexturesLoader;
+import com.example.mini.game.util.animation.VBORoadAnimation;
+import com.example.mini.game.util.mathematics.Vector3;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-
-import pl.dybisz.testgry.GameRenderer;
-import pl.dybisz.testgry.R;
-import pl.dybisz.testgry.util.ShadersController;
-import pl.dybisz.testgry.util.TexturesLoader;
-import pl.dybisz.testgry.util.animation.VBORoadAnimation;
-import pl.dybisz.testgry.util.mathematics.Vector3;
 
 /**
  * Animation "na dwa baty".
@@ -78,11 +78,11 @@ public class Road {
 
         // Pass the projection and view transformation to the shader
         float[] scratch = new float[16];
-        //Matrix.translateM(scratch, 0, mvpMatrix, 0, translation.getX(), translation.getY(), translation.getZ());
-        GLES20.glUniformMatrix4fv(u_TransformationMatrixHandle, 1, false, mvpMatrix, 0);
+        Matrix.translateM(scratch, 0, mvpMatrix, 0, translation.getX(), translation.getY(), translation.getZ());
+        GLES20.glUniformMatrix4fv(u_TransformationMatrixHandle, 1, false, scratch, 0);
 
-//        /* Set vColor to our color float table */
-//        GLES20.glUniform4fv(uniformColorId, 1, color, 0);
+        /* Set vColor to our color float table */
+        //GLES20.glUniform4fv(uniformColorId, 1, color, 0);
 
          /* Draw */
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertices.length / 3);

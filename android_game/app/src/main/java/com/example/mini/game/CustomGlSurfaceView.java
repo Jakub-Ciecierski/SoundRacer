@@ -1,10 +1,10 @@
-package pl.dybisz.testgry;
+package com.example.mini.game;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
-import pl.dybisz.testgry.util.screenMovement.MovementController;
+import com.example.mini.game.util.screenMovement.MovementController;
 
 /**
  * Created by dybisz on 2014-11-23.
@@ -20,6 +20,10 @@ public class CustomGlSurfaceView extends GLSurfaceView {
         movementController = new MovementController(context);
         setEGLContextClientVersion(2);
         setRenderer(new GameRenderer(context));
+        /*
+            Renders only when there is change to drawing data
+            setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        */
     }
 
     /**

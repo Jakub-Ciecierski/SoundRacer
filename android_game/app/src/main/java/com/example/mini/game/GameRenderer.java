@@ -1,4 +1,4 @@
-package pl.dybisz.testgry;
+package com.example.mini.game;
 
 import android.content.Context;
 import android.opengl.GLES20;
@@ -6,16 +6,15 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 
+import com.example.mini.game.shapes.complex.CartesianCoordinates;
+import com.example.mini.game.shapes.complex.GameBoard;
+import com.example.mini.game.shapes.complex.SetOfButtons;
+import com.example.mini.game.util.CameraType;
+import com.example.mini.game.util.camera.DeveloperStaticSphereCamera;
+import com.example.mini.game.util.camera.PlayerStaticSphereCamera;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-
-import pl.dybisz.testgry.shapes.complex.CartesianCoordinates;
-
-import pl.dybisz.testgry.shapes.complex.GameBoard;
-import pl.dybisz.testgry.util.CameraType;
-import pl.dybisz.testgry.util.camera.DeveloperStaticSphereCamera;
-import pl.dybisz.testgry.shapes.complex.SetOfButtons;
-import pl.dybisz.testgry.util.camera.PlayerStaticSphereCamera;
 
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glViewport;
@@ -48,6 +47,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         cartesianCoordinates = new CartesianCoordinates(new float[]{0.0f, 0.0f, 0.0f});
         movementButtons = new SetOfButtons(context);
         gameBoard = new GameBoard();
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
     @Override
