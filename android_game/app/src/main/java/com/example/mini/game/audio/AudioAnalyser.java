@@ -1,8 +1,5 @@
 package com.example.mini.game.audio;
 
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
 import android.util.Log;
 
 import com.example.mini.game.audio.analysis.FFT;
@@ -11,6 +8,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
+
 
 /**
  * Onset detection
@@ -54,8 +52,6 @@ public class AudioAnalyser {
     public static final float frameLengthMs = (1152f/44100f) * 1000f;
     // milliseconds per one byte in Mp3
     public static final float sampleLengthMs = frameLengthMs / 1152f;
-
-    private float currentTimeMs = 0;
 
     /**
      * TODO check if file exists

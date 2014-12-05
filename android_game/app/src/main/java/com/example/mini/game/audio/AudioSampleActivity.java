@@ -15,14 +15,21 @@ import com.example.mini.game.graphview.GraphView;
 import com.example.mini.game.graphview.GraphViewSeries;
 import com.example.mini.game.graphview.LineGraphView;
 
+import org.apache.commons.math3.analysis.interpolation.HermiteInterpolator;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunctionLagrangeForm;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class AudioSampleActivity extends ActionBarActivity {
     // path to file
     //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/Billy Talent - Diamond on a Landmine with Lyrics.mp3";
-    final String FILE = "/sdcard/external_sd/Music/Billy_Talent/judith.mp3";
-    //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/explosivo.mp3";
+    //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/judith.mp3";
+    final String FILE = "/sdcard/external_sd/Music/Billy_Talent/explosivo.mp3";
 
     AudioAnalyser audioAnalyser;
 
@@ -85,10 +92,49 @@ public class AudioSampleActivity extends ActionBarActivity {
             audioAnalyser.analyzerThread.join();
         }catch(InterruptedException e){e.printStackTrace();}
 
+
+
+        SplineInterpolator interpolator = new SplineInterpolator();
+        int size = audioAnalyser.getCurrentSpectralFluxSize();
+
+        Log.i("Interpolation","Starting length of data: " + size);
+        List<Double> interpolatedList = new ArrayList<Double>();
+
+        boolean done = false;
+        int sampleSize = 200;
+        int total = 0;
+        while(!done) {
+
+            int maxSize = (sampleSize + total) < size ? sampleSize : size - total;
+            double x[] = new double[maxSize];
+            double y[] = new double[maxSize];
+            for(int j = 0; j < maxSize; j++ ) {
+                x[j] = audioAnalyser.getTimeOfFlux(j);
+                y[j] = audioAnalyser.getFluxAt(j) / 100000;
+
+                total++;
+                Log.i("Interpolation","at: " + total);
+                if(total >= size) {
+                    done = true;
+                    break;
+                }
+            }
+            PolynomialFunctionLagrangeForm lagrange = new PolynomialFunctionLagrangeForm(x,y);
+            for(int j = 0; j < maxSize; j++ ) {
+                interpolatedList.add(lagrange.value(x[j]));
+            }
+        }
+
+        Log.i("Interpolation","Finished");
+
         GraphView.GraphViewData[] data = new GraphView.GraphViewData[audioAnalyser.getCurrentSpectralFluxSize()];
         for(int i = 0;i < data.length; i++) {
-
-            data[i] = new GraphView.GraphViewData(audioAnalyser.getTimeOfFlux(i), audioAnalyser.getFluxAt(i));
+            long time = audioAnalyser.getTimeOfFlux(i);
+            //float flux = audioAnalyser.getFluxAt(i) / 1000000;
+            double flux = interpolatedList.get(i);
+            //Log.i("Graph","Argument: " + time + " Value: " + flux);
+            data[i] = new GraphView.GraphViewData(audioAnalyser.getTimeOfFlux(i), flux);
+            //data[i] = new GraphView.GraphViewData(audioAnalyser.getTimeOfFlux(i), flux[i]);
         }
         GraphViewSeries exampleSeries = new GraphViewSeries(data);
 
