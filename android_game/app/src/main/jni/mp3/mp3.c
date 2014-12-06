@@ -22,23 +22,25 @@ sizeof(double)    = 8
 
 
 mpg123_handle *mh = NULL;
+mpg123_handle *mh_analysis = NULL;
 
 
 /*
  * Init MPG123, must be done one per process and before all other functions!
  */
-JNIEXPORT jboolean JNICALL Java_com_example_mini_game_audio_AudioAnalyser_ninitLib(JNIEnv* env, jobject this)
+JNIEXPORT jboolean JNICALL Java_com_example_mini_game_audio_NativeMP3Decoder_ninitLib(JNIEnv* env, jobject this)
 {	 
 	jint err = MPG123_ERR;
 
-	if(mpg123_init() != MPG123_OK || (mh = mpg123_new(NULL, &err)) == NULL)
+	if(mpg123_init() != MPG123_OK || (mh = mpg123_new(NULL, &err)) == NULL || (mh_analysis = mpg123_new(NULL, &err)) == NULL)
 		return JNI_FALSE;
 
 	/*
 	 * Setup needed format options
 	 */
 	mpg123_format_none(mh);
-	if ((err = mpg123_format(mh, 44100, MPG123_STEREO, MPG123_ENC_SIGNED_16)) != MPG123_OK) 
+	if ((err = mpg123_format(mh, 44100, MPG123_STEREO, MPG123_ENC_SIGNED_16)) != MPG123_OK
+	||(err = mpg123_format(mh_analysis, 44100, MPG123_STEREO, MPG123_ENC_SIGNED_16)) != MPG123_OK)
 		return JNI_FALSE;
 
 	mpg123_volume();
@@ -48,26 +50,36 @@ JNIEXPORT jboolean JNICALL Java_com_example_mini_game_audio_AudioAnalyser_ninitL
 /*
  * Finish our MPG123 library
  */
-JNIEXPORT void JNICALL Java_com_example_mini_game_audio_AudioAnalyser_ncleanupLib(JNIEnv* env, jobject this)
+JNIEXPORT void JNICALL Java_com_example_mini_game_audio_NativeMP3Decoder_ncleanupLib(JNIEnv* env, jobject this)
 {
 	mpg123_delete(mh);
+	mpg123_delete(mh_analysis);
 	mpg123_exit();
 	mh = NULL;
+	mh_analysis = NULL;
 }
 
 /*
  * Get last error, explaining string
  */
-JNIEXPORT jstring JNICALL Java_com_example_mini_game_audio_AudioAnalyser_ngetError(JNIEnv* env, jobject this)
+JNIEXPORT jstring JNICALL Java_com_example_mini_game_audio_NativeMP3Decoder_ngetError(JNIEnv* env, jobject this, jint handle)
 {
-	const char *err_string = mpg123_strerror(mh);
+    const char *err_string = NULL;
+    if(handle = 0)
+    {
+        err_string = mpg123_strerror(mh);
+    }
+    if(handle = 1)
+    {
+        err_string = mpg123_strerror(mh_analysis);
+    }
 	return (*env)->NewStringUTF(env, err_string);
 }
 
 /*
  * Init one MP3 file
  */
-JNIEXPORT jint JNICALL Java_com_example_mini_game_audio_AudioAnalyser_ninitMP3(JNIEnv* env, jobject this, jstring filename)
+JNIEXPORT jint JNICALL Java_com_example_mini_game_audio_NativeMP3Decoder_ninitMP3(JNIEnv* env, jobject this, jstring filename, jint handle)
 {
 	jint err = MPG123_ERR;
 
@@ -76,9 +88,16 @@ JNIEXPORT jint JNICALL Java_com_example_mini_game_audio_AudioAnalyser_ninitMP3(J
 		return -2;
 
 	// Init and access new MP3 file
-	if((err = mpg123_open(mh, mfile)) != MPG123_OK) 
-		return err;
-
+	if(handle == 0)
+	{
+	    if((err = mpg123_open(mh, mfile)) != MPG123_OK)
+		    return err;
+	}
+    if(handle == 1)
+    {
+        if((err = mpg123_open(mh_analysis, mfile)) != MPG123_OK)
+            return err;
+    }
   	(*env)->ReleaseStringUTFChars(env, filename, mfile);
 
 
@@ -106,18 +125,29 @@ JNIEXPORT jint JNICALL Java_com_example_mini_game_audio_AudioAnalyser_ninitMP3(J
 /*
  * Close and finish all handles to one MP3 file
  */
-void Java_com_example_mini_game_audio_AudioAnalyser_ncleanupMP3(JNIEnv* env, jobject this)
+void Java_com_example_mini_game_audio_NativeMP3Decoder_ncleanupMP3(JNIEnv* env, jobject this, jint handle)
 {
-	mpg123_close(mh);
+    if(handle == 0)
+	    mpg123_close(mh);
+    if(handle == 1)
+        mpg123_close(mh_analysis);
 }
 
 /*
  *
  */
-JNIEXPORT jboolean JNICALL Java_com_example_mini_game_audio_AudioAnalyser_nsetEQ(JNIEnv* env, jobject this, jint ch, jdouble val)
+JNIEXPORT jboolean JNICALL Java_com_example_mini_game_audio_NativeMP3Decoder_nsetEQ(JNIEnv* env, jobject this, jint ch, jdouble val, jint handle)
 {
-	if(mpg123_eq(mh, MPG123_LEFT | MPG123_RIGHT, ch, val) != MPG123_OK)
-		return JNI_FALSE;
+    if(handle == 0)
+    {
+	    if(mpg123_eq(mh, MPG123_LEFT | MPG123_RIGHT, ch, val) != MPG123_OK)
+		    return JNI_FALSE;
+    }
+    if(handle == 1)
+    {
+        if(mpg123_eq(mh_analysis, MPG123_LEFT | MPG123_RIGHT, ch, val) != MPG123_OK)
+            return JNI_FALSE;
+    }
 
 	return JNI_TRUE;
 }
@@ -125,15 +155,18 @@ JNIEXPORT jboolean JNICALL Java_com_example_mini_game_audio_AudioAnalyser_nsetEQ
 /*
  *
  */
-JNIEXPORT void JNICALL Java_com_example_mini_game_audio_AudioAnalyser_nresetEQ(JNIEnv* env, jobject this)
+JNIEXPORT void JNICALL Java_com_example_mini_game_audio_NativeMP3Decoder_nresetEQ(JNIEnv* env, jobject this, jint handle)
 {
-	mpg123_reset_eq(mh);
+    if(handle == 0)
+	    mpg123_reset_eq(mh);
+	if(handle == 1)
+        mpg123_reset_eq(mh_analysis);
 }
 
 /*
  * Decode our MP3 file
  */
-JNIEXPORT jint JNICALL  Java_com_example_mini_game_audio_AudioAnalyser_ndecodeMP3(JNIEnv* env, jobject this, jint inlen, jshortArray jpcm)
+JNIEXPORT jint JNICALL  Java_com_example_mini_game_audio_NativeMP3Decoder_ndecodeMP3(JNIEnv* env, jobject this, jint inlen, jshortArray jpcm, jint handle)
 {
 	jint err = MPG123_ERR;
 	jint outlen = 0;
@@ -141,7 +174,14 @@ JNIEXPORT jint JNICALL  Java_com_example_mini_game_audio_AudioAnalyser_ndecodeMP
 
 	// Write PCM Data to byte array
 	pcm = (*env)->GetShortArrayElements(env, jpcm, NULL);
-	err = mpg123_read(mh, (unsigned char*) pcm, inlen, &outlen);
+	if( handle == 0 )
+	{
+	    err = mpg123_read(mh, (unsigned char*) pcm, inlen, &outlen);
+	}
+	if( handle == 1 )
+    {
+        err = mpg123_read(mh_analysis, (unsigned char*) pcm, inlen, &outlen);
+    }
 	(*env)->ReleaseShortArrayElements(env, jpcm, pcm, 0);
 
 	return err;
@@ -150,14 +190,26 @@ JNIEXPORT jint JNICALL  Java_com_example_mini_game_audio_AudioAnalyser_ndecodeMP
 /*
  * Seek to specified offset, starting from 0, in milliseconds
  */
-JNIEXPORT void JNICALL Java_com_example_mini_game_audio_AudioAnalyser_nseekTo(JNIEnv* env, jobject this, jint pos)
+JNIEXPORT void JNICALL Java_com_example_mini_game_audio_NativeMP3Decoder_nseekTo(JNIEnv* env, jobject this, jint pos, jint handle)
 {
-	if(mh != NULL)
-		mpg123_seek(mh, pos, SEEK_SET);
+    if( handle == 0)
+    {
+	    if(mh != NULL)
+		    mpg123_seek(mh, pos, SEEK_SET);
+    }
+    if( handle == 1)
+    {
+        if(mh_analysis != NULL)
+            mpg123_seek(mh_analysis, pos, SEEK_SET);
+    }
 }
 
-JNIEXPORT jint JNICALL Java_com_example_mini_game_audio_AudioAnalyser_nTell(JNIEnv* env, jobject this)
+JNIEXPORT jint JNICALL Java_com_example_mini_game_audio_NativeMP3Decoder_nTell(JNIEnv* env, jobject this, jint handle)
 {
-    off_t pos = mpg123_tell(mh);
+    off_t pos = 0;
+    if(handle == 0)
+        pos = mpg123_tell(mh);
+    if(handle == 1)
+        pos = mpg123_tell(mh_analysis);
     return pos;
 }
