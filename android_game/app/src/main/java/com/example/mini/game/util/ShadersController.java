@@ -39,26 +39,135 @@ public abstract class ShadersController {
         Texture vertex shader code.
      */
     public static final String textureVertexShader =
-           "uniform mat4 u_Matrix;\n" +
-                   "attribute vec4 a_Position;\n" +
-                   "attribute vec2 a_TextureCoordinates;\n" +
-                   "varying vec2 v_TextureCoordinates;\n" +
-                   "void main()\n" +
-                   "{\n" +
-                   "v_TextureCoordinates = a_TextureCoordinates;\n" +
-                   "gl_Position = u_Matrix * a_Position;\n" +
-                   "}";
+            "uniform mat4 u_Matrix;\n" +
+                    "attribute vec4 a_Position;\n" +
+                    "attribute vec2 a_TextureCoordinates;\n" +
+                    "varying vec2 v_TextureCoordinates;\n" +
+                    "void main()\n" +
+                    "{\n" +
+                    "v_TextureCoordinates = a_TextureCoordinates;\n" +
+                    "gl_Position = u_Matrix * a_Position;\n" +
+                    "}";
     /*
         Texture fragment shader code.
      */
     public static final String textureFragmentShader =
-           "precision mediump float;\n" +
-                   "uniform sampler2D u_TextureUnit;\n" +
-                   "varying vec2 v_TextureCoordinates;\n" +
-                   "void main()\n" +
-                   "{\n" +
-                   "gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);\n" +
-                   "}";
+            "precision mediump float;\n" +
+                    "uniform sampler2D u_TextureUnit;\n" +
+                    "varying vec2 v_TextureCoordinates;\n" +
+                    "void main()\n" +
+                    "{\n" +
+                    "gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);\n" +
+                    "}";
+    /**
+     * TODO
+     */
+    public static final String fogVertexShader =
+            "uniform mat4 uMVPMatrix;" +
+                    "varying float v_eyeDist;" +
+                    "attribute vec4 vPosition;" +
+                    "uniform vec4 u_eyePos;" +
+                    "void main() {" +
+                    "vec4 vViewPos = uMVPMatrix*vPosition;" +
+                    "v_eyeDist = sqrt( (vViewPos.x - u_eyePos.x) *\n" +
+                    "                      (vViewPos.x - u_eyePos.x) +\n" +
+                    "                      (vViewPos.y - u_eyePos.y) *\n" +
+                    "                      (vViewPos.y - u_eyePos.y) +\n" +
+                    "                      (vViewPos.z - u_eyePos.z) *\n" +
+                    "                      (vViewPos.z - u_eyePos.z) );" +
+                    "  gl_Position = uMVPMatrix * vPosition;" +
+                    "}";
+    /**
+     * TODO
+     */
+    public static final String fogFragmentShader =
+            "uniform vec4 u_fogColor;\n" +
+                    "uniform float u_fogMaxDist;\n" +
+                    "varying float v_eyeDist;\n" +
+                    "uniform float u_fogMinDist;\n" +
+                    "uniform vec4 u_Color;\n" +
+                    "\n" +
+                    "float computeLinearFogFactor()\n" +
+                    "{\n" +
+                    "   float factor;\n" +
+                    "  \n" +
+                    "    \n" +
+                    "   // Compute linear fog equation\n" +
+                    "   factor = (u_fogMaxDist - v_eyeDist) /\n" +
+                    "            (u_fogMaxDist - u_fogMinDist );\n" +
+                    "   \n" +
+                    "   // Clamp in the [0,1] range\n" +
+                    "   factor = clamp( factor, 0.0, 1.0 );\n" +
+                    "            \n" +
+                    "   return factor;            \n" +
+                    "}\n" +
+                    "\n" +
+                    "void main(void)\n" +
+                    "{\tfloat fogFactor = computeLinearFogFactor();\n" +
+                    "    vec4  fogColor = fogFactor * u_fogColor;\n" +
+                    "   \n" +
+                    "    \n" +
+                    "    // Compute final color as a lerp with fog factor\n" +
+                    "    gl_FragColor = u_Color * fogFactor +\n" +
+                    "                   fogColor * (1.0 - fogFactor); \n" +
+                    "}";
+    /**
+     * TODO
+     */
+    public static final String textureFogVertexShader =
+            "uniform mat4 uMVPMatrix;" +
+                    "varying float v_eyeDist;" +
+                    "attribute vec4 vPosition;" +
+                    "uniform vec4 u_eyePos;" +
+                    "attribute vec2 a_TextureCoordinates;\n" +
+                    "varying vec2 v_TextureCoordinates;\n" +
+                    "void main() {" +
+                    "v_TextureCoordinates = a_TextureCoordinates;\n" +
+                    "vec4 vViewPos = uMVPMatrix*vPosition;" +
+                    "v_eyeDist = sqrt( (vViewPos.x - u_eyePos.x) *\n" +
+                    "                      (vViewPos.x - u_eyePos.x) +\n" +
+                    "                      (vViewPos.y - u_eyePos.y) *\n" +
+                    "                      (vViewPos.y - u_eyePos.y) +\n" +
+                    "                      (vViewPos.z - u_eyePos.z) *\n" +
+                    "                      (vViewPos.z - u_eyePos.z) );" +
+                    "  gl_Position = uMVPMatrix * vPosition;" +
+                    "}";
+    /**
+     * TODO
+     */
+    public static final String textureFogFragmentShader =
+            "uniform vec4 u_fogColor;\n" +
+                    "uniform float u_fogMaxDist;\n" +
+                    "varying float v_eyeDist;\n" +
+                    "uniform float u_fogMinDist;\n" +
+                    "uniform sampler2D u_TextureUnit;\n" +
+                    "varying vec2 v_TextureCoordinates;\n" +
+                    "\n" +
+                    "float computeLinearFogFactor()\n" +
+                    "{\n" +
+                    "   float factor;\n" +
+                    "  \n" +
+                    "    \n" +
+                    "   // Compute linear fog equation\n" +
+                    "   factor = (u_fogMaxDist - v_eyeDist) /\n" +
+                    "            (u_fogMaxDist - u_fogMinDist );\n" +
+                    "   \n" +
+                    "   // Clamp in the [0,1] range\n" +
+                    "   factor = clamp( factor, 0.0, 1.0 );\n" +
+                    "            \n" +
+                    "   return factor;            \n" +
+                    "}\n" +
+                    "\n" +
+                    "void main(void)\n" +
+                    "{\tfloat fogFactor = computeLinearFogFactor();\n" +
+                    "    vec4  fogColor = fogFactor * u_fogColor;\n" +
+                    "   \n" +
+                    "    \n" +
+                    "    // Compute final color as a lerp with fog factor\n" +
+                    "vec4 baseColor = texture2D(u_TextureUnit, v_TextureCoordinates);" +
+                    "    gl_FragColor = baseColor * fogFactor +\n" +
+                    "                   fogColor * (1.0 - fogFactor); \n" +
+                    "}";
 
     public static int loadShader(int type, String shaderCode) {
         /* Create and verify */

@@ -44,7 +44,8 @@ public class ObstaclesWorkshop {
      */
     public void draw(float[] mvpMatrix) {
         for (int i = 0; i < obstacles.length; i++) {
-            obstacles[i].draw(mvpMatrix);
+            //obstacles[i].draw(mvpMatrix);
+            obstacles[i].fogDraw(mvpMatrix);
         }
     }
 

@@ -70,8 +70,8 @@ public class TexturesLoader {
             texture[i++] = 1.0f;
             texture[i++] = offSet * oneStep;
             texture[i++] = 0.0f;
-            print("offset: " + offSet + " vertex_botom: " + texture[i-4] +" " + texture[i-3]
-                    + "vertex_up:" + texture[i-2] + " " + texture[i-1] + "oneStep: " + oneStep );
+//            print("offset: " + offSet + " vertex_botom: " + texture[i-4] +" " + texture[i-3]
+//                    + "vertex_up:" + texture[i-2] + " " + texture[i-1] + "oneStep: " + oneStep );
             offSet++;
         }
 

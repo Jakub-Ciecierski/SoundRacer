@@ -1,12 +1,11 @@
 package com.example.mini.game.util.screenMovement;
 
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.example.mini.game.GameRenderer;
 import com.example.mini.game.shapes.complex.SetOfButtons;
-import com.example.mini.game.util.MoveType;
+import com.example.mini.game.util.enums.MoveType;
 import com.example.mini.game.util.camera.DeveloperStaticSphereCamera;
 
 

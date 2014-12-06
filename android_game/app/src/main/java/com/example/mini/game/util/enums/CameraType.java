@@ -1,4 +1,4 @@
-package com.example.mini.game.util;
+package com.example.mini.game.util.enums;
 
 /**
  * Depending on settings, user can choose which camera

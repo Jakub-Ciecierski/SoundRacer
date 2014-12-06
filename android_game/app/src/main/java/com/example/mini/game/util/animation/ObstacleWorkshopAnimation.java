@@ -39,7 +39,7 @@ public class ObstacleWorkshopAnimation {
 
         /* If there are obstacles on the scene which crossed the vanish point,
         move them to availableObstacles buffer */
-        if (renderedObstacles.areThereAnyFreeObstacles())
+        //if (renderedObstacles.areThereAnyFreeObstacles())
             availableObstacles.addToBuffer(renderedObstacles.getFreeObstacles
                     (GameBoard.LATTICE_BOTTOM_RIGHT_CORNER.getZ()));
 

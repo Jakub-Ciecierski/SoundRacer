@@ -32,6 +32,11 @@ public abstract class PlayerStaticSphereCamera {
                 lookAtCoordinates.getZ(),
                 upVector.getX(),
                 upVector.getY(),
-                upVector.getZ());
+                upVector.getZ())
+        ;
+    }
+
+    public static Vector3 getEyeVector() {
+        return eyeCoordinates;
     }
 }

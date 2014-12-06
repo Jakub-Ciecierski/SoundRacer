@@ -9,9 +9,10 @@ import android.opengl.Matrix;
 import com.example.mini.game.shapes.complex.CartesianCoordinates;
 import com.example.mini.game.shapes.complex.GameBoard;
 import com.example.mini.game.shapes.complex.SetOfButtons;
-import com.example.mini.game.util.CameraType;
+import com.example.mini.game.util.enums.CameraType;
 import com.example.mini.game.util.camera.DeveloperStaticSphereCamera;
 import com.example.mini.game.util.camera.PlayerStaticSphereCamera;
+import com.example.mini.game.util.mathematics.Vector3;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -55,7 +56,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         glViewport(0, 0, width, height);
         float ratio = (float) width / height;
         movementButtons.setDimensions(width, height);
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 1, 100);
+        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 1, 400);
         Matrix.orthoM(mOrthogonalMatrix, 0, -ratio, ratio, -1, 1, -1, 1);
     }
 
@@ -66,7 +67,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         gameBoard.render(getCurrentCameraMatrix());
-        cartesianCoordinates.draw(getCurrentCameraMatrix());
+        if(currentCamera == CameraType.DEVELOPER_CAMERA)
+            cartesianCoordinates.draw(getCurrentCameraMatrix());
         movementButtons.draw(mOrthogonalMatrix);
 
     }
@@ -80,5 +82,11 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     public static void swapCameras() {
         currentCamera = (currentCamera == CameraType.DEVELOPER_CAMERA) ?
                 CameraType.PLAYER_CAMERA : CameraType.DEVELOPER_CAMERA;
+
+    }
+
+    public static float[] getEyePosition() {
+        Vector3 temp = PlayerStaticSphereCamera.getEyeVector();
+        return new float[]{temp.getX(), temp.getY(), temp.getZ(), 1.0f};
     }
 }
