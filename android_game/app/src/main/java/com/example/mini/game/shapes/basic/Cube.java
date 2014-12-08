@@ -2,8 +2,12 @@ package com.example.mini.game.shapes.basic;
 
 /**
  * Created by Łukasz on 2014-11-23.
- */import android.opengl.GLES20;
+ */
 
+import android.opengl.GLES20;
+import android.opengl.Matrix;
+
+import com.example.mini.game.shapes.complex.GameBoard;
 import com.example.mini.game.util.ShadersController;
 
 import java.nio.ByteBuffer;
@@ -17,7 +21,7 @@ import java.nio.ShortBuffer;
  * It encapsulates shaders creation, program linking and drawing.
  * Created by dybisz on 2014-11-23.
  */
-public class Cube{
+public class Cube {
     /*
         Buffer to pass array of vertices into dalvik machine.
      */
@@ -32,20 +36,20 @@ public class Cube{
         List of vertices describing triangle.
      */
     static float verticesCoordinates[] = {   // in counterclockwise order:
-            -1,-1,-1,
-            1,-1,-1,
-            1,1,-1,
-            -1,1,-1,
-            -1,-1,1,
-            1,-1,1,
-            1,1,1,
-            -1,1,1
+            -1, -1, -1,
+            1, -1, -1,
+            1, 1, -1,
+            -1, 1, -1,
+            -1, -1, 1,
+            1, -1, 1,
+            1, 1, 1,
+            -1, 1, 1
     };
     /*
         Color of our Triangle: [0] Red, [1] Green, [2] Blue, [3] Alpha
         saturation.
      */
-    private short drawOrder[] ={0,1,2,0,2,3,1,5,2,5,6,2,6,5,4,6,4,7,4,0,3,4,3,7,7,3,2,2,6,7,1,0,4,1,4,5};
+    private short drawOrder[] = {0, 1, 2, 0, 2, 3, 1, 5, 2, 5, 6, 2, 6, 5, 4, 6, 4, 7, 4, 0, 3, 4, 3, 7, 7, 3, 2, 2, 6, 7, 1, 0, 4, 1, 4, 5};
     float color[] = {0, 1.0f, 0.5f, 1.0f};
 
     /*
@@ -55,6 +59,8 @@ public class Cube{
     int attributePositionId;
     int uniformColorId;
     int mvpId;
+    protected static float[] translate = new float[]{GameBoard.ROAD_WIDTH / 2, 2.0f, 4.0f};
+    protected static float[] rotate = new float[]{0.0f, 1.0f, 1.0f, 1.0f};
     //float[] mvpMatrix = new float[16];
 
     public Cube() {
@@ -81,7 +87,8 @@ public class Cube{
                 ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
 
     }
-    public Cube (int program,float[] triangleVertices) {
+
+    public Cube(int program, float[] triangleVertices) {
         programId = program;
     }
 
@@ -105,7 +112,11 @@ public class Cube{
         /*stride*/  0, vertexBuffer);
 
         // Pass the projection and view transformation to the shader
-        GLES20.glUniformMatrix4fv(mvpId, 1, false, mvpMatrix, 0);
+        float[] scratch = new float[16];
+        Matrix.translateM(scratch,0, mvpMatrix, 0, translate[0], translate[1], translate[2]);
+        Matrix.rotateM(scratch, 0, rotate[0], rotate[1], rotate[2], rotate[3]);
+
+        GLES20.glUniformMatrix4fv(mvpId, 1, false, scratch, 0);
 
         /* Set vColor to our color float table */
         GLES20.glUniform4fv(uniformColorId, 1, color, 0);

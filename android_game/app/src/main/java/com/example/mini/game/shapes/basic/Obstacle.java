@@ -179,8 +179,8 @@ public class Obstacle {
         GLES20.glUniform4fv(u_fogColor_HANDLE, 1, new float[]{0.7f, 0.2f, 1f, 1.0f}, 0);
         GLES20.glUniform4fv(u_eyePos_HANDLE, 1, GameRenderer.getEyePosition(), 0);
         GLES20.glUniform1f(u_fogMaxDist_HANDLE,
-                GameBoard.ROAD_VERTICES_PER_BORDER * 0.8f);
-        GLES20.glUniform1f(u_fogMinDist_HANDLE, 0.0f);
+                GameBoard.ROAD_VERTICES_PER_BORDER);
+        GLES20.glUniform1f(u_fogMinDist_HANDLE, 50.0f);
 
 
 
@@ -233,7 +233,7 @@ public class Obstacle {
      * It also provides that vertex is not smaller than 0.
      */
     public void decrementAssignedVertex() {
-        if (assignedVertexIndex > 0)
+        if (assignedVertexIndex > 1)
             assignedVertexIndex--;
     }
 

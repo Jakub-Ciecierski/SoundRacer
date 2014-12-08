@@ -1,8 +1,6 @@
 package com.example.mini.game.util.animation;
 
 
-import android.util.Log;
-
 import com.example.mini.game.shapes.complex.GameBoard;
 import com.example.mini.game.shapes.complex.Road;
 import com.example.mini.game.util.enums.TurnStage;
@@ -14,22 +12,17 @@ import static android.util.FloatMath.sqrt;
 import static java.lang.Math.abs;
 
 /**
- * Created by user on 2014-11-30.
+ * Created by dybisz on 2014-11-30.
  */
 public class VBORoadAnimation {
     private final static int COMPONENTS_PER_VERTEX = 3;
     private final static int TEXTURE_COMPONENTS_PER_VERTEX = 2;
-    private final static float SIN_ARGUMENT_MULTIPLIER = 0.5f;
-    private final static float SIN_VALUE_MULTIPLIER = 1.0f;
-    private final static float LEVITATION_HEIGHT = 1.3f;
     private final int arrayOfVerticesLength;
     private final float roadLength;
-    private float currentTime = 0.0f;
-    private float helpCounter = 0.0f;
+    private float timeCounter = 0.0f;
     private int verticesPerBorder;
     private float timeUnitLength;
-    private float roadWidth;
-    private TurnStage lastTurn = TurnStage.TURN_LEFT_START;
+    private TurnStage lastTurn = TurnStage.TURN_RIGHT_START;
     /**
      * *** RIGHT TURN AHEAD **********
      */
@@ -37,20 +30,14 @@ public class VBORoadAnimation {
     private int turningOffset = 0;
     public float rememberZ = 0.0f;
     public float alpha;
-    private int deepCounter = 12;
+    private int deepThroatCounter = 12;
     private float nextTurnCounter = 0.0f;
     private float innerRadius;
     private float outerRadius;
     private float rightStablePhaseModifier = 0.0f;
-
-    /**
-     * ******************************
-     */
-
-    /**
-     * *** LEFT TURN AHEAD **********
-     */
     private float[] turnLeftVertices;
+    private float tempCounter = 0.0f;
+
 
     /**
      * ******************************
@@ -60,56 +47,61 @@ public class VBORoadAnimation {
         this.verticesPerBorder = verticesPerBorder;
         this.timeUnitLength = timeUnitLength;
         this.roadLength = verticesPerBorder * timeUnitLength;
-        this.roadWidth = roadWidth;
         this.arrayOfVerticesLength = verticesPerBorder * 2 * COMPONENTS_PER_VERTEX;
 
         this.outerRadius = (2 * roadLength) / GameBoard.PI;
         this.innerRadius = outerRadius - GameBoard.ROAD_WIDTH;
 
-        generateTurningRightVertices();
-        generateTurningLeftVertices();
+        generateTurningRightVertices(90);
+        generateTurningLeftVertices(90);
 
     }
 
-    private void generateTurningRightVertices() {
+    /**
+     * Fills {@link #turnRightVertices} with appropriate values i.e.
+     * coordinates of vertices simulating turning right.
+     *
+     * @param angleOfTurn How curvy you want the turn to be?
+     */
+    private void generateTurningRightVertices(float angleOfTurn) {
         turnRightVertices = new float[verticesPerBorder * 3 * 2];
-        float innerOffSet = 0;
-        float oneStep = (90 / ((float) verticesPerBorder * 0.8f));
-        float radius = 50;
-        float[] center = new float[]{-30, 0, -50};
-
+        float startAngle = 0;
+        float oneStep = (angleOfTurn / ((float) verticesPerBorder));
         for (int i = 0; i < turnRightVertices.length; ) {
-            // Inner
+            /* Inner vertex */
             turnRightVertices[i++] =
-                    innerRadius * cos(innerOffSet * GameBoard.DEGREES_TO_RADIAN_COEFFICIENT)
+                    innerRadius * cos(startAngle * GameBoard.DEGREES_TO_RADIAN_COEFFICIENT)
                             - innerRadius;
             turnRightVertices[i++] = 0.0f;
-            turnRightVertices[i++] = innerRadius * sin(innerOffSet * GameBoard.DEGREES_TO_RADIAN_COEFFICIENT);
-            // outer
-            turnRightVertices[i++] = outerRadius * cos(innerOffSet * GameBoard.DEGREES_TO_RADIAN_COEFFICIENT) -
+            turnRightVertices[i++] = innerRadius * sin(startAngle * GameBoard.DEGREES_TO_RADIAN_COEFFICIENT);
+            /* Outer vertex */
+            turnRightVertices[i++] = outerRadius * cos(startAngle * GameBoard.DEGREES_TO_RADIAN_COEFFICIENT) -
                     innerRadius;
             turnRightVertices[i++] = 0.0f;
-            turnRightVertices[i++] = outerRadius * sin(innerOffSet * GameBoard.DEGREES_TO_RADIAN_COEFFICIENT);
+            turnRightVertices[i++] = outerRadius * sin(startAngle * GameBoard.DEGREES_TO_RADIAN_COEFFICIENT);
 
-            innerOffSet += oneStep;
+            startAngle += oneStep;
         }
     }
 
-    private void generateTurningLeftVertices() {
+    /**
+     * Fills {@link #turnRightVertices} with appropriate values i.e.
+     * coordinates of vertices simulating turning left.
+     *
+     * @param angleOfTurn How curvy you want the turn to be?
+     */
+    private void generateTurningLeftVertices(float angleOfTurn) {
         turnLeftVertices = new float[verticesPerBorder * 3 * 2];
         float innerOffSet = 180;
-        float oneStep = (90 / ((float) verticesPerBorder * 0.8f));
-        float radius = 50;
-        float[] center = new float[]{-30, 0, -50};
-
+        float oneStep = (angleOfTurn / ((float) verticesPerBorder));
         for (int i = 0; i < turnRightVertices.length; ) {
-            // Inner
+            /* Inner vertex */
             turnLeftVertices[i++] =
                     outerRadius * cos(innerOffSet * GameBoard.DEGREES_TO_RADIAN_COEFFICIENT)
                             + outerRadius;
             turnLeftVertices[i++] = 0.0f;
             turnLeftVertices[i++] = outerRadius * sin(innerOffSet * GameBoard.DEGREES_TO_RADIAN_COEFFICIENT);
-            // Outer
+            /* Outer vertex */
             turnLeftVertices[i++] = innerRadius * cos(innerOffSet * GameBoard.DEGREES_TO_RADIAN_COEFFICIENT) +
                     outerRadius;
             turnLeftVertices[i++] = 0.0f;
@@ -119,6 +111,14 @@ public class VBORoadAnimation {
         }
     }
 
+    /**
+     * Updates given set of texture coordinates by 'rolling it'.
+     * 'Rolling' means moving all texture coordinates down by one vertex and
+     * adding previously lost first 2 vertices at the end. More or less.
+     *
+     * @param oldTexture Set of texture coordinates to be 'rolled'.
+     * @return 'Rolled' texture coordinates.
+     */
     public float[] generateNextTexture(float[] oldTexture) {
         float[] newTextures = new float[oldTexture.length];
         float[] oldVertices = new float[2 * TEXTURE_COMPONENTS_PER_VERTEX];
@@ -127,7 +127,7 @@ public class VBORoadAnimation {
         System.arraycopy(oldTexture, 2 * TEXTURE_COMPONENTS_PER_VERTEX, newTextures, 0,
                 oldTexture.length - (2 * TEXTURE_COMPONENTS_PER_VERTEX));
 
-        // Mobius by się nie powstydził : D
+        // Mobius by się nie powstydził :-D
         newTextures[newTextures.length - 4] = oldVertices[2];
         newTextures[newTextures.length - 3] = oldVertices[3];
         newTextures[newTextures.length - 2] = oldVertices[0];
@@ -136,9 +136,8 @@ public class VBORoadAnimation {
         return newTextures;
     }
 
-
-    public float[] generateNextFrame(float[] oldVertices) {
-            /* Copy everything beside first 2 vertices */
+    public float[] generateNextFrame(float[] oldVertices, Vector3 translation) {
+        /* Copy everything beside first 2 vertices */
         float[] newVertices = new float[arrayOfVerticesLength];
         System.arraycopy(oldVertices, 2 * COMPONENTS_PER_VERTEX, newVertices, 0,
                 arrayOfVerticesLength - (2 * COMPONENTS_PER_VERTEX));
@@ -147,21 +146,18 @@ public class VBORoadAnimation {
             case STRAIGHT:
                 // Left border x, y ,z
                 newVertices[arrayOfVerticesLength - 6] = 0;
-                newVertices[arrayOfVerticesLength - 5] = 0;/*SIN_VALUE_MULTIPLIER * sin(SIN_ARGUMENT_MULTIPLIER * currentTime)
-                        + LEVITATION_HEIGHT;*/
-                newVertices[arrayOfVerticesLength - 4] = timeUnitLength * helpCounter;
+                newVertices[arrayOfVerticesLength - 5] = 0.0f;
+                newVertices[arrayOfVerticesLength - 4] = GameBoard.TIME_UNIT_LENGTH * timeCounter;
                 // Right border x,y,z
-                newVertices[arrayOfVerticesLength - 3] = roadWidth;
-                newVertices[arrayOfVerticesLength - 2] = 0;/*SIN_VALUE_MULTIPLIER * sin(SIN_ARGUMENT_MULTIPLIER * currentTime)
-                        + LEVITATION_HEIGHT;*/
-                newVertices[arrayOfVerticesLength - 1] = timeUnitLength * helpCounter;
+                newVertices[arrayOfVerticesLength - 3] = GameBoard.ROAD_WIDTH;
+                newVertices[arrayOfVerticesLength - 2] = 0.0f;
+                newVertices[arrayOfVerticesLength - 1] = GameBoard.TIME_UNIT_LENGTH * timeCounter;
 
-                // Update current time
-                currentTime += 0.5;
                 // Update help counter
-                helpCounter++;
-                rememberZ = timeUnitLength * helpCounter;
-                //Road.rememberMyPlx = timeUnitLength * helpCounter;
+                timeCounter++;
+                rememberZ = timeUnitLength * timeCounter;
+                nextTurnCounter++;
+
                 if (nextTurnCounter == GameBoard.TURNING_RIGHT_ANIMATION_FREQUENCY) {
                     TurnStage newTurnStage = (lastTurn == TurnStage.TURN_RIGHT_START) ?
                             TurnStage.TURN_LEFT_START : TurnStage.TURN_RIGHT_START;
@@ -182,12 +178,9 @@ public class VBORoadAnimation {
                 newVertices[arrayOfVerticesLength - 1] = rememberZ +
                         turnRightVertices[turningOffset++];
 
-                // Update current time
-                currentTime += 0.5;
                 // Update help counter
-                helpCounter++;
+                timeCounter++;
 
-                //Road.rememberMyPlx = timeUnitLength * helpCounter;
                 /* If we filled out array with turnRightVertices values,
                 * we swap to STABLE state */
                 if (turningOffset >= turnRightVertices.length) {
@@ -208,11 +201,7 @@ public class VBORoadAnimation {
                 newVertices[arrayOfVerticesLength - 1] = rememberZ +
                         turnLeftVertices[turningOffset++];
 
-                // Update current time
-                currentTime += 0.5;
-                // Update help counter
-                helpCounter++;
-
+                timeCounter++;
 
                 /* If we filled out array with turnRightVertices values,
                 * we swap to STABLE state */
@@ -220,25 +209,23 @@ public class VBORoadAnimation {
                     Road.currentTurnStage = TurnStage.TURN_LEFT_STABLE;
                     turningOffset = 0;
                 }
-                //Road.rememberMyPlx = timeUnitLength * helpCounter;
                 return newVertices;
             case TURN_RIGHT_STABLE:
                 nextTurnCounter = 0.0f;
-               Road.currentTurnStage = TurnStage.TURN_RIGHT_END;
+                Road.currentTurnStage = TurnStage.TURN_RIGHT_END;
                 return oldVertices;
             case TURN_LEFT_STABLE:
                 nextTurnCounter = 0.0f;
-                Road.currentTurnStage = TurnStage.TURN_LEFT_END;
+
+
+                    Road.currentTurnStage = TurnStage.TURN_LEFT_END;
                 return oldVertices;
             case TURN_RIGHT_END:
                 /* Get last 2 points from shrinking curve */
-                float inner_x = oldVertices[oldVertices.length - deepCounter];
-                float inner_y = oldVertices[oldVertices.length - deepCounter + 1];
-                float inner_z = oldVertices[oldVertices.length - deepCounter + 2];
-
-                float outer_x = oldVertices[oldVertices.length - deepCounter + 3];
-                float outer_y = oldVertices[oldVertices.length - deepCounter + 4];
-                float outer_z = oldVertices[oldVertices.length - deepCounter + 5];
+                float inner_x = oldVertices[oldVertices.length - deepThroatCounter];
+                float inner_z = oldVertices[oldVertices.length - deepThroatCounter + 2];
+                float outer_x = oldVertices[oldVertices.length - deepThroatCounter + 3];
+                float outer_z = oldVertices[oldVertices.length - deepThroatCounter + 5];
 
                 /* Calculate vector between them(2d plane will be enough) */
                 float[] innerOuterVec = new float[]
@@ -256,7 +243,7 @@ public class VBORoadAnimation {
                 //if (perpendicular[0] < 0) perpendicular[0] *= -1;
                 if (perpendicular[1] < 0) perpendicular[1] *= -1;
 
-                /* Normalization to timeUnitLength*/
+                /* Normalization to timeUnitLength */
                 float length = sqrt(perpendicular[0] * perpendicular[0] +
                         perpendicular[1] * perpendicular[1]);
                 perpendicular[0] = (perpendicular[0] / length) * timeUnitLength;
@@ -264,7 +251,7 @@ public class VBORoadAnimation {
 
                 /* Now, when we have an appropriate vector, we need to
                  * apply it to all new vertices */
-                int additionalCounter = deepCounter - 6;
+                int additionalCounter = deepThroatCounter - 6;
                 for (int i = additionalCounter; i > 0; i -= 6) {
                     // Inner vertex
                     oldVertices[oldVertices.length - i] = oldVertices[oldVertices.length - (i + 6)] + perpendicular[0];
@@ -275,25 +262,21 @@ public class VBORoadAnimation {
                     oldVertices[oldVertices.length - (i - 4)] = oldVertices[oldVertices.length - (i + 2)];
                     oldVertices[oldVertices.length - (i - 5)] = oldVertices[oldVertices.length - (i + 1)] + perpendicular[1];
                 }
-
                 /* At the end we increase counter for the next iteration */
-                deepCounter += 6;
-                /* When deepCounter exceeds array length we reset it and
+                deepThroatCounter += 6;
+                /* When deepThroatCounter exceeds array length we reset it and
                  * change the phase*/
-                if (deepCounter > verticesPerBorder * 2 * 3) {
+                if (deepThroatCounter > verticesPerBorder * 2 * 3) {
                     Road.currentTurnStage = TurnStage.STRAIGHT;
-                    deepCounter = 12;
+                    deepThroatCounter = 12;
                 }
                 return oldVertices;
             case TURN_LEFT_END:
                 /* Get last 2 points from shrinking curve */
-                float inner_xl = oldVertices[oldVertices.length - deepCounter];
-                float inner_yl = oldVertices[oldVertices.length - deepCounter + 1];
-                float inner_zl = oldVertices[oldVertices.length - deepCounter + 2];
-
-                float outer_xl = oldVertices[oldVertices.length - deepCounter + 3];
-                float outer_yl = oldVertices[oldVertices.length - deepCounter + 4];
-                float outer_zl = oldVertices[oldVertices.length - deepCounter + 5];
+                float inner_xl = oldVertices[oldVertices.length - deepThroatCounter];
+                float inner_zl = oldVertices[oldVertices.length - deepThroatCounter + 2];
+                float outer_xl = oldVertices[oldVertices.length - deepThroatCounter + 3];
+                float outer_zl = oldVertices[oldVertices.length - deepThroatCounter + 5];
 
                 /* Calculate vector between them(2d plane will be enough) */
                 float[] innerOuterVecl = new float[]
@@ -319,7 +302,7 @@ public class VBORoadAnimation {
 
                 /* Now, when we have an appropriate vector, we need to
                  * apply it to all new vertices */
-                int additionalCounterl = deepCounter - 6;
+                int additionalCounterl = deepThroatCounter - 6;
                 for (int i = additionalCounterl; i > 0; i -= 6) {
                     // Inner vertex
                     oldVertices[oldVertices.length - i] = oldVertices[oldVertices.length - (i + 6)] + perpendicularl[0];
@@ -332,80 +315,59 @@ public class VBORoadAnimation {
                 }
 
                 /* At the end we increase counter for the next iteration */
-                deepCounter += 6;
-                /* When deepCounter exceeds array length we reset it and
+                deepThroatCounter += 6;
+                /* When deepThroatCounter exceeds array length we reset it and
                  * change the phase*/
-                if (deepCounter > verticesPerBorder * 2 * 3) {
+                if (deepThroatCounter > verticesPerBorder * 2 * 3) {
                     Road.currentTurnStage = TurnStage.STRAIGHT;
-                    deepCounter = 12;
+                    deepThroatCounter = 12;
                 }
                 return oldVertices;
         }
+        /* For animation purpose only */
+        nextTurnCounter++;
         return oldVertices;
     }
 
-    private void simulateVerticesSwap(float[] oldVertices) {
-        /* After end of this loop vertices will keep their Z coordinates,
-         * but X's and Y's will be swap in a following manner:
-         *(i) inner vertex n will have x and y coordinates of inner vertex n-1
-         * (ii) outer vertex n will have x and y coordinates of outer vertex n-1
-         * First two vertices in array will keep old values since we will change
-         * them anyway.*/
-        for (int i = oldVertices.length; i > 6; i = i- 6) {
-//            // Inner vertex
-            oldVertices[i-6] = oldVertices[i-12];//x
-            oldVertices[i-5] = oldVertices[i -11];//y
-            // Outer vertex
-            oldVertices[i-3] = oldVertices[i-9];//x
-            oldVertices[i-2] = oldVertices[i-8];//y
-//            Log.i("i:","" + i);
-        }
-//        for(int i = 0 ; i < 12; i++) {
-//            Log.i("CHECK", "["+i+"]: " + oldVertices[i]);
-//        }
-
-    }
-
+    /**
+     * At the beginning we just create a road shape for further animation.
+     *
+     * @return Array of vertices of newly created road.
+     */
     public float[] generateStartShape() {
-        float oneStep = (90 / (float) verticesPerBorder *
-                GameBoard.DEGREES_TO_RADIAN_COEFFICIENT);
-        float offSet = 0.0f;
         float[] vertices = new float[arrayOfVerticesLength];
-
         for (int i = 0; i < arrayOfVerticesLength; ) {
-            // Left border x, y ,z
+            /* Inner vertex */
             vertices[i++] = 0;
-            vertices[i++] = 0;/*SIN_VALUE_MULTIPLIER * sin(SIN_ARGUMENT_MULTIPLIER * currentTime)
-                    + LEVITATION_HEIGHT;*/
-            vertices[i++] = timeUnitLength * helpCounter;
-            // Right border x,y,z
-            vertices[i++] = roadWidth;
-            vertices[i++] = 0;/*SIN_VALUE_MULTIPLIER * sin(SIN_ARGUMENT_MULTIPLIER * currentTime)
-                    + LEVITATION_HEIGHT;*/
-            vertices[i++] = timeUnitLength * helpCounter;
-            // Update current time
-            currentTime += 0.5;
-            // Update help counter
-            helpCounter++;
-            offSet += oneStep;
-
+            vertices[i++] = 0.0f;
+            vertices[i++] = GameBoard.TIME_UNIT_LENGTH * timeCounter;
+            /* Outer vertex */
+            vertices[i++] = GameBoard.ROAD_WIDTH;
+            vertices[i++] = 0.0f;
+            vertices[i++] = GameBoard.TIME_UNIT_LENGTH * timeCounter;
+            /* Update vertex */
+            timeCounter++;
         }
-
         return vertices;
     }
 
-    public void generateNextFrame(Vector3 translation, float[] rotate) {
-        if (/*Road.currentPhase != Phase.TURN_RIGHT_STABLE &&*/ Road.currentTurnStage != TurnStage.TURN_LEFT_STABLE
+    /**
+     * Method 'animates' the road by translating it on Z axis.
+     * It also increase {@link com.example.mini.game.shapes.complex.Road#totalZTranslation}
+     * value.
+     *
+     * @param translation Since this this class does not have access to
+     *                    {@link com.example.mini.game.shapes.complex.Road} fields,
+     *                    translation vector need to be shared.
+     */
+    public void translateByTimeUnit(Vector3 translation) {
+        if (Road.currentTurnStage != TurnStage.TURN_LEFT_STABLE
                 && Road.currentTurnStage != TurnStage.TURN_RIGHT_END
-                && Road.currentTurnStage != TurnStage.TURN_LEFT_END) {
+                && Road.currentTurnStage != TurnStage.TURN_LEFT_END
+                && Road.currentTurnStage != TurnStage.TURN_RIGHT_STABLE) {
             translation.setZ(translation.getZ() - timeUnitLength);
-            Road.rememberMyPlx += timeUnitLength;
+            Road.totalZTranslation += timeUnitLength;
         }
-
-//        if (Road.currentPhase == Phase.TURN_RIGHT_STABLE)
-//            translation.setX(translation.getX() + rightStablePhaseModifier);
-        nextTurnCounter++;
-        Log.i("", "plx: " + Road.rememberMyPlx);
     }
 
 

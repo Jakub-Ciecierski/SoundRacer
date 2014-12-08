@@ -54,6 +54,14 @@ public class GameBoard {
      */
     private static final boolean HORIZON_RIBBON_ANIMATION = true;
     /**
+     * TODO
+     */
+    private static final boolean PLAYER_RENDERING = true;
+    /**
+     * TODO
+     */
+    private static final boolean PLAYER_ANIMATION = true;
+    /**
      * Tells when to call {@link #switchFrame()} method to
      * proceed with animation.
      * Bigger this constant slower the animation of objects.
@@ -214,6 +222,10 @@ public class GameBoard {
      */
     private HorizonRibbon horizonRibbon;
     /**
+     * TODO
+     */
+    private Player player;
+    /**
      * Counts to next animation frame switch.
      */
     public static int animationCounter = 1;
@@ -225,6 +237,7 @@ public class GameBoard {
         lattice = new Lattice();
         obstaclesWorkshop = new ObstaclesWorkshop();
         horizonRibbon = new HorizonRibbon();
+        player = new Player();
     }
 
     /**
@@ -246,12 +259,14 @@ public class GameBoard {
         }
         if (ROAD_RENDERING) {
             //road.draw(mvpMatrix);
-            road.fogDraw(mvpMatrix);
+            road.lightsFogDraw(mvpMatrix);
         }
         if (OBSTACLES_WORKSHOP_RENDERING) {
             obstaclesWorkshop.draw(mvpMatrix);
         }
-
+        if(PLAYER_RENDERING) {
+            player.draw(mvpMatrix);
+        }
         incrementAnimationCounter();
     }
 
@@ -272,6 +287,10 @@ public class GameBoard {
         if (OBSTACLES_WORKSHOP_ANIMATION) {
             obstaclesWorkshop.switchFrame();
         }
+        if(PLAYER_ANIMATION) {
+            player.switchFrame();
+        }
+
     }
 
     /**

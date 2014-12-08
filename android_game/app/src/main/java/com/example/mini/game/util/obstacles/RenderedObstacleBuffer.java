@@ -116,7 +116,7 @@ public class RenderedObstacleBuffer {
                 new ArrayList<Obstacle>();
         for (Obstacle obstacle : storedObstacles) {
             if (obstacle.getTranslationZ() <= vanishBorder ||
-                    obstacle.getAssignedVertexIndex() == 0) {
+                    obstacle.getAssignedVertexIndex() == 1) {
                 freeObstacles.add(obstacle);
             }
         }

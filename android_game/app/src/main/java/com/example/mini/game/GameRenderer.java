@@ -25,7 +25,7 @@ import static android.opengl.GLES20.glViewport;
  */
 public class GameRenderer implements GLSurfaceView.Renderer {
     public static Context context;
-    public static CameraType currentCamera = CameraType.DEVELOPER_CAMERA;
+    public static CameraType currentCamera = CameraType.PLAYER_CAMERA;
     private float[] mProjectionMatrix = new float[16];
     private float[] mOrthogonalMatrix = new float[16];
     private CartesianCoordinates cartesianCoordinates;
@@ -58,6 +58,9 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         movementButtons.setDimensions(width, height);
         Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 1, 400);
         Matrix.orthoM(mOrthogonalMatrix, 0, -ratio, ratio, -1, 1, -1, 1);
+
+        CustomGlSurfaceView.screenWidth = width;
+        CustomGlSurfaceView.screenHeight = height;
     }
 
     @Override

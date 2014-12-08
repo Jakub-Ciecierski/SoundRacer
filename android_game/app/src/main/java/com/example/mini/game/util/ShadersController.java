@@ -142,6 +142,7 @@ public abstract class ShadersController {
                     "uniform float u_fogMinDist;\n" +
                     "uniform sampler2D u_TextureUnit;\n" +
                     "varying vec2 v_TextureCoordinates;\n" +
+
                     "\n" +
                     "float computeLinearFogFactor()\n" +
                     "{\n" +
@@ -169,6 +170,71 @@ public abstract class ShadersController {
                     "                   fogColor * (1.0 - fogFactor); \n" +
                     "}";
 
+    /**
+     * TODO
+     */
+    public static final String textureLightsFogVertexShader =
+            "uniform mat4 u_MVPMatrix;\n" +
+                    "uniform vec4 u_eyePos;\n" +
+                    "\n" +
+                    "attribute vec3 a_Normal;\n" +
+                    "attribute vec4 a_Position;\n" +
+                    "attribute vec2 a_TextureCoordinates;\n" +
+                    "\n" +
+                    "varying float v_eyeDist;\n" +
+                    "varying vec3 v_Normal;\n" +
+                    "varying vec2 v_TextureCoordinates;\n" +
+                    "varying vec3 v_Position;\n" +
+                    "\n" +
+                    "void main()\n" +
+                    "{\n" +
+                    "  v_Position = vec3(u_MVPMatrix * a_Position);\n" +
+                    "  v_Normal = vec3(u_MVPMatrix * vec4(a_Normal, 0.0));\n" +
+                    "  v_TextureCoordinates = a_TextureCoordinates;\n" +
+                    "  \n" +
+                    "  vec4 vViewPos = u_MVPMatrix * a_Position;\n" +
+                    "  v_eyeDist = sqrt(\n" +
+                    "          (vViewPos.x - u_eyePos.x)*(vViewPos.x - u_eyePos.x) +\n" +
+                    "          (vViewPos.y - u_eyePos.y)*(vViewPos.y - u_eyePos.y) +\n" +
+                    "          (vViewPos.z - u_eyePos.z)*(vViewPos.z - u_eyePos.z) \n" +
+                    "    );\n" +
+                    "    \n" +
+                    "  gl_Position = u_MVPMatrix*a_Position;\n" +
+                    "}";
+    /**
+     * TODO
+     */
+    public static final String textureLightsFogFragmentShader =
+            "precision mediump float;\n" +
+                    "\n" +
+                    "uniform vec4 u_fogColor;\n" +
+                    "uniform float u_fogMaxDist;\n" +
+                    "uniform vec3 u_LightPosition;\n" +
+                    "uniform float u_fogMinDist;\n" +
+                    "uniform sampler2D u_TextureUnit;\n" +
+                    "\n" +
+                    "varying vec2 v_TextureCoordinates;\n" +
+                    "varying vec3 v_Normal;\n" +
+                    "varying float v_eyeDist;\n" +
+                    "varying vec3 v_Position;\n" +
+                    "\n" +
+                    "float computeLinearFogFactor() \n" +
+                    "{\n" +
+                    "  float factor;\n" +
+                    "  factor = (u_fogMaxDist - v_eyeDist) / (u_fogMaxDist - u_fogMinDist);\n" +
+                    "  factor = clamp(factor, 0.0,1.0);\n" +
+                    "  return factor;\n" +
+                    "}\n" +
+                    "\n" +
+                    "void main()\n" +
+                    "{\n" +
+                    "  float fogFactor = computeLinearFogFactor();\n" +
+                    "  vec4 fogColor = fogFactor * u_fogColor;\n" +
+                    "  \n" +
+                    "  vec3 lightVector = normalize(u_LightPosition - v_Position);\n" +
+                    "  float diffuse = max(dot(v_Normal, lightVector),0.0);\n" +
+                    "  gl_FragColor = diffuse * texture2D(u_TextureUnit,v_TextureCoordinates)*fogFactor + fogColor*(1.0 - fogFactor);\n" +
+                    "}";
     public static int loadShader(int type, String shaderCode) {
         /* Create and verify */
         int shaderId = GLES20.glCreateShader(type);

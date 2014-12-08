@@ -50,6 +50,8 @@ public class ObstacleWorkshopAnimation {
             renderedObstacles.addToBuffer(availableObstacles.getObstacles(2));
             spawnCounter = 0;
         }
+
+
     }
 
     /**
