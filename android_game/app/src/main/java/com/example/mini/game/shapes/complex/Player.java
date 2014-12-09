@@ -7,14 +7,14 @@ import com.example.mini.game.shapes.basic.Cube;
  */
 public class Player extends Cube {
     public static void setTranslate(float x, float y, float z) {
-        if (x <= GameBoard.ROAD_WIDTH && x >= 0)
+        if (x <= GameBoard.ROAD_WIDTH - GameBoard.PLAYER_WIDTH && x >= 0 + GameBoard.PLAYER_WIDTH)
             translate[0] = x;
         translate[1] = y;
         translate[2] = z;
     }
     public static void rotateAroundZ(float a) {
         if(a <= 35 && a >= -35)
-        rotate = new float[] {a,0.0f,0.0f,1.0f};
+            rotate = new float[] {a,0.0f,0.0f,1.0f};
     }
 
     public static float getCurrentAngle() {
@@ -34,6 +34,10 @@ public class Player extends Cube {
 
     public Player() {
         super();
+    }
+
+    public Player(float width) {
+        super(width);
     }
 
     public void switchFrame() {

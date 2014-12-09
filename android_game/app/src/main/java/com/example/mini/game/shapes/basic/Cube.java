@@ -35,16 +35,10 @@ public class Cube {
     /*
         List of vertices describing triangle.
      */
-    static float verticesCoordinates[] = {   // in counterclockwise order:
-            -1, -1, -1,
-            1, -1, -1,
-            1, 1, -1,
-            -1, 1, -1,
-            -1, -1, 1,
-            1, -1, 1,
-            1, 1, 1,
-            -1, 1, 1
-    };
+    float verticesCoordinates[];
+
+    private float width = 2;
+
     /*
         Color of our Triangle: [0] Red, [1] Green, [2] Blue, [3] Alpha
         saturation.
@@ -64,6 +58,8 @@ public class Cube {
     //float[] mvpMatrix = new float[16];
 
     public Cube() {
+        this.width = 2;
+        generateVerticies();
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (# of coordinate values * 4 bytes per float)
@@ -88,8 +84,38 @@ public class Cube {
 
     }
 
+    public Cube (float width) {
+        this.width = width;
+        generateVerticies();
+        // initialize vertex byte buffer for shape coordinates
+        ByteBuffer bb = ByteBuffer.allocateDirect(
+                // (# of coordinate values * 4 bytes per float)
+                verticesCoordinates.length * 4);
+        bb.order(ByteOrder.nativeOrder());
+        vertexBuffer = bb.asFloatBuffer();
+        vertexBuffer.put(verticesCoordinates);
+        vertexBuffer.position(0);
+
+        // initialize byte buffer for the draw list
+        ByteBuffer dlb = ByteBuffer.allocateDirect(
+                // (# of coordinate values * 2 bytes per short)
+                drawOrder.length * 2);
+        dlb.order(ByteOrder.nativeOrder());
+        drawListBuffer = dlb.asShortBuffer();
+        drawListBuffer.put(drawOrder);
+        drawListBuffer.position(0);
+        /* Compile standard shaders and program for THIS triangle */
+        programId = ShadersController.createProgram(
+                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.vertexShader),
+                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
+    }
+
     public Cube(int program, float[] triangleVertices) {
         programId = program;
+    }
+
+    public float getWidth() {
+        return this.width;
     }
 
     public void draw(float[] mvpMatrix) {
@@ -128,6 +154,41 @@ public class Cube {
 
         /* Safe bullshit */
         GLES20.glDisableVertexAttribArray(attributePositionId);
+    }
+
+    private void generateVerticies() {
+        verticesCoordinates = new float[COORDINATES_PER_VERTEX*8];
+        verticesCoordinates[0] = 0;
+        verticesCoordinates[1] = 0;
+        verticesCoordinates[2] = 0;
+
+        verticesCoordinates[3] = width;
+        verticesCoordinates[4] = 0;
+        verticesCoordinates[5] = 0;
+
+        verticesCoordinates[6] = width;
+        verticesCoordinates[7] = width;
+        verticesCoordinates[8] = 0;
+
+        verticesCoordinates[9] = 0;
+        verticesCoordinates[10] = width;
+        verticesCoordinates[11] = 0;
+
+        verticesCoordinates[12] = 0;
+        verticesCoordinates[13] = 0;
+        verticesCoordinates[14] = width;
+
+        verticesCoordinates[15] = width;
+        verticesCoordinates[16] = 0;
+        verticesCoordinates[17] = width;
+
+        verticesCoordinates[18] = width;
+        verticesCoordinates[19] = width;
+        verticesCoordinates[20] = width;
+
+        verticesCoordinates[21] = 0;
+        verticesCoordinates[22] = width;
+        verticesCoordinates[23] = width;
     }
 }
 
