@@ -31,10 +31,10 @@ public class AudioPlayer {
 
     private boolean isPlaying = false;
 
-    // 1 frame takes about frameLengthMs in miliseconds
-    public static final float frameLengthMs = (1152f/44100f) * 1000f;
+    // 1 frame takes about FRAME_LENGTH_MS in miliseconds
+    public static final float FRAME_LENGTH_MS = (1152f/44100f) * 1000f;
     // milliseconds per one byte in Mp3
-    public static final float sampleLengthMs = frameLengthMs / 1152f;
+    public static final float SAMPLE_LENGTH_MS = FRAME_LENGTH_MS / 1152f;
 
     private float currentTimeMs = 0;
 
@@ -84,9 +84,10 @@ public class AudioPlayer {
                         audioSemaphore.acquire();
                         short[] sample = new short[sampleSize];
 
-                        currentTimeMs = sampleLengthMs * audioTrack.getPlaybackHeadPosition();
+                        currentTimeMs = SAMPLE_LENGTH_MS * audioTrack.getPlaybackHeadPosition();
 
-                        //Log.i("AudioPlayer",Float.toString(currentTimeMs));
+                        //Log.i("AudioPlayer", Integer.toString(audioTrack.getPlaybackHeadPosition()));
+                        Log.i("AudioPlayer",Float.toString(currentTimeMs));
 
                         // decode, sampleSize*2 becouse sizeof(short) = sizeof(byte)*2
                         int ret = NativeMP3Decoder.decodeMP3(sampleSize * 2, sample, WRITE_HANDLE);
@@ -130,7 +131,7 @@ public class AudioPlayer {
             //Thread.sleep(100);
 
             // number of samples to rewind
-            int rewindSamples = (int) (rewindTime / sampleLengthMs);
+            int rewindSamples = (int) (rewindTime / SAMPLE_LENGTH_MS);
 
             // get current frame position
             int currentSample = this.audioTrack.getPlaybackHeadPosition();
@@ -227,7 +228,8 @@ public class AudioPlayer {
     }
 
     /**
-     *
+     * Computes current time of playback audio in milliseconds
+     * TODO allow backtracking
      * @return
      *      Current time in milliseconds
      */
@@ -235,7 +237,7 @@ public class AudioPlayer {
         long time = 0;
         try {
             audioSemaphore.acquire();
-            float t = sampleLengthMs * this.audioTrack.getPlaybackHeadPosition();
+            float t = SAMPLE_LENGTH_MS * this.audioTrack.getPlaybackHeadPosition();
             time = (long)t;
             audioSemaphore.release();
         }catch (InterruptedException e){e.printStackTrace();}

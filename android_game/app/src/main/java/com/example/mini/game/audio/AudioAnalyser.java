@@ -22,7 +22,12 @@ import java.util.concurrent.Semaphore;
  *
  * A single flux is absolute difference between the bin values of the current spectrum and the bin values of the last spectrum.
  * More about beat detection:
+ * When the current spectrum has more overall energy than the previous spectrum the spectral flux function will rise.
+ * If the current spectrum has less energy than the previous spectrum the spectral flux function will fal.
  * http://www.badlogicgames.com/wordpress/?p=161
+ *
+ * TODO fix the constants of rate and formatting:
+ * http://stackoverflow.com/questions/15225894/windows-mp3-decode-library-c-c
  *
  * Created by Kuba on 26/11/2014.
  */
@@ -48,10 +53,20 @@ public class AudioAnalyser {
     private FFT fft;
     private List<Float> spectralFlux;
 
-    // 1 frame takes about frameLengthMs in miliseconds
-    public static final float frameLengthMs = (1152f/44100f) * 1000f;
-    // milliseconds per one byte in Mp3
-    public static final float sampleLengthMs = frameLengthMs / 1152f;
+    private final int FLUX_SCALER = 100000;
+
+    // 1 frame takes about FRAME_LENGTH_MS in milliseconds
+    public static final float FRAME_LENGTH_MS = (1152f/44100f) * 1000f;
+
+    // milliseconds per one byte in layer 3 = mp3
+    public static final float SAMPLE_LENGTH_MS = FRAME_LENGTH_MS / 1152f;
+
+    // lengths of one flux in milliseconds
+    public float FLUX_LENGTH_MS;
+
+    private Bumper bumper;
+    private int bumperSampleSize;
+    private int currentBumperIndex;
 
     /**
      * TODO check if file exists
@@ -63,13 +78,16 @@ public class AudioAnalyser {
      * @param sampleRate
      *      speed of the audio playback in Hz.
      *      Standard for mp3 audio is 44100Hz
+     * @param bumperSampleSize
+     *      The maximum size of sample for bumper computations
+     *      Also this means that first bumper computations will start
+     *      when spectral flux size reaches that size, or analyzing has finished
+     *      before reaching that size
      */
-    public AudioAnalyser(String filePath, int sampleSize, int sampleRate) {
+    public AudioAnalyser(String filePath, int sampleSize, int sampleRate, int bumperSampleSize) {
         File file = new File(filePath);
         if(!file.exists()) {
             Log.w("AudioAnalyser","File: " + filePath + " does not exist");
-        } else {
-            Log.i("AudioAnalyser","Creating instance of AudioAnalyser");
         }
 
         // path to audio file
@@ -81,8 +99,20 @@ public class AudioAnalyser {
         // spectral flux
         this.spectralFlux = new ArrayList<Float>( );
 
+        this.FLUX_LENGTH_MS = this.sampleSize / 2 * SAMPLE_LENGTH_MS;
+
         // create instance of fourier transform
         this.fft = new FFT(sampleSize, sampleRate);
+
+        this.bumper = new Bumper();
+        this.bumperSampleSize = bumperSampleSize;
+        this.currentBumperIndex = 0;
+
+        Log.i("AudioAnalyser","Creating instance of AudioAnalyser");
+        Log.i("AudioAnalyser","Sample rate: " + sampleRate);
+        Log.i("AudioAnalyser","Sample size: " + sampleSize);
+        Log.i("AudioAnalyser","Sample length in milliseconds: " + SAMPLE_LENGTH_MS);
+        Log.i("AudioAnalyser","Flux length in milliseconds: " + FLUX_LENGTH_MS);
     }
 
     /**
@@ -131,15 +161,74 @@ public class AudioAnalyser {
                         System.arraycopy(fft.getSpectrum(), 0, spectrum, 0, spectrum.length);
 
                         float flux = 0;
-                        for (int i = 0; i < spectrum.length; i++)
-                            flux += (spectrum[i] - lastSpectrum[i]);
+                        for (int i = 0; i < spectrum.length; i++) {
+                            // Rectifying.
+                            // We are not interested in falling spectral flux but only in rising spectral flux.
+                            float value = (spectrum[i] - lastSpectrum[i]);
+                            flux += value < 0 ? 0 : value;
+                        }
+                        flux /= FLUX_SCALER;
                         spectralFlux.add(flux);
+
+                        // compute bumpers
+                        if(spectralFlux.size() == bumperSampleSize + currentBumperIndex) {
+                            float average = 0;
+                            float min = spectralFlux.get(currentBumperIndex);
+                            float max = spectralFlux.get(currentBumperIndex);
+
+                            float[] fluxSample = new float[bumperSampleSize];
+                            for(int i = 0; i < bumperSampleSize; i++) {
+                                float value = spectralFlux.get(currentBumperIndex);
+                                average += value;
+                                if(min > value) {
+                                    min = value;
+                                }
+                                if(max < value) {
+                                    max = value;
+                                }
+
+                                fluxSample[i] = value;
+                                currentBumperIndex++;
+                            }
+                            average /= bumperSampleSize;
+
+                            bumper.computeBumps(fluxSample, average, max, min);
+                            Log.i("AudioAnalyser", "Computed: " + bumperSampleSize + " bumper samples");
+                            Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
+                        }
 
                         fluxSemaphore.release();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+                // compute the leftovers of flux
+                int fluxLeftOver = spectralFlux.size() - currentBumperIndex;
+                if(fluxLeftOver > 0) {
+                    float average = 0;
+                    float min = spectralFlux.get(currentBumperIndex);
+                    float max = spectralFlux.get(currentBumperIndex);
+
+                    float[] fluxSample = new float[fluxLeftOver];
+                    for(int i = 0; i < fluxLeftOver; i++) {
+                        float value = spectralFlux.get(currentBumperIndex);
+                        average += value;
+                        if(min > value) {
+                            min = value;
+                        }
+                        if(max < value) {
+                            max = value;
+                        }
+                        fluxSample[i] = value;
+                        currentBumperIndex++;
+                    }
+                    average /= fluxLeftOver;
+                    bumper.computeBumps(fluxSample, average, max, min);
+
+                    Log.i("AudioAnalyser", "Computed leftover: " + fluxLeftOver + " bumper samples");
+                    Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
+                }
+
                 NativeMP3Decoder.cleanupMP3(ANALYSIS_HANDLE);
 
                 // mark the doneAnalysing flag
@@ -149,9 +238,10 @@ public class AudioAnalyser {
                 long delta = endTime - startTime;
                 Log.i("AudioAnalyser", "Finished analyzing entire audio after: " + Long.toString(delta) + " milliseconds");
                 Log.i("AudioAnalyser", "Spectral size: " + Integer.toString(spectralFlux.size()));
+                Log.i("AudioAnalyser", "Bumper size: " + bumper.getCurrentBumpSize());
                 totalBytes = spectralFlux.size() * sampleSize / 2;
                 Log.i("AudioAnalyser", "Total bytes read: " + totalBytes);
-                Log.i("AudioAnalyser", "Audio Length: " + totalBytes * sampleLengthMs);
+                Log.i("AudioAnalyser", "Audio Length in milliseconds: " + totalBytes * SAMPLE_LENGTH_MS);
             }
         });
         analyzerThread.start();
@@ -162,8 +252,8 @@ public class AudioAnalyser {
      * @return
      *      Flux value at given millisecond
      */
-    public int getFluxAtTime(long timeMs) {
-        float f = timeMs / AudioAnalyser.sampleLengthMs;
+    private int getFluxAtTime(long timeMs) {
+        float f = timeMs / AudioAnalyser.SAMPLE_LENGTH_MS;
         int sampleNumber = (int)f;
         int position = sampleNumber / sampleSize * 2;
         return position;
@@ -178,7 +268,7 @@ public class AudioAnalyser {
      * @throws IllegalArgumentException
      */
     public float getFluxAt(int i) throws IllegalArgumentException{
-        //float time = i*(bufferSize/2) * AudioAnalyser.sampleLengthMs;
+        //float time = i*(bufferSize/2) * AudioAnalyser.SAMPLE_LENGTH_MS;
         float flux = 0f;
         try {
             fluxSemaphore.acquire();
@@ -212,13 +302,15 @@ public class AudioAnalyser {
             fluxSemaphore.release();
         }catch (InterruptedException e){e.printStackTrace();}
 
-        float t  = i * sampleSize/2 * AudioAnalyser.sampleLengthMs;
+        float t  = i * sampleSize/2 * AudioAnalyser.SAMPLE_LENGTH_MS;
         long timePosition = (long)t;
         return timePosition;
     }
 
     /**
      * Returns the amount of bytes that have been analyzed so far
+     * When analysing is done, the number of bytes is equal to decoded
+     * file length
      * @return
      *      Number of analyzed bytes
      */
@@ -241,6 +333,11 @@ public class AudioAnalyser {
         return doneAnalysing;
     }
 
+    /**
+     * Gets current spectral flux size
+     * @return
+     *      Spectral flux size
+     */
     public int getCurrentSpectralFluxSize() {
         int size = 0;
         try {
@@ -249,5 +346,9 @@ public class AudioAnalyser {
             fluxSemaphore.release();
         }catch (InterruptedException e){e.printStackTrace();}
         return size;
+    }
+
+    public Bumper getBumper() {
+        return this.bumper;
     }
 }
