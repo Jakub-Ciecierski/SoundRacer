@@ -1,6 +1,8 @@
 package com.example.mini.game;
 
 import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
@@ -10,20 +12,23 @@ import com.example.mini.game.util.screenMovement.MovementController;
  * Created by dybisz on 2014-11-23.
  */
 public class CustomGlSurfaceView extends GLSurfaceView {
-   MovementController movementController;
+    MovementController movementController;
+    public static Context context;
+    public static float screenHeight;
+    public static float screenWidth;
+
 
     /**
      * @param context
      */
     public CustomGlSurfaceView(Context context) {
         super(context);
-        movementController = new MovementController(context);
+        this.context = context;
+        movementController = new MovementController();
         setEGLContextClientVersion(2);
         setRenderer(new GameRenderer(context));
-        /*
-            Renders only when there is change to drawing data
-            setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        */
+
+
     }
 
     /**
@@ -32,8 +37,7 @@ public class CustomGlSurfaceView extends GLSurfaceView {
      */
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-           movementController.handleMovement(e);
-           requestRender();
-           return true;
+
+        return movementController.handleMovement(e);
     }
 }

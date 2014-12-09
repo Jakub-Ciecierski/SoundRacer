@@ -117,13 +117,7 @@ public class ObstaclesWeb {
             else
                 linesWidth[i].setTranslationsZ(linesWidth[i].getTranslationsZ() - 0.5f);
         }
-
-        /** OBSTACLES CHECK **/
-        // najpierw to rusz wszystkimi do namalowania i się zobaczy
-//        renderedObstacles.render(0.5f);
-        // Check if there are obstacles free to stop rendering
-        if (renderedObstacles.areThereAnyFreeObstacles())
-            availableObstacles.addToBuffer(renderedObstacles.getFreeObstacles(0.0f));
+        availableObstacles.addToBuffer(renderedObstacles.getFreeObstacles(0.0f));
 
         obstacleGenerationCounter++;
         if (obstacleGenerationCounter == OBSTACLE_GENERATION_TIME) {

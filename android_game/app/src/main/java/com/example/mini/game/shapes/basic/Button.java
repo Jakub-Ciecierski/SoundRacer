@@ -3,7 +3,7 @@ package com.example.mini.game.shapes.basic;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.example.mini.game.util.MoveType;
+import com.example.mini.game.util.enums.MoveType;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

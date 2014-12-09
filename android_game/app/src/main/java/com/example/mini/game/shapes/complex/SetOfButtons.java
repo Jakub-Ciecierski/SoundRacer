@@ -6,7 +6,7 @@ import android.opengl.GLES20;
 import com.example.mini.game.GameRenderer;
 import com.example.mini.game.R;
 import com.example.mini.game.shapes.basic.Button;
-import com.example.mini.game.util.MoveType;
+import com.example.mini.game.util.enums.MoveType;
 import com.example.mini.game.util.ShadersController;
 import com.example.mini.game.util.TexturesLoader;
 

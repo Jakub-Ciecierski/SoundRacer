@@ -2,7 +2,7 @@ package com.example.mini.game.util.camera;
 
 import android.opengl.Matrix;
 
-import com.example.mini.game.util.MoveType;
+import com.example.mini.game.util.enums.MoveType;
 import com.example.mini.game.util.mathematics.Vector3;
 
 import static android.util.FloatMath.cos;
@@ -106,5 +106,9 @@ public abstract class DeveloperStaticSphereCamera {
         DeveloperStaticSphereCamera.radiusOfView = radiusOfView;
         // Just to update coordinates:
         rotate(0, 0);
+    }
+
+    public static Vector3 getEyeVector() {
+        return eyeCoordinates;
     }
 }

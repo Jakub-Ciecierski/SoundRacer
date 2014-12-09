@@ -22,7 +22,6 @@ public class LatticeAnimation {
     public void generateNextFrame(Line line) {
         if (line.getTranslationsZ() <= vanishBorder) {
             line.setTranslationsZ(spawnBorder);
-            Log.i("BANG!", "GENERATE!" + GameBoard.animationCounter + " " + GameBoard.tempCounter);
         } else
             line.setTranslationsZ(line.getTranslationsZ() - GameBoard.TIME_UNIT_LENGTH);
     }
