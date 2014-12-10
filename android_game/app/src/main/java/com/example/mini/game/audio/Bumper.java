@@ -19,6 +19,9 @@ public class Bumper {
      */
     private List<Float> bumps;
 
+    private static List<Float> s_bumps = new ArrayList<Float>();
+    private static int s_currentReadIndex = 0;
+
     /**
      * Pointer to current position of reading index for bumps
      */
@@ -53,6 +56,20 @@ public class Bumper {
             currentReadIndex++;
             return value;
         }
+    }
+
+    public static float getNextBumper() {
+        if(s_currentReadIndex >= s_bumps.size())
+            return -1;
+        float value = s_bumps.get(s_currentReadIndex);
+        // increment the pointer
+        s_currentReadIndex++;
+        //Log.i("Bumper","Bumper[" + s_currentReadIndex + "]: " + value);
+        return value;
+    }
+
+    private void setStaticBumper() {
+
     }
 
     /**
@@ -132,13 +149,13 @@ public class Bumper {
             for(int i = 0;i < length; i++) {
                 float bumpHeight = fluxSample[i];
 
-                if(bumpHeight >= max - average) {
+                if(bumpHeight >= 500.0f) {
                     interpolate(BumpType.BIG_BUMP);
                 }
-                else if(bumpHeight >= average*2) {
+                else if(bumpHeight >= 420.0f) {
                     interpolate(BumpType.MEDIUM_BUMP);
                 }
-                else if(bumpHeight >= average) {
+                else if(bumpHeight >= 220.0f) {
                     interpolate(BumpType.SMALL_BUMP);
                 }
                 // if flux is not big enough, set no bumps
@@ -147,11 +164,14 @@ public class Bumper {
                     // if fist, simple add it
                     if(currentWriteIndex == -1) {
                         this.bumps.add(BumpType.NO_BUMP.getHeight());
+                        s_bumps.add(BumpType.NO_BUMP.getHeight());
                     }
                     else {
                         // if we are sliding down or up a bump, do not reset the road height
                         if(currentWriteIndex <= bumps.size() - 1) {
                             this.bumps.add(BumpType.NO_BUMP.getHeight());
+                            s_bumps.add(BumpType.NO_BUMP.getHeight());
+
                         }
                     }
                     currentWriteIndex++;
@@ -194,6 +214,7 @@ public class Bumper {
                     float prevValue = this.bumps.get(bumpPosition);
                     if(prevValue < value) {
                         this.bumps.set(bumpPosition, value);
+                        s_bumps.set(bumpPosition, value);
                     }
                 } catch(IndexOutOfBoundsException e) {
                     Log.e("Bump_Interpolation", "Trying to set up a bump at negative index");
@@ -204,9 +225,11 @@ public class Bumper {
             else {
                 if(bumpPosition < bumps.size()) {
                     this.bumps.set(bumpPosition, value);
+                    s_bumps.set(bumpPosition, value);
                 }
                 else {
                     this.bumps.add(value);
+                    s_bumps.add(value);
                 }
             }
         }

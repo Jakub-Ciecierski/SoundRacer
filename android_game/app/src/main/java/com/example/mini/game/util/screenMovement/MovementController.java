@@ -30,8 +30,8 @@ public class MovementController {
     }
 
     public boolean handleMovement(MotionEvent e) {
-        //basicMovement.onTouchEvent(e);
-        //pinchDetector.onTouchEvent(e);
+        basicMovement.onTouchEvent(e);
+        pinchDetector.onTouchEvent(e);
         /* If player action is different than the above two ... */
         int numberOfTouches = e.getPointerCount();
         switch (e.getActionMasked()) {

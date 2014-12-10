@@ -53,7 +53,7 @@ public class Cube {
     int attributePositionId;
     int uniformColorId;
     int mvpId;
-    protected static float[] translate = new float[]{GameBoard.ROAD_WIDTH / 2, 2.0f, 4.0f};
+    protected static float[] translate = new float[]{GameBoard.ROAD_WIDTH / 2, 2.0f, 0.0f};
     protected static float[] rotate = new float[]{0.0f, 1.0f, 1.0f, 1.0f};
     //float[] mvpMatrix = new float[16];
 

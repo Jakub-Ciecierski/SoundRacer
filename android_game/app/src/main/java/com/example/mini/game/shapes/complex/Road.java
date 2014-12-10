@@ -29,15 +29,15 @@ public class Road {
     private final int fogLightsProgram;
     private float[] color;
     public static float[] vertices;
-    private FloatBuffer verticesVbo;
-    private FloatBuffer textureVbo;
-    private FloatBuffer normalsVbo;
+    private static FloatBuffer verticesVbo;
+    private static FloatBuffer textureVbo;
+    private static FloatBuffer normalsVbo;
     private VBORoadAnimation vboRoadAnimation;
     private static Vector3 translation = new Vector3(0f, 0f, 0f);
     public float[] rotation = new float[]{0.0f, 1.0f, 1.0f, 1.0f};
     private int program;
     private int texture;
-    private float[] textureWinding; /*= new float[]{
+    private static float[] textureWinding; /*= new float[]{
         0.0f, 1.0f,     // bottom left
                 0.0f, 0.0f,     // top left
                 1.0f, 1.0f,     // bottom right
@@ -45,7 +45,7 @@ public class Road {
     };*/
     int fogProgram;
     public static TurnStage currentTurnStage = TurnStage.STRAIGHT;
-    private float[] normals;
+    private static float[] normals;
     private float lightCounter = 0.0f;
 
     public Road(int verticesPerBorder, float timeUnitLength, float roadWidth, float[] color) {
@@ -169,10 +169,16 @@ public class Road {
 
     }
 
+    public static void nextVertexRoad() {
+        vertices = VBORoadAnimation.generateNewShit(vertices, translation);
+        textureWinding = VBORoadAnimation.generateNextTexture(textureWinding);
+        loadBuffers();
+    }
+
     /**
      *
      */
-    private void loadBuffers() {
+    private static void loadBuffers() {
         verticesVbo = ByteBuffer.allocateDirect(vertices.length * 4)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer().put(vertices);
         verticesVbo.position(0);

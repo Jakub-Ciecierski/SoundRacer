@@ -1,6 +1,7 @@
 package com.example.mini.game.shapes.complex;
 
 
+import com.example.mini.game.GameRenderer;
 import com.example.mini.game.util.mathematics.Vector3;
 
 /**
@@ -23,7 +24,7 @@ public class GameBoard {
      * Represents a need for animation of the {@link #road}or not.
      * See {@link #switchFrame()} method's body.
      */
-    private static final boolean ROAD_ANIMATION = true;
+    private static final boolean ROAD_ANIMATION = false;
     /**
      * Tells {@link #render(float[]) render method} whether draw
      * obstacles objects produced {@link #obstaclesWorkshop obstacle workshop}
@@ -98,7 +99,7 @@ public class GameBoard {
      * <p></p>
      * Can also be interpreted as space "between two vertices" of the road border.
      */
-    public static final float TIME_UNIT_LENGTH = 2.0f;
+    public static final float TIME_UNIT_LENGTH = GameRenderer.FLUX_LENGTH_MS;
     /**
      * To save memory, class generates finite amount of obstacle
      * objects and then rearrange them on the scene using transformation

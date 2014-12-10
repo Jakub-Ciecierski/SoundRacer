@@ -1,8 +1,14 @@
 package com.example.mini.game.util.animation;
 
 
+import android.util.Log;
+
+import com.example.mini.game.audio.AudioAnalyser;
+import com.example.mini.game.audio.Bumper;
 import com.example.mini.game.shapes.complex.GameBoard;
+import com.example.mini.game.shapes.complex.Player;
 import com.example.mini.game.shapes.complex.Road;
+import com.example.mini.game.util.camera.PlayerStaticSphereCamera;
 import com.example.mini.game.util.enums.TurnStage;
 import com.example.mini.game.util.mathematics.Vector3;
 
@@ -19,7 +25,7 @@ public class VBORoadAnimation {
     private final static int TEXTURE_COMPONENTS_PER_VERTEX = 2;
     private final int arrayOfVerticesLength;
     private final float roadLength;
-    private float timeCounter = 0.0f;
+    private static float timeCounter = 0.0f;
     private int verticesPerBorder;
     private float timeUnitLength;
     private TurnStage lastTurn = TurnStage.TURN_RIGHT_START;
@@ -119,7 +125,7 @@ public class VBORoadAnimation {
      * @param oldTexture Set of texture coordinates to be 'rolled'.
      * @return 'Rolled' texture coordinates.
      */
-    public float[] generateNextTexture(float[] oldTexture) {
+    public static float[] generateNextTexture(float[] oldTexture) {
         float[] newTextures = new float[oldTexture.length];
         float[] oldVertices = new float[2 * TEXTURE_COMPONENTS_PER_VERTEX];
         System.arraycopy(oldTexture, 0, oldVertices, 0, oldVertices.length);
@@ -135,35 +141,65 @@ public class VBORoadAnimation {
 
         return newTextures;
     }
+    public static float[] generateNewShit(float[] oldVertices,Vector3 translation) {
 
+        /* Copy everything beside first 2 vertices */
+        float[] newVertices = new float[oldVertices.length];
+        System.arraycopy(oldVertices, 2 * COMPONENTS_PER_VERTEX, newVertices, 0,
+                oldVertices.length - (2 * COMPONENTS_PER_VERTEX));
+
+        float value = Bumper.getNextBumper();
+
+        Log.i("GENERATE_NEW_SHIT", timeCounter + ": " + value);
+        /* Fill out 2 last vertices */
+        newVertices[oldVertices.length - 6] = 0;
+        newVertices[oldVertices.length - 5] = value;
+        newVertices[oldVertices.length - 4] = GameBoard.TIME_UNIT_LENGTH * timeCounter;
+        // Right border x,y,z
+        newVertices[oldVertices.length - 3] = GameBoard.ROAD_WIDTH;
+        newVertices[oldVertices.length - 2] = value;
+        newVertices[oldVertices.length - 1] = GameBoard.TIME_UNIT_LENGTH * timeCounter;
+
+        Player.setTranslate(Player.getTranslationX(), Road.vertices[1] + 2, Player.getTranslationZ());
+        PlayerStaticSphereCamera.moveCameraBy(Player.getTranslationY() + 4);
+
+        //
+        timeCounter++;
+        translation.setZ(translation.getZ() - GameBoard.TIME_UNIT_LENGTH);
+
+        return newVertices;
+
+    }
     public float[] generateNextFrame(float[] oldVertices, Vector3 translation) {
         /* Copy everything beside first 2 vertices */
         float[] newVertices = new float[arrayOfVerticesLength];
         System.arraycopy(oldVertices, 2 * COMPONENTS_PER_VERTEX, newVertices, 0,
                 arrayOfVerticesLength - (2 * COMPONENTS_PER_VERTEX));
 
+
+
         switch (Road.currentTurnStage) {
             case STRAIGHT:
                 // Left border x, y ,z
                 newVertices[arrayOfVerticesLength - 6] = 0;
-                newVertices[arrayOfVerticesLength - 5] = 0.0f;
+                newVertices[arrayOfVerticesLength - 5] = Bumper.getNextBumper();
                 newVertices[arrayOfVerticesLength - 4] = GameBoard.TIME_UNIT_LENGTH * timeCounter;
                 // Right border x,y,z
                 newVertices[arrayOfVerticesLength - 3] = GameBoard.ROAD_WIDTH;
-                newVertices[arrayOfVerticesLength - 2] = 0.0f;
+                newVertices[arrayOfVerticesLength - 2] = Bumper.getNextBumper();
                 newVertices[arrayOfVerticesLength - 1] = GameBoard.TIME_UNIT_LENGTH * timeCounter;
 
                 // Update help counter
                 timeCounter++;
-                rememberZ = timeUnitLength * timeCounter;
+                rememberZ = GameBoard.TIME_UNIT_LENGTH * timeCounter;
                 nextTurnCounter++;
-
-                if (nextTurnCounter == GameBoard.TURNING_RIGHT_ANIMATION_FREQUENCY) {
-                    TurnStage newTurnStage = (lastTurn == TurnStage.TURN_RIGHT_START) ?
-                            TurnStage.TURN_LEFT_START : TurnStage.TURN_RIGHT_START;
-                    Road.currentTurnStage = newTurnStage;
-                    lastTurn = newTurnStage;
-                }
+                Road.totalZTranslation += GameBoard.TIME_UNIT_LENGTH;
+//                if (nextTurnCounter == GameBoard.TURNING_RIGHT_ANIMATION_FREQUENCY) {
+//                    TurnStage newTurnStage = (lastTurn == TurnStage.TURN_RIGHT_START) ?
+//                            TurnStage.TURN_LEFT_START : TurnStage.TURN_RIGHT_START;
+//                    Road.currentTurnStage = newTurnStage;
+//                    lastTurn = newTurnStage;
+//                }
 
                 return newVertices;
             case TURN_RIGHT_START:
@@ -337,13 +373,15 @@ public class VBORoadAnimation {
     public float[] generateStartShape() {
         float[] vertices = new float[arrayOfVerticesLength];
         for (int i = 0; i < arrayOfVerticesLength; ) {
+            float value = Bumper.getNextBumper();
+            //Log.i("START_SHAPE","VALUE: " + value);
             /* Inner vertex */
             vertices[i++] = 0;
-            vertices[i++] = 0.0f;
+            vertices[i++] = value;
             vertices[i++] = GameBoard.TIME_UNIT_LENGTH * timeCounter;
             /* Outer vertex */
             vertices[i++] = GameBoard.ROAD_WIDTH;
-            vertices[i++] = 0.0f;
+            vertices[i++] = value;
             vertices[i++] = GameBoard.TIME_UNIT_LENGTH * timeCounter;
             /* Update vertex */
             timeCounter++;
@@ -365,8 +403,8 @@ public class VBORoadAnimation {
                 && Road.currentTurnStage != TurnStage.TURN_RIGHT_END
                 && Road.currentTurnStage != TurnStage.TURN_LEFT_END
                 && Road.currentTurnStage != TurnStage.TURN_RIGHT_STABLE) {
-            translation.setZ(translation.getZ() - timeUnitLength);
-            Road.totalZTranslation += timeUnitLength;
+            translation.setZ(translation.getZ() - GameBoard.TIME_UNIT_LENGTH);
+            //Road.totalZTranslation += timeUnitLength;
         }
     }
 

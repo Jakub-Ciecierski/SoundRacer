@@ -5,6 +5,9 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.util.Log;
 
+import com.example.mini.game.shapes.complex.GameBoard;
+import com.example.mini.game.shapes.complex.Road;
+
 import java.io.File;
 import java.util.concurrent.Semaphore;
 
@@ -37,6 +40,10 @@ public class AudioPlayer {
     public static final float SAMPLE_LENGTH_MS = FRAME_LENGTH_MS / 1152f;
 
     private float currentTimeMs = 0;
+
+    private int bytesDecoded = 0;
+
+    public static int fluxCounter = 0;
 
     /**
      *
@@ -87,7 +94,7 @@ public class AudioPlayer {
                         currentTimeMs = SAMPLE_LENGTH_MS * audioTrack.getPlaybackHeadPosition();
 
                         //Log.i("AudioPlayer", Integer.toString(audioTrack.getPlaybackHeadPosition()));
-                        Log.i("AudioPlayer",Float.toString(currentTimeMs));
+                        //Log.i("AudioPlayer","time: " + currentTimeMs);
 
                         // decode, sampleSize*2 becouse sizeof(short) = sizeof(byte)*2
                         int ret = NativeMP3Decoder.decodeMP3(sampleSize * 2, sample, WRITE_HANDLE);
@@ -100,6 +107,7 @@ public class AudioPlayer {
                             // write sample to audio tracker
                             audioTrack.write(sample, 0, sample.length);
                         }
+                        bytesDecoded += sampleSize / 2;
                         audioSemaphore.release();
                     }catch(InterruptedException e) {e.printStackTrace();}
                 }
@@ -194,12 +202,37 @@ public class AudioPlayer {
         }catch (InterruptedException e){}
     }
 
+    public void timeStamp() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long pos = audioTrack.getPlaybackHeadPosition();
+                while(pos < bytesDecoded ) {
+                    float time = SAMPLE_LENGTH_MS * pos;
+                    //Log.i("","time: " + time);
+                    //Log.i("","Bytes decoded: " + bytesDecoded);
+                    //Log.i("","Pos: " + pos);
+                    pos = audioTrack.getPlaybackHeadPosition();
+                    if(fluxCounter * GameBoard.TIME_UNIT_LENGTH < time) {
+                        fluxCounter++;
+                        // add vertex to gameboard.
+                        Road.nextVertexRoad();
+                    }
+
+                }
+                Log.i("","Audio finished playing with: " + fluxCounter  + " fluxes");
+                Log.i("","Audio length: " + fluxCounter * GameBoard.TIME_UNIT_LENGTH + " ms");
+            }
+        }).start();
+    }
+
     /**
      * Starts playing audio
      */
     public void playAudio() {
         this.audioTrack.play();
         this.isPlaying = true;
+        timeStamp();
         Log.i("AudioPlayer","Playing audio");
     }
 
@@ -227,6 +260,8 @@ public class AudioPlayer {
         return isPlaying;
     }
 
+
+
     /**
      * Computes current time of playback audio in milliseconds
      * TODO allow backtracking
@@ -235,12 +270,17 @@ public class AudioPlayer {
      */
     public long getCurrentTime() {
         long time = 0;
-        try {
-            audioSemaphore.acquire();
-            float t = SAMPLE_LENGTH_MS * this.audioTrack.getPlaybackHeadPosition();
-            time = (long)t;
-            audioSemaphore.release();
-        }catch (InterruptedException e){e.printStackTrace();}
+
+//        try {
+//            audioSemaphore.acquire();
+//            float t = SAMPLE_LENGTH_MS * this.audioTrack.getPlaybackHeadPosition();
+//            time = (long)t;
+//            audioSemaphore.release();
+//        }catch (InterruptedException e){e.printStackTrace();
+//        }
+        float t = SAMPLE_LENGTH_MS * this.audioTrack.getPlaybackHeadPosition();
+
+        time = (long)t;
         return time;
     }
 }

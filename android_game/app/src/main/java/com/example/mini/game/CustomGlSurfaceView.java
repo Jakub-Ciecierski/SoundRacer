@@ -16,6 +16,7 @@ public class CustomGlSurfaceView extends GLSurfaceView {
     public static Context context;
     public static float screenHeight;
     public static float screenWidth;
+    private GameRenderer gameRenderer;
 
 
     /**
@@ -24,9 +25,10 @@ public class CustomGlSurfaceView extends GLSurfaceView {
     public CustomGlSurfaceView(Context context) {
         super(context);
         this.context = context;
+        gameRenderer = new GameRenderer(context);
         movementController = new MovementController();
         setEGLContextClientVersion(2);
-        setRenderer(new GameRenderer(context));
+        setRenderer(gameRenderer);
 
 
     }
@@ -37,7 +39,14 @@ public class CustomGlSurfaceView extends GLSurfaceView {
      */
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-
         return movementController.handleMovement(e);
+    }
+
+    public void onClickAudio() {
+        gameRenderer.startAudio();
+    }
+
+    public void onClickAnal() {
+        gameRenderer.startAnalyzing();
     }
 }

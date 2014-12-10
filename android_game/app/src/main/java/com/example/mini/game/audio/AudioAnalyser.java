@@ -52,6 +52,7 @@ public class AudioAnalyser {
     private int sampleSize;
     private FFT fft;
     private List<Float> spectralFlux;
+    private static List<Float> s_spectralFlux = new ArrayList<Float>();
 
     private final int FLUX_SCALER = 100000;
 
@@ -68,6 +69,9 @@ public class AudioAnalyser {
     private int bumperSampleSize;
     private int currentBumperIndex;
 
+    private static int currentFluxIndex = 0;
+
+    public static boolean isReadyToGo = false;
     /**
      * TODO check if file exists
      * Creates at AudioAnalyser of input audio file
@@ -113,6 +117,16 @@ public class AudioAnalyser {
         Log.i("AudioAnalyser","Sample size: " + sampleSize);
         Log.i("AudioAnalyser","Sample length in milliseconds: " + SAMPLE_LENGTH_MS);
         Log.i("AudioAnalyser","Flux length in milliseconds: " + FLUX_LENGTH_MS);
+    }
+
+    public static float getNextFlux() {
+        if(currentFluxIndex >= s_spectralFlux.size())
+            return -1;
+        float value = s_spectralFlux.get(currentFluxIndex);
+        // increment the pointer
+        currentFluxIndex++;
+        //Log.i("Bumper","Bumper[" + s_currentReadIndex + "]: " + value);
+        return value;
     }
 
     /**
@@ -169,6 +183,7 @@ public class AudioAnalyser {
                         }
                         flux /= FLUX_SCALER;
                         spectralFlux.add(flux);
+                        s_spectralFlux.add(flux);
 
                         // compute bumpers
                         if(spectralFlux.size() == bumperSampleSize + currentBumperIndex) {
@@ -193,6 +208,7 @@ public class AudioAnalyser {
                             average /= bumperSampleSize;
 
                             bumper.computeBumps(fluxSample, average, max, min);
+                            isReadyToGo = true;
                             Log.i("AudioAnalyser", "Computed: " + bumperSampleSize + " bumper samples");
                             Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
                         }
@@ -224,7 +240,7 @@ public class AudioAnalyser {
                     }
                     average /= fluxLeftOver;
                     bumper.computeBumps(fluxSample, average, max, min);
-
+                    isReadyToGo = true;
                     Log.i("AudioAnalyser", "Computed leftover: " + fluxLeftOver + " bumper samples");
                     Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
                 }

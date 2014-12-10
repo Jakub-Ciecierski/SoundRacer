@@ -4,8 +4,12 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 
+import com.example.mini.game.audio.AudioAnalyser;
+import com.example.mini.game.audio.AudioPlayer;
+import com.example.mini.game.audio.NativeMP3Decoder;
 import com.example.mini.game.shapes.complex.CartesianCoordinates;
 import com.example.mini.game.shapes.complex.GameBoard;
 import com.example.mini.game.shapes.complex.SetOfButtons;
@@ -26,11 +30,28 @@ import static android.opengl.GLES20.glViewport;
 public class GameRenderer implements GLSurfaceView.Renderer {
     public static Context context;
     public static CameraType currentCamera = CameraType.PLAYER_CAMERA;
+
+    public static float FLUX_LENGTH_MS = 0;
+
     private float[] mProjectionMatrix = new float[16];
     private float[] mOrthogonalMatrix = new float[16];
     private CartesianCoordinates cartesianCoordinates;
     private SetOfButtons movementButtons;
     private GameBoard gameBoard;
+
+    // path to file
+    //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/Billy Talent - Diamond on a Landmine with Lyrics.mp3";
+    //final String FILE = "/sdcard/external_sd/Music/samples/tests/limit.mp3";
+    //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/judith.mp3";
+    //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/explosivo.mp3";
+    //final String FILE = "/sdcard/external_sd/Music/samples/jazz.mp3";
+    //final String FILE = "/sdcard/music/judith.mp3";
+    //final String FILE = "/sdcard/music/explosivo.mp3";
+    //final String FILE = "/sdcard/music/kat - 04 - stworzylem piekna rzecz.mp3";
+    final String FILE = "/sdcard/music/siusior.mp3";
+    AudioAnalyser audioAnalyser;
+    AudioPlayer audioPlayer;
+    final int bufferSize = 1024;
 
 
     public GameRenderer(Context context) {
@@ -47,8 +68,22 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         // axis
         cartesianCoordinates = new CartesianCoordinates(new float[]{0.0f, 0.0f, 0.0f});
         movementButtons = new SetOfButtons(context);
-        gameBoard = new GameBoard();
+
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+        // AUDIO
+        NativeMP3Decoder.initLib();
+        audioAnalyser = new AudioAnalyser(FILE, bufferSize, 44100, 400);
+        FLUX_LENGTH_MS = audioAnalyser.FLUX_LENGTH_MS;
+
+        audioPlayer = new AudioPlayer(FILE, bufferSize, 44100);
+        audioAnalyser.startAnalyzing();
+
+        while(!AudioAnalyser.isReadyToGo){}
+
+        Log.i("GAME_RENDERER","Anal is ready for action");
+
+        gameBoard = new GameBoard();
     }
 
     @Override
@@ -70,9 +105,12 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         gameBoard.render(getCurrentCameraMatrix());
-        if(currentCamera == CameraType.DEVELOPER_CAMERA)
+        if (currentCamera == CameraType.DEVELOPER_CAMERA)
             cartesianCoordinates.draw(getCurrentCameraMatrix());
         movementButtons.draw(mOrthogonalMatrix);
+
+
+        // AUDIO
 
     }
 
@@ -91,5 +129,16 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     public static float[] getEyePosition() {
         Vector3 temp = PlayerStaticSphereCamera.getEyeVector();
         return new float[]{temp.getX(), temp.getY(), temp.getZ(), 1.0f};
+    }
+
+
+    public void startAnalyzing() {
+        audioAnalyser.startAnalyzing();
+    }
+
+    public void startAudio() {
+        Log.i("", "start audio clicked");
+        audioPlayer.startDecoding();
+        audioPlayer.playAudio();
     }
 }
