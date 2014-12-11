@@ -200,12 +200,10 @@ public class GameBoard {
      * Constant determines how often we generate road which turns right.
      */
     public static final float TURNING_LEFT_ANIMATION_FREQUENCY = 120.0f;
-
     /**
      * Width of player cube
      */
     public static final float PLAYER_WIDTH = 2.0f;
-
     /**
      * Encapsulation of all methods concerning road.
      * See {@link  com.example.mini.game.shapes.complex.Road Road class}
@@ -244,7 +242,7 @@ public class GameBoard {
         lattice = new Lattice();
         obstaclesWorkshop = new ObstaclesWorkshop();
         horizonRibbon = new HorizonRibbon();
-        player = new Player(PLAYER_WIDTH);
+        player = new Player();
     }
 
     /**
