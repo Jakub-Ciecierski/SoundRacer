@@ -206,6 +206,7 @@ public class AudioPlayer {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 long pos = audioTrack.getPlaybackHeadPosition();
                 while(pos < bytesDecoded ) {
                     float time = SAMPLE_LENGTH_MS * pos;
@@ -222,6 +223,7 @@ public class AudioPlayer {
                 }
                 Log.i("","Audio finished playing with: " + fluxCounter  + " fluxes");
                 Log.i("","Audio length: " + fluxCounter * GameBoard.TIME_UNIT_LENGTH + " ms");
+
             }
         }).start();
     }

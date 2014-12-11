@@ -42,13 +42,13 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     // path to file
     //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/Billy Talent - Diamond on a Landmine with Lyrics.mp3";
     //final String FILE = "/sdcard/external_sd/Music/samples/tests/limit.mp3";
-    //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/judith.mp3";
+    final String FILE = "/sdcard/external_sd/Music/Billy_Talent/judith.mp3";
     //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/explosivo.mp3";
     //final String FILE = "/sdcard/external_sd/Music/samples/jazz.mp3";
     //final String FILE = "/sdcard/music/judith.mp3";
     //final String FILE = "/sdcard/music/explosivo.mp3";
     //final String FILE = "/sdcard/music/kat - 04 - stworzylem piekna rzecz.mp3";
-    final String FILE = "/sdcard/music/siusior.mp3";
+    //final String FILE = "/sdcard/music/siusior.mp3";
     AudioAnalyser audioAnalyser;
     AudioPlayer audioPlayer;
     final int bufferSize = 1024;
