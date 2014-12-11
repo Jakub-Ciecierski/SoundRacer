@@ -48,7 +48,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     //final String FILE = "/sdcard/music/judith.mp3";
     //final String FILE = "/sdcard/music/explosivo.mp3";
     //final String FILE = "/sdcard/music/kat - 04 - stworzylem piekna rzecz.mp3";
-    final String FILE = "/sdcard/music/siusior.mp3";
+    final String FILE = "/sdcard/music/intoTheVoid.mp3";
     AudioAnalyser audioAnalyser;
     AudioPlayer audioPlayer;
     final int bufferSize = 1024;

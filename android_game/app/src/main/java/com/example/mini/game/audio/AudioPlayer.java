@@ -222,6 +222,7 @@ public class AudioPlayer {
                 }
                 Log.i("","Audio finished playing with: " + fluxCounter  + " fluxes");
                 Log.i("","Audio length: " + fluxCounter * GameBoard.TIME_UNIT_LENGTH + " ms");
+                NativeMP3Decoder.cleanupLib();
             }
         }).start();
     }
