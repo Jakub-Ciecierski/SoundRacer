@@ -28,7 +28,8 @@ import java.util.List;
 public class AudioSampleActivity extends ActionBarActivity {
     // path to file
     //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/Billy Talent - Diamond on a Landmine with Lyrics.mp3";
-    final String FILE = "/sdcard/external_sd/Music/Billy_Talent/judith.mp3";
+    //final String FILE = "/sdcard/red.mp3";
+    final String FILE = "/storage/sdcard0/red.mp3";
     //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/explosivo.mp3";
     //final String FILE = "/sdcard/external_sd/Music/samples/jazz.mp3";
 
