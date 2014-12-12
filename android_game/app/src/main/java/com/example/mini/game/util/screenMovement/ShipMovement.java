@@ -10,9 +10,11 @@ import com.example.mini.game.util.enums.MoveType;
  */
 public class ShipMovement implements Runnable {
     private MoveType moveType;
+    private Player player;
 
     public ShipMovement(MoveType moveType) {
         this.moveType = moveType;
+        //this.player = player;
         MovementController.stabilising = false;
     }
 

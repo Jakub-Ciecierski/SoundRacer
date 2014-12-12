@@ -15,15 +15,6 @@ import com.example.mini.game.graphview.GraphView;
 import com.example.mini.game.graphview.GraphViewSeries;
 import com.example.mini.game.graphview.LineGraphView;
 
-import org.apache.commons.math3.analysis.interpolation.HermiteInterpolator;
-import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunctionLagrangeForm;
-import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class AudioSampleActivity extends ActionBarActivity {
     // path to file
@@ -100,7 +91,7 @@ public class AudioSampleActivity extends ActionBarActivity {
             long time = audioAnalyser.getTimeOfFlux(i);
             float flux = audioAnalyser.getFluxAt(i);
             float bump = audioAnalyser.getBumper().getNextBump();
-            //Log.i("Graph","Bump[" + i +"]: " + bump);
+            Log.i("Graph","Bump[" + i +"]: " + bump);
             data[i] = new GraphView.GraphViewData(time, bump);
             //data[i] = new GraphView.GraphViewData(audioAnalyser.getTimeOfFlux(i), flux);
         }
