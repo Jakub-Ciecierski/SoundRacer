@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -30,8 +32,15 @@ public class MyActivity extends Activity implements SensorEventListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Erase the title bar
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // Make it full Screen
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //getting Intent passed from LauncherActivity
+        String filePath = getIntent().getExtras().getString("filePath");
+
         super.onCreate(savedInstanceState);
-        glSurfaceView = new CustomGlSurfaceView(this);
+        glSurfaceView = new CustomGlSurfaceView(this,filePath);
         setContentView(glSurfaceView);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 

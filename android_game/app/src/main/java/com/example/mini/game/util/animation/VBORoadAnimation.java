@@ -150,7 +150,7 @@ public class VBORoadAnimation {
 
         float value = Bumper.getNextBumper();
 
-        Log.i("GENERATE_NEW_SHIT", timeCounter + ": " + value);
+        //Log.i("GENERATE_NEW_SHIT", timeCounter + ": " + value);
         /* Fill out 2 last vertices */
         newVertices[oldVertices.length - 6] = 0;
         newVertices[oldVertices.length - 5] = value;

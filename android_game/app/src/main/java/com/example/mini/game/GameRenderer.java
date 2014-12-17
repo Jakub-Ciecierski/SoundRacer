@@ -48,14 +48,15 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     //final String FILE = "/sdcard/music/judith.mp3";
     //final String FILE = "/sdcard/music/explosivo.mp3";
     //final String FILE = "/sdcard/music/kat - 04 - stworzylem piekna rzecz.mp3";
-    final String FILE = "/storage/sdcard0/red.mp3";;
+    String FILE = "/storage/sdcard0/red.mp3";
+    //final String FILE = "/storage/sdcard0/red.mp3";
     AudioAnalyser audioAnalyser;
     AudioPlayer audioPlayer;
     final int bufferSize = 1024;
 
 
-    public GameRenderer(Context context) {
-        this.context = context;
+    public GameRenderer(Context context, String filePath) {
+        this.context = context; FILE = filePath;
     }
 
     @Override
@@ -72,7 +73,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         // AUDIO
-        /*NativeMP3Decoder.initLib();
+        NativeMP3Decoder.initLib();
         audioAnalyser = new AudioAnalyser(FILE, bufferSize, 44100, 400);
         FLUX_LENGTH_MS = audioAnalyser.FLUX_LENGTH_MS;
 
@@ -82,7 +83,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         while(!AudioAnalyser.isReadyToGo){}
 
         Log.i("GAME_RENDERER","Anal is ready for action");
-*/
+
         gameBoard = new GameBoard();
     }
 

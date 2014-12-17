@@ -140,10 +140,10 @@ public class Bumper {
             float avg = 0;
             int length = fluxSample.length;
 
-            Log.i("Bump", "Computing bumps, sample size: " + length);
-            Log.i("Bump", "Average: " + average);
-            Log.i("Bump", "max: " + max);
-            Log.i("Bump", "min: " + min);
+           // Log.i("Bump", "Computing bumps, sample size: " + length);
+           // Log.i("Bump", "Average: " + average);
+           // Log.i("Bump", "max: " + max);
+            //Log.i("Bump", "min: " + min);
 
             // find points of interests
             for(int i = 0;i < length; i++) {

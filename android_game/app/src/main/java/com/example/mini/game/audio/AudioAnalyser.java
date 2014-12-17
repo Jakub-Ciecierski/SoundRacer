@@ -112,11 +112,11 @@ public class AudioAnalyser {
         this.bumperSampleSize = bumperSampleSize;
         this.currentBumperIndex = 0;
 
-        Log.i("AudioAnalyser","Creating instance of AudioAnalyser");
-        Log.i("AudioAnalyser","Sample rate: " + sampleRate);
-        Log.i("AudioAnalyser","Sample size: " + sampleSize);
-        Log.i("AudioAnalyser","Sample length in milliseconds: " + SAMPLE_LENGTH_MS);
-        Log.i("AudioAnalyser","Flux length in milliseconds: " + FLUX_LENGTH_MS);
+       // Log.i("AudioAnalyser","Creating instance of AudioAnalyser");
+       // Log.i("AudioAnalyser","Sample rate: " + sampleRate);
+       // Log.i("AudioAnalyser","Sample size: " + sampleSize);
+       // Log.i("AudioAnalyser","Sample length in milliseconds: " + SAMPLE_LENGTH_MS);
+       // Log.i("AudioAnalyser","Flux length in milliseconds: " + FLUX_LENGTH_MS);
     }
 
     public static float getNextFlux() {
@@ -209,8 +209,8 @@ public class AudioAnalyser {
 
                             bumper.computeBumps(fluxSample, average, max, min);
                             isReadyToGo = true;
-                            Log.i("AudioAnalyser", "Computed: " + bumperSampleSize + " bumper samples");
-                            Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
+                            //Log.i("AudioAnalyser", "Computed: " + bumperSampleSize + " bumper samples");
+                            //Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
                         }
 
                         fluxSemaphore.release();
@@ -241,8 +241,8 @@ public class AudioAnalyser {
                     average /= fluxLeftOver;
                     bumper.computeBumps(fluxSample, average, max, min);
                     isReadyToGo = true;
-                    Log.i("AudioAnalyser", "Computed leftover: " + fluxLeftOver + " bumper samples");
-                    Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
+                    //Log.i("AudioAnalyser", "Computed leftover: " + fluxLeftOver + " bumper samples");
+                    //Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
                 }
 
                 NativeMP3Decoder.cleanupMP3(ANALYSIS_HANDLE);
