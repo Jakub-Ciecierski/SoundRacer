@@ -52,4 +52,5 @@ public class CustomGlSurfaceView extends GLSurfaceView {
     public void onClickAnal() {
         gameRenderer.startAnalyzing();
     }
+
 }

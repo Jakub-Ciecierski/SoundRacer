@@ -2,6 +2,7 @@ package com.example.mini.game;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -17,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.example.mini.game.launcher.LauncherActivity;
 import com.example.mini.game.shapes.complex.Road;
 
 import java.util.List;
@@ -46,14 +48,16 @@ public class MyActivity extends Activity implements SensorEventListener{
 
         Button startAudio = new Button(this);
         Button startAnalyzing = new Button(this);
-
+        Button backToFileChooser = new Button(this);
         startAudio.setText("Start audio");
         startAnalyzing.setText("Start anal");
+        backToFileChooser.setText("Back");
 
         LinearLayout ll = new LinearLayout(this);
 
         ll.addView(startAudio);
         ll.addView(startAnalyzing);
+        ll.addView(backToFileChooser);
         ll.setGravity(Gravity.LEFT | Gravity.RIGHT);
         this.addContentView(ll,
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
@@ -70,7 +74,15 @@ public class MyActivity extends Activity implements SensorEventListener{
             }
         });
 
-    }
+            backToFileChooser.setOnClickListener(new View.OnClickListener(){
+                        public void onClick(View v){
+                            Intent intent = new Intent(v.getContext(), LauncherActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+}
+
     @Override
     protected void onPause() {
         super.onPause();

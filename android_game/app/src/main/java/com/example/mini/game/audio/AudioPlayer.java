@@ -45,6 +45,8 @@ public class AudioPlayer {
 
     public static int fluxCounter = 0;
 
+    private boolean doneDecoding = false;
+
     /**
      *
      * @param filePath
@@ -91,7 +93,7 @@ public class AudioPlayer {
                         audioSemaphore.acquire();
                         short[] sample = new short[sampleSize];
 
-                        currentTimeMs = SAMPLE_LENGTH_MS * audioTrack.getPlaybackHeadPosition();
+                        //currentTimeMs = SAMPLE_LENGTH_MS * audioTrack.getPlaybackHeadPosition();
 
                         //Log.i("AudioPlayer", Integer.toString(audioTrack.getPlaybackHeadPosition()));
                         //Log.i("AudioPlayer","time: " + currentTimeMs);
@@ -111,6 +113,7 @@ public class AudioPlayer {
                         audioSemaphore.release();
                     }catch(InterruptedException e) {e.printStackTrace();}
                 }
+                doneDecoding = true;
                 // cleanup the mp3 and release audio resources
                 NativeMP3Decoder.cleanupMP3(WRITE_HANDLE);
 
@@ -208,22 +211,28 @@ public class AudioPlayer {
             public void run() {
 
                 long pos = audioTrack.getPlaybackHeadPosition();
-                while(pos < bytesDecoded ) {
+                while(pos < bytesDecoded || !doneDecoding ) {
                     float time = SAMPLE_LENGTH_MS * pos;
                     //Log.i("","time: " + time);
                     //Log.i("","Bytes decoded: " + bytesDecoded);
                     //Log.i("","Pos: " + pos);
                     pos = audioTrack.getPlaybackHeadPosition();
-                    if(fluxCounter * GameBoard.TIME_UNIT_LENGTH < time) {
+                    if(fluxCounter * GameBoard.TIME_UNIT_LENGTH < time) { //AudioSampleActivity.FLUX_LENGTH
+//                        float value = AudioAnalyser.s_spectralFlux.get(fluxCounter);
+//                        if(value >= 400.f)
+//                            Log.i("Freq Spectrum","" + AudioAnalyser.freqSpectrumValues.get(fluxCounter));
                         fluxCounter++;
+
                         // add vertex to gameboard.
                         Road.nextVertexRoad();
                     }
 
                 }
-                Log.i("","Audio finished playing with: " + fluxCounter  + " fluxes");
-                Log.i("","Audio length: " + fluxCounter * GameBoard.TIME_UNIT_LENGTH + " ms");
-				NativeMP3Decoder.cleanupLib();            }
+                Log.i("AudioPlayer","Audio finished playing with pos: " + pos  + " and BytesDecoded: " + bytesDecoded);
+                Log.i("AudioPlayer","Audio finished playing with: " + fluxCounter  + " fluxes");
+                //Log.i("","Audio length: " + fluxCounter * GameBoard.TIME_UNIT_LENGTH + " ms");
+                //NativeMP3Decoder.cleanupLib();
+            }
         }).start();
     }
 

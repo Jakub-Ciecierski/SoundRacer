@@ -52,7 +52,8 @@ public class AudioAnalyser {
     private int sampleSize;
     private FFT fft;
     private List<Float> spectralFlux;
-    private static List<Float> s_spectralFlux = new ArrayList<Float>();
+    public static List<String> freqSpectrumValues = new ArrayList<String>();
+    public static List<Float> s_spectralFlux = new ArrayList<Float>();
 
     private final int FLUX_SCALER = 100000;
 
@@ -112,11 +113,11 @@ public class AudioAnalyser {
         this.bumperSampleSize = bumperSampleSize;
         this.currentBumperIndex = 0;
 
-       // Log.i("AudioAnalyser","Creating instance of AudioAnalyser");
-       // Log.i("AudioAnalyser","Sample rate: " + sampleRate);
-       // Log.i("AudioAnalyser","Sample size: " + sampleSize);
-       // Log.i("AudioAnalyser","Sample length in milliseconds: " + SAMPLE_LENGTH_MS);
-       // Log.i("AudioAnalyser","Flux length in milliseconds: " + FLUX_LENGTH_MS);
+        Log.i("AudioAnalyser","Creating instance of AudioAnalyser");
+        Log.i("AudioAnalyser","Sample rate: " + sampleRate);
+        Log.i("AudioAnalyser","Sample size: " + sampleSize);
+        Log.i("AudioAnalyser","Sample length in milliseconds: " + SAMPLE_LENGTH_MS);
+        Log.i("AudioAnalyser","Flux length in milliseconds: " + FLUX_LENGTH_MS);
     }
 
     public static float getNextFlux() {
@@ -147,6 +148,14 @@ public class AudioAnalyser {
                 float[] lastSpectrum = new float[sampleSize / 2 + 1];
 
                 long totalBytes = 0;
+
+                // freq spectrum test
+                float subBassValueTotal = 0.0f;
+                float bassValueTotal = 0.0f;
+                float bassValueTotal2 = 0.0f;
+                float midRangeValueTotal = 0.0f;
+                float highMidValueTotal = 0.0f;
+                float highFreqValueTotal = 0.0f;
 
                 while (!done) {
                     try {
@@ -181,9 +190,119 @@ public class AudioAnalyser {
                             float value = (spectrum[i] - lastSpectrum[i]);
                             flux += value < 0 ? 0 : value;
                         }
+                        // TODO fix flux scaler
                         flux /= FLUX_SCALER;
+                        //Log.i("AudioAnalyser","Flux: " + flux);
                         spectralFlux.add(flux);
                         s_spectralFlux.add(flux);
+
+                        // frequency spectrum test
+                        //Log.i("AudioAnalyzer","time: " + spectralFlux.size() * FLUX_LENGTH_MS);
+                        final float lowerSubBass = 0.0f;
+                        final float upperSubBass = 60.0f;
+
+                        final float lowerBass = 61.0f;
+                        final float upperBass = 120.0f;
+
+                        final float lowerBass2 = 121.0f;
+                        final float upperBass2 = 215.0f;
+
+                        final float lowerMidRange = 216.0f;
+                        final float upperMidRange = 2024.0f;
+
+                        final float lowerHighMid = 2025.0f;
+                        final float upperHighMid = 6029.0f;
+
+                        final float lowerHighFreq = 6030.0f;
+                        final float upperHighFreq = 22050.0f;
+
+                        float subBassValue = 0.0f;
+                        float bassValue = 0.0f;
+                        float bassValue2 = 0.0f;
+                        float midRangeValue = 0.0f;
+                        float highMidValue = 0.0f;
+                        float highFreqValue = 0.0f;
+
+                        int subBassCounter = 0;
+                        int bassCounter = 0;
+                        int bassCounter2 = 0;
+                        int midRangeCounter = 0;
+                        int highMidCounter = 0;
+                        int highFreqCounter = 0;
+
+                        for(int i = 0; i < spectrum.length;i++) {
+                            float freq = i * 44100 / 1024;
+                            float value = spectrum[i] / 1000.0f;
+                            if(freq >= lowerSubBass && freq <= upperSubBass) {
+                                subBassCounter++;
+                                subBassValue += value;
+                            }
+                            if(freq >= lowerBass && freq <= upperBass) {
+                                bassCounter++;
+                                bassValue += value;
+                            }
+                            if(freq >= lowerBass2 && freq <= upperBass2) {
+                                bassCounter2++;
+                                bassValue2 += value;
+                            }
+                            if(freq >= lowerMidRange && freq <= upperMidRange) {
+                                midRangeCounter++;
+                                midRangeValue += value;
+                            }
+                            if(freq >= lowerHighMid && freq <= upperHighMid) {
+                                highMidCounter++;
+                                highMidValue += value;
+                            }
+                            if(freq >= lowerHighFreq && freq <= upperHighFreq) {
+                                highFreqCounter++;
+                                highFreqValue += value;
+                            }
+
+                            //Log.i("FFT","Band[" + i + "] = " + freq + " Hz, Amplitude: " + value);
+                        }
+                        subBassValue /= subBassCounter;
+                        bassValue /= bassCounter;
+                        bassValue2 /= bassCounter2;
+                        midRangeValue /= midRangeCounter;
+                        highMidValue /= highMidCounter;
+                        highFreqValue /= highFreqCounter;
+
+                        subBassValueTotal += subBassValue;
+                        bassValueTotal += bassValue;
+                        bassValueTotal2 += bassValue2;
+                        midRangeValueTotal += midRangeValue;
+                        highMidValueTotal += highMidValue;
+                        highFreqValueTotal += highFreqValue;
+
+                        float maxFreq = subBassValue;
+                        String maxStr = "SubBass";
+                        if (maxFreq < bassValue) {
+                            maxFreq = bassValue;
+                            maxStr = "Bass";
+                        }
+                        if (maxFreq < bassValue2) {
+                            maxFreq = bassValue2;
+                            maxStr = "Bass2";
+                        }
+                        if (maxFreq < midRangeValue) {
+                            maxFreq = midRangeValue;
+                            maxStr = "MidRange";
+                        }
+                        if (maxFreq < highMidValue) {
+                            maxFreq = highMidValue;
+                            maxStr = "HighMid";
+                        }
+                        if (maxFreq < highFreqValue) {
+                            maxFreq = highFreqValue;
+                            maxStr = "HighFreq";
+                        }
+                        freqSpectrumValues.add(maxStr);
+
+//                        Log.i("FFT","[" + bassCounter + "] Bass " + lowerBass + " - " + upperBass + " Hz = " + bassValue);
+//                        Log.i("FFT","[" + bassCounter2 + "] Bass2 " + lowerBass2 + " - " + upperBass2 + " Hz = " + bassValue2);
+//                        Log.i("FFT","[" + midRangeCounter + "] MidRange " + lowerMidRange + " - " + upperMidRange + " Hz = " + midRangeValue);
+//                        Log.i("FFT","[" + highMidCounter + "] HighMid " + lowerHighMid + " - " + upperHighMid + " Hz = " + highMidValue);
+//                        Log.i("FFT","[" + highFreqCounter + "] HighFreq " + lowerHighFreq + " - " + upperHighFreq + " Hz = " + highFreqValue);
 
                         // compute bumpers
                         if(spectralFlux.size() == bumperSampleSize + currentBumperIndex) {
@@ -258,6 +377,13 @@ public class AudioAnalyser {
                 totalBytes = spectralFlux.size() * sampleSize / 2;
                 Log.i("AudioAnalyser", "Total bytes read: " + totalBytes);
                 Log.i("AudioAnalyser", "Audio Length in milliseconds: " + totalBytes * SAMPLE_LENGTH_MS);
+
+                // freq spectrum test
+                Log.i("AudioAnalyser", "Bass value: " + bassValueTotal);
+                Log.i("AudioAnalyser", "Bass2 value: " + bassValueTotal2);
+                Log.i("AudioAnalyser", "MidRange value: " + midRangeValueTotal);
+                Log.i("AudioAnalyser", "HighMid value: " + highMidValueTotal);
+                Log.i("AudioAnalyser", "HighFreq value: " + highFreqValueTotal);
             }
         });
         analyzerThread.start();

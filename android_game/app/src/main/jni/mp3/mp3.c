@@ -39,6 +39,7 @@ JNIEXPORT jboolean JNICALL Java_com_example_mini_game_audio_NativeMP3Decoder_nin
 	 * Setup needed format options
 	 */
 	mpg123_format_none(mh);
+	mpg123_format_none(mh_analysis);
 	if ((err = mpg123_format(mh, 44100, MPG123_STEREO, MPG123_ENC_SIGNED_16)) != MPG123_OK
 	||(err = mpg123_format(mh_analysis, 44100, MPG123_STEREO, MPG123_ENC_SIGNED_16)) != MPG123_OK)
 		return JNI_FALSE;
