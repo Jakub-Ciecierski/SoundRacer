@@ -142,4 +142,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         audioPlayer.startDecoding();
         audioPlayer.playAudio();
     }
+    public void stopAudio(){
+        audioPlayer.stopAudio();
+    }
 }

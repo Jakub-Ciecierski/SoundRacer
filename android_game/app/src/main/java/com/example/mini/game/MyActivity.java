@@ -1,7 +1,9 @@
 package com.example.mini.game;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
@@ -18,6 +20,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.example.mini.game.audio.AudioAnalyser;
+import com.example.mini.game.audio.AudioPlayer;
 import com.example.mini.game.launcher.LauncherActivity;
 import com.example.mini.game.shapes.complex.Road;
 
@@ -26,14 +30,13 @@ import java.util.List;
 
 public class MyActivity extends Activity implements SensorEventListener{
     private CustomGlSurfaceView glSurfaceView;
-
-    @Override
     protected void onStart() {
         super.onStart();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("MyActivity","OnCreate has been started");
         // Erase the title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         // Make it full Screen
@@ -76,9 +79,27 @@ public class MyActivity extends Activity implements SensorEventListener{
 
             backToFileChooser.setOnClickListener(new View.OnClickListener(){
                         public void onClick(View v){
-                            Intent intent = new Intent(v.getContext(), LauncherActivity.class);
-                            startActivity(intent);
-                            finish();
+
+                            if(!AudioAnalyser.doneAnalysing){
+                                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(v.getContext());
+                                dlgAlert.setMessage("Please wait until the end of audio analysing");
+                                dlgAlert.setTitle("lel");
+                                dlgAlert.setPositiveButton("Ok",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                //dismiss the dialog
+                                            }
+                                        });
+                                dlgAlert.setCancelable(true);
+                                dlgAlert.create().show();
+                            }
+                            else{
+                              //  AudioPlayer.doneDecoding=true;
+                             Intent intent = new Intent(v.getContext(), LauncherActivity.class);
+                             startActivity(intent);
+                             glSurfaceView.stopAudio();
+                             finish();
+                         }
                         }
                     });
 }
