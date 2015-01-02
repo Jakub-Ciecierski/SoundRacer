@@ -22,10 +22,13 @@ public class CustomGlSurfaceView extends GLSurfaceView {
     /**
      * @param context
      */
-    public CustomGlSurfaceView(Context context) {
+    public CustomGlSurfaceView(Context context,String filePath) {
         super(context);
         this.context = context;
-        gameRenderer = new GameRenderer(context);
+        /*
+        GameRenderer now takes song path as second parameter
+         */
+        gameRenderer = new GameRenderer(context,filePath);
         movementController = new MovementController();
         setEGLContextClientVersion(2);
         setRenderer(gameRenderer);
@@ -49,4 +52,6 @@ public class CustomGlSurfaceView extends GLSurfaceView {
     public void onClickAnal() {
         gameRenderer.startAnalyzing();
     }
+
+    public void stopAudio(){gameRenderer.stopAudio();}
 }

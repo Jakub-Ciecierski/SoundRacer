@@ -40,8 +40,8 @@ public class AudioAnalyser {
     private final Semaphore fluxSemaphore = new Semaphore(1);
 
     // Tells us if analysis has been finished
-    private boolean doneAnalysing = false;
-
+    //private boolean doneAnalysing = false;
+    public static boolean doneAnalysing = false;
     // the analyzer thread
     public Thread analyzerThread;
 

@@ -1,7 +1,10 @@
 package com.example.mini.game;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -12,9 +15,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.example.mini.game.audio.AudioAnalyser;
+import com.example.mini.game.audio.AudioPlayer;
+import com.example.mini.game.launcher.LauncherActivity;
 import com.example.mini.game.shapes.complex.Road;
 
 import java.util.List;
@@ -22,29 +30,37 @@ import java.util.List;
 
 public class MyActivity extends Activity implements SensorEventListener{
     private CustomGlSurfaceView glSurfaceView;
-
-    @Override
     protected void onStart() {
         super.onStart();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("MyActivity","OnCreate has been started");
+        // Erase the title bar
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // Make it full Screen
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //getting Intent passed from LauncherActivity
+        String filePath = getIntent().getExtras().getString("filePath");
+
         super.onCreate(savedInstanceState);
-        glSurfaceView = new CustomGlSurfaceView(this);
+        glSurfaceView = new CustomGlSurfaceView(this,filePath);
         setContentView(glSurfaceView);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         Button startAudio = new Button(this);
         Button startAnalyzing = new Button(this);
-
+        Button backToFileChooser = new Button(this);
         startAudio.setText("Start audio");
         startAnalyzing.setText("Start anal");
+        backToFileChooser.setText("Back");
 
         LinearLayout ll = new LinearLayout(this);
 
         ll.addView(startAudio);
         ll.addView(startAnalyzing);
+        ll.addView(backToFileChooser);
         ll.setGravity(Gravity.LEFT | Gravity.RIGHT);
         this.addContentView(ll,
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
@@ -61,7 +77,33 @@ public class MyActivity extends Activity implements SensorEventListener{
             }
         });
 
-    }
+            backToFileChooser.setOnClickListener(new View.OnClickListener(){
+                        public void onClick(View v){
+
+                            if(!AudioAnalyser.doneAnalysing){
+                                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(v.getContext());
+                                dlgAlert.setMessage("Please wait until the end of audio analysing");
+                                dlgAlert.setTitle("lel");
+                                dlgAlert.setPositiveButton("Ok",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                //dismiss the dialog
+                                            }
+                                        });
+                                dlgAlert.setCancelable(true);
+                                dlgAlert.create().show();
+                            }
+                            else{
+                              //  AudioPlayer.doneDecoding=true;
+                             Intent intent = new Intent(v.getContext(), LauncherActivity.class);
+                             startActivity(intent);
+                             glSurfaceView.stopAudio();
+                             finish();
+                         }
+                        }
+                    });
+}
+
     @Override
     protected void onPause() {
         super.onPause();

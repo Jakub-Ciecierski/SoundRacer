@@ -42,6 +42,17 @@ public class MusicChooser {
         return song;
     }
 
+    public String getSongByName(String songName)
+    {
+        for(int i=0;i<songs.size();i++)
+        {
+             if(songs.get(i).getName()==songName){
+                 return songs.get(i).getPath();
+             }
+        }
+        return "";
+    }
+
     public List<Song> getSongs() {
         return new ArrayList<Song>(songs);
     }

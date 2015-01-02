@@ -226,7 +226,7 @@ public class AudioPlayer {
                         // add vertex to gameboard.
                         Road.nextVertexRoad();
                     }
-
+                 //   Log.i("AudioPlayer", "still getting playback head position...");
                 }
                 Log.i("AudioPlayer","Audio finished playing with pos: " + pos  + " and BytesDecoded: " + bytesDecoded);
                 Log.i("AudioPlayer","Audio finished playing with: " + fluxCounter  + " fluxes");
