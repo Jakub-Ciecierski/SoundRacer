@@ -135,27 +135,28 @@ public class Bumper {
      * @param fluxSample
      *      Flux sample to be computed
      */
-    protected void computeBumps(float[] fluxSample, float average, float max, float min) {
+    protected void computeBumps(Flux[] fluxSample, float average, float max, float min) {
         synchronized (this) {
-            float avg = 0;
             int length = fluxSample.length;
 
-           Log.i("Bump", "Computing bumps, sample size: " + length);
-           Log.i("Bump", "Average: " + average);
-           Log.i("Bump", "max: " + max);
+           /*Log.i("Bump", "Computing bumps, sample size: " + length);
+            Log.i("Bump", "Average: " + average);
             Log.i("Bump", "min: " + min);
+            Log.i("Bump", "max: " + max);*/
 
             // find points of interests
             for(int i = 0;i < length; i++) {
-                float bumpHeight = fluxSample[i];
+                Flux flux = fluxSample[i];
 
-                if(bumpHeight >= 500.0f) {
+                float bumpHeight = flux.getValue();
+
+                if(bumpHeight >= max * 0.75f && flux.isValidBump()) {
                     interpolate(BumpType.BIG_BUMP);
                 }
-                else if(bumpHeight >= 420.0f) {
+                else if(bumpHeight >= max * 0.60f && flux.isValidBump()) {
                     interpolate(BumpType.MEDIUM_BUMP);
                 }
-                else if(bumpHeight >= 220.0f) {
+                else if(bumpHeight >= max * 0.35f && flux.isValidBump()) {
                     interpolate(BumpType.SMALL_BUMP);
                 }
                 // if flux is not big enough, set no bumps
@@ -171,7 +172,6 @@ public class Bumper {
                         if(currentWriteIndex <= bumps.size() - 1) {
                             this.bumps.add(BumpType.NO_BUMP.getHeight());
                             s_bumps.add(BumpType.NO_BUMP.getHeight());
-
                         }
                     }
                     currentWriteIndex++;
@@ -187,7 +187,7 @@ public class Bumper {
      */
     private void interpolate(BumpType bumType) {
         // TODO determine length of bumps, Take 1 Flux length in time
-        final float INTERPOLATION_LENGTH = 50;
+        final float INTERPOLATION_LENGTH = 25;
         final int LENGTH_TO_PEAK = (int)INTERPOLATION_LENGTH / 2;
 
         // Skip first iteration which would make divider equal to 0

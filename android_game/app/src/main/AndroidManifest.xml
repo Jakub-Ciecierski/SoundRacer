@@ -23,17 +23,12 @@
         <activity
             android:name=".audio.AudioSampleActivity"
             android:label="@string/title_activity_audio_sample" >
+
         </activity>
 
         <activity
             android:name=".MyActivity"
             android:label="@string/title_activity_audio_sample" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-
         </activity>
     </application>
     <uses-permission

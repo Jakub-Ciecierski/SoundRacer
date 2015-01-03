@@ -51,7 +51,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     //final String FILE = "/sdcard/music/kat - 04 - stworzylem piekna rzecz.mp3";
     //String FILE = "/storage/sdcard0/red.mp3";
     //final String FILE = "/storage/sdcard0/red.mp3";
-    final String FILE = "/storage/extSdCard/music/judith.mp3";
+    String FILE;// = "/storage/extSdCard/music/judith.mp3";
     //final String FILE = "/storage/extSdCard/music/explosivo.mp3";
     AudioAnalyser audioAnalyser;
     AudioPlayer audioPlayer;
@@ -59,7 +59,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
 
     public GameRenderer(Context context, String filePath) {
-        this.context = context; FILE = filePath;
+        this.context = context;
+        FILE = filePath;
     }
 
     @Override

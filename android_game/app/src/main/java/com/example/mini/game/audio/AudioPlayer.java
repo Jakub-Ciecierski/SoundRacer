@@ -218,9 +218,15 @@ public class AudioPlayer {
                     //Log.i("","Pos: " + pos);
                     pos = audioTrack.getPlaybackHeadPosition();
                     if(fluxCounter * GameBoard.TIME_UNIT_LENGTH < time) { //AudioSampleActivity.FLUX_LENGTH
-//                        float value = AudioAnalyser.s_spectralFlux.get(fluxCounter);
-//                        if(value >= 400.f)
-//                            Log.i("Freq Spectrum","" + AudioAnalyser.freqSpectrumValues.get(fluxCounter));
+                        /*float value = AudioAnalyser.s_spectralFlux.get(fluxCounter);
+                        if(value >= 250.f)
+                            Log.i("AudioPlayer","" + AudioAnalyser.freqSpectrumValues.get(fluxCounter));*/
+
+                        Flux flux = AudioAnalyser.s_spectralFluxes.get(fluxCounter);
+                        float value = flux.getValue();
+
+                        Log.i("AudioPlayer","" + flux.getSpectrumBand().toString());
+
                         fluxCounter++;
 
                         // add vertex to gameboard.
