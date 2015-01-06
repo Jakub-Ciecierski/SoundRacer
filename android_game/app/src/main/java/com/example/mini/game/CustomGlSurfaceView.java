@@ -53,5 +53,5 @@ public class CustomGlSurfaceView extends GLSurfaceView {
         gameRenderer.startAnalyzing();
     }
 
-    public void stopAudio(){gameRenderer.stopAudio();}
+    public void onClickstopAudio(){gameRenderer.stopAudio();}
 }

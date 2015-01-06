@@ -7,7 +7,7 @@ package com.example.mini.game.audio;
  * Created by Kuba on 07/12/2014.
  */
 public enum BumpType {
-    BIG_BUMP (3.0f, 10),
+    BIG_BUMP (4.0f, 10),
     MEDIUM_BUMP (2.0f, 6),
     SMALL_BUMP (1.0f, 3),
     NO_BUMP (0.0f, 0);

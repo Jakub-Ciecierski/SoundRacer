@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.mini.game.audio.AudioAnalyser;
 import com.example.mini.game.audio.Bumper;
+import com.example.mini.game.logic.GlobalState;
 import com.example.mini.game.shapes.complex.GameBoard;
 import com.example.mini.game.shapes.complex.Player;
 import com.example.mini.game.shapes.complex.Road;
@@ -149,6 +150,7 @@ public class VBORoadAnimation {
                 oldVertices.length - (2 * COMPONENTS_PER_VERTEX));
 
         float value = Bumper.getNextBumper();
+        //float value = GlobalState.getNextBump();
 
         //Log.i("GENERATE_NEW_SHIT", timeCounter + ": " + value);
         /* Fill out 2 last vertices */

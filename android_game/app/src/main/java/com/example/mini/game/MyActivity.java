@@ -50,8 +50,11 @@ public class MyActivity extends Activity implements SensorEventListener{
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         Button startAudio = new Button(this);
+        Button stopAudio = new Button(this);
         Button startAnalyzing = new Button(this);
         Button backToFileChooser = new Button(this);
+
+        stopAudio.setText("Stop audio");
         startAudio.setText("Start audio");
         startAnalyzing.setText("Start anal");
         backToFileChooser.setText("Back");
@@ -59,7 +62,8 @@ public class MyActivity extends Activity implements SensorEventListener{
         LinearLayout ll = new LinearLayout(this);
 
         ll.addView(startAudio);
-        ll.addView(startAnalyzing);
+        ll.addView(stopAudio);
+        //ll.addView(startAnalyzing);
         ll.addView(backToFileChooser);
         ll.setGravity(Gravity.LEFT | Gravity.RIGHT);
         this.addContentView(ll,
@@ -68,6 +72,15 @@ public class MyActivity extends Activity implements SensorEventListener{
         startAudio.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
               glSurfaceView.onClickAudio();
+            }
+        });
+
+        //stopAudio.setOnClickListener((v) -> { glSurfaceView.onClickstopAudio(); });
+
+        stopAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                glSurfaceView.onClickstopAudio();
             }
         });
 
@@ -97,7 +110,7 @@ public class MyActivity extends Activity implements SensorEventListener{
                               //  AudioPlayer.doneDecoding=true;
                              Intent intent = new Intent(v.getContext(), LauncherActivity.class);
                              startActivity(intent);
-                             glSurfaceView.stopAudio();
+                             glSurfaceView.onClickstopAudio();
                              finish();
                          }
                         }

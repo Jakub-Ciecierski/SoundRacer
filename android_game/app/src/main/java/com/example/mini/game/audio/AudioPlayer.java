@@ -5,6 +5,7 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.util.Log;
 
+import com.example.mini.game.logic.GlobalState;
 import com.example.mini.game.shapes.complex.GameBoard;
 import com.example.mini.game.shapes.complex.Road;
 
@@ -43,7 +44,7 @@ public class AudioPlayer {
 
     private int bytesDecoded = 0;
 
-    public static int fluxCounter = 0;
+    private int fluxCounter = 0;
 
     private boolean doneDecoding = false;
 
@@ -60,6 +61,8 @@ public class AudioPlayer {
         } else {
             Log.i("AudioPlayer","Creating instance of AudioPlayer");
         }
+
+        //Bumper.reset();
 
         // path to audio file
         this.filePath = filePath;
@@ -84,8 +87,10 @@ public class AudioPlayer {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                timeStamp();
                 Log.i("AudioPlayer","Starting decoding audio");
                 // load up the mp3
+                NativeMP3Decoder.cleanupMP3(WRITE_HANDLE);
                 NativeMP3Decoder.loadMP3(filePath, WRITE_HANDLE);
                 boolean done = false;
                 while (!done) {
@@ -205,39 +210,24 @@ public class AudioPlayer {
         }catch (InterruptedException e){}
     }
 
-    public void timeStamp() {
+    private void timeStamp() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 long pos = audioTrack.getPlaybackHeadPosition();
                 while(pos < bytesDecoded || !doneDecoding ) {
                     float time = SAMPLE_LENGTH_MS * pos;
-                    //Log.i("","time: " + time);
-                    //Log.i("","Bytes decoded: " + bytesDecoded);
-                    //Log.i("","Pos: " + pos);
                     pos = audioTrack.getPlaybackHeadPosition();
-                    if(fluxCounter * GameBoard.TIME_UNIT_LENGTH < time) { //AudioSampleActivity.FLUX_LENGTH
-                        /*float value = AudioAnalyser.s_spectralFlux.get(fluxCounter);
-                        if(value >= 250.f)
-                            Log.i("AudioPlayer","" + AudioAnalyser.freqSpectrumValues.get(fluxCounter));*/
-
-                        Flux flux = AudioAnalyser.s_spectralFluxes.get(fluxCounter);
-                        float value = flux.getValue();
-
-                        Log.i("AudioPlayer","" + flux.getSpectrumBand().toString());
-
+                    Log.i("AudioPlayer","Audio playing with pos: " + pos );
+                    if(fluxCounter * GlobalState.FLUX_LENGTH < time) {
                         fluxCounter++;
-
                         // add vertex to gameboard.
                         Road.nextVertexRoad();
                     }
-                 //   Log.i("AudioPlayer", "still getting playback head position...");
                 }
+                donePlaying = true;
                 Log.i("AudioPlayer","Audio finished playing with pos: " + pos  + " and BytesDecoded: " + bytesDecoded);
                 Log.i("AudioPlayer","Audio finished playing with: " + fluxCounter  + " fluxes");
-                //Log.i("","Audio length: " + fluxCounter * GameBoard.TIME_UNIT_LENGTH + " ms");
-                //NativeMP3Decoder.cleanupLib();
             }
         }).start();
     }
@@ -247,8 +237,8 @@ public class AudioPlayer {
      */
     public void playAudio() {
         this.audioTrack.play();
+
         this.isPlaying = true;
-        timeStamp();
         Log.i("AudioPlayer","Playing audio");
     }
 
@@ -276,7 +266,9 @@ public class AudioPlayer {
         return isPlaying;
     }
 
-
+    public boolean isDonePlaying() {
+        return donePlaying;
+    }
 
     /**
      * Computes current time of playback audio in milliseconds

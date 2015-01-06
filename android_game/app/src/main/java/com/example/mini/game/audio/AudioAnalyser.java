@@ -42,6 +42,7 @@ public class AudioAnalyser {
     // Tells us if analysis has been finished
     //private boolean doneAnalysing = false;
     public static boolean doneAnalysing = false;
+
     // the analyzer thread
     public Thread analyzerThread;
 
@@ -77,7 +78,7 @@ public class AudioAnalyser {
 
     private static int currentFluxIndex = 0;
 
-    public static boolean isReadyToGo = false;
+    private boolean isReadyToGo = false;
     /**
      * TODO check if file exists
      * Creates at AudioAnalyser of input audio file
@@ -116,7 +117,8 @@ public class AudioAnalyser {
         // create instance of fourier transform
         this.fft = new FFT(sampleSize, sampleRate);
 
-        this.bumper = new Bumper();
+        //this.bumper = new Bumper();
+
         this.bumperSampleSize = bumperSampleSize;
         this.currentBumperIndex = 0;
 
@@ -144,6 +146,7 @@ public class AudioAnalyser {
         analyzerThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                NativeMP3Decoder.cleanupMP3(ANALYSIS_HANDLE);
                 NativeMP3Decoder.loadMP3(filePath, ANALYSIS_HANDLE);
                 boolean done = false;
 
@@ -228,7 +231,7 @@ public class AudioAnalyser {
                             }
                             average /= bumperSampleSize;
 
-                            bumper.computeBumps(fluxSample, average, max, min);
+                            Bumper.computeBumps(fluxSample, average, max, min);
                             isReadyToGo = true;
                             //Log.i("AudioAnalyser", "Computed: " + bumperSampleSize + " bumper samples");
                             //Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
@@ -263,7 +266,7 @@ public class AudioAnalyser {
                         currentBumperIndex++;
                     }
                     average /= fluxLeftOver;
-                    bumper.computeBumps(fluxSample, average, max, min);
+                    Bumper.computeBumps(fluxSample, average, max, min);
                     isReadyToGo = true;
                     //Log.i("AudioAnalyser", "Computed leftover: " + fluxLeftOver + " bumper samples");
                     //Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
@@ -278,7 +281,7 @@ public class AudioAnalyser {
                 long delta = endTime - startTime;
                 Log.i("AudioAnalyser", "Finished analyzing entire audio after: " + Long.toString(delta) + " milliseconds");
                 Log.i("AudioAnalyser", "Spectral size: " + Integer.toString(spectralFlux.size()));
-                Log.i("AudioAnalyser", "Bumper size: " + bumper.getCurrentBumpSize());
+
                 totalBytes = spectralFlux.size() * sampleSize / 2;
                 Log.i("AudioAnalyser", "Total bytes read: " + totalBytes);
                 Log.i("AudioAnalyser", "Audio Length in milliseconds: " + totalBytes * SAMPLE_LENGTH_MS);
@@ -386,6 +389,10 @@ public class AudioAnalyser {
             fluxSemaphore.release();
         }catch (InterruptedException e){e.printStackTrace();}
         return size;
+    }
+
+    public boolean isReadyToGo() {
+        return isReadyToGo;
     }
 
     public Bumper getBumper() {
