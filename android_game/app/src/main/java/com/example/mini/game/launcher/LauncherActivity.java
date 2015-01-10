@@ -21,7 +21,6 @@ import android.opengl.GLSurfaceView;
 import com.example.mini.game.GameRenderer;
 import com.example.mini.game.MyActivity;
 import com.example.mini.game.R;
-import com.example.mini.game.logic.Renderer;
 
 import java.io.File;
 import java.util.ArrayList;

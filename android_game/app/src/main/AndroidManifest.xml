@@ -22,10 +22,12 @@
         <activity
             android:name="com.example.mini.game.audio.AudioSampleActivity"
             android:label="@string/title_activity_audio_sample" >
+
         </activity>
         <activity
             android:name="com.example.mini.game.MyActivity"
             android:label="@string/title_activity_audio_sample" >
+          
         </activity>
         <activity
             android:name="com.example.mini.game.gameMenu.MenuActivity"

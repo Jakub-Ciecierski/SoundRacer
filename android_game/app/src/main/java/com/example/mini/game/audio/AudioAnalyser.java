@@ -42,6 +42,7 @@ public class AudioAnalyser {
     // Tells us if analysis has been finished
     //private boolean doneAnalysing = false;
     public static boolean doneAnalysing = false;
+
     // the analyzer thread
     public Thread analyzerThread;
 
@@ -52,8 +53,13 @@ public class AudioAnalyser {
     private int sampleSize;
     private FFT fft;
     private List<Float> spectralFlux;
+
+    private final float sampleRate;
+
     public static List<String> freqSpectrumValues = new ArrayList<String>();
     public static List<Float> s_spectralFlux = new ArrayList<Float>();
+
+    public static List<Flux> s_spectralFluxes = new ArrayList<Flux>();
 
     private final int FLUX_SCALER = 100000;
 
@@ -72,7 +78,7 @@ public class AudioAnalyser {
 
     private static int currentFluxIndex = 0;
 
-    public static boolean isReadyToGo = false;
+    private boolean isReadyToGo = false;
     /**
      * TODO check if file exists
      * Creates at AudioAnalyser of input audio file
@@ -95,6 +101,8 @@ public class AudioAnalyser {
             Log.w("AudioAnalyser","File: " + filePath + " does not exist");
         }
 
+        this.sampleRate = sampleRate;
+
         // path to audio file
         this.filePath = filePath;
 
@@ -109,7 +117,8 @@ public class AudioAnalyser {
         // create instance of fourier transform
         this.fft = new FFT(sampleSize, sampleRate);
 
-        this.bumper = new Bumper();
+        //this.bumper = new Bumper();
+
         this.bumperSampleSize = bumperSampleSize;
         this.currentBumperIndex = 0;
 
@@ -137,25 +146,17 @@ public class AudioAnalyser {
         analyzerThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                NativeMP3Decoder.cleanupMP3(ANALYSIS_HANDLE);
                 NativeMP3Decoder.loadMP3(filePath, ANALYSIS_HANDLE);
                 boolean done = false;
 
                 Log.i("AudioAnalyser", "Starting analyzing entire audio...");
                 long startTime = System.currentTimeMillis();
 
-                FFT fft = new FFT(sampleSize, 44100);
                 float[] spectrum = new float[sampleSize / 2 + 1];
                 float[] lastSpectrum = new float[sampleSize / 2 + 1];
 
                 long totalBytes = 0;
-
-                // freq spectrum test
-                float subBassValueTotal = 0.0f;
-                float bassValueTotal = 0.0f;
-                float bassValueTotal2 = 0.0f;
-                float midRangeValueTotal = 0.0f;
-                float highMidValueTotal = 0.0f;
-                float highFreqValueTotal = 0.0f;
 
                 while (!done) {
                     try {
@@ -183,136 +184,40 @@ public class AudioAnalyser {
                         System.arraycopy(spectrum, 0, lastSpectrum, 0, spectrum.length);
                         System.arraycopy(fft.getSpectrum(), 0, spectrum, 0, spectrum.length);
 
-                        float flux = 0;
+                        float fluxValue = 0;
                         for (int i = 0; i < spectrum.length; i++) {
                             // Rectifying.
                             // We are not interested in falling spectral flux but only in rising spectral flux.
                             float value = (spectrum[i] - lastSpectrum[i]);
-                            flux += value < 0 ? 0 : value;
+                            fluxValue += value < 0 ? 0 : value;
                         }
-                        // TODO fix flux scaler
-                        flux /= FLUX_SCALER;
-                        //Log.i("AudioAnalyser","Flux: " + flux);
-                        spectralFlux.add(flux);
-                        s_spectralFlux.add(flux);
+                        fluxValue /= FLUX_SCALER;
 
-                        // frequency spectrum test
-                        //Log.i("AudioAnalyzer","time: " + spectralFlux.size() * FLUX_LENGTH_MS);
-                        final float lowerSubBass = 0.0f;
-                        final float upperSubBass = 60.0f;
+                        spectralFlux.add(fluxValue);
+                        s_spectralFlux.add(fluxValue);
 
-                        final float lowerBass = 61.0f;
-                        final float upperBass = 120.0f;
+                        // compute the dominating spectrum band in that flux
+                        FrequencySpectrum.SpectrumBand spectrumBand = FrequencySpectrum.computeSpectrum(spectrum, sampleRate, sampleSize);
 
-                        final float lowerBass2 = 121.0f;
-                        final float upperBass2 = 215.0f;
+                        Flux flux = new Flux();
+                        flux.setValue(fluxValue);
+                        flux.setSpectrumBand(spectrumBand);
 
-                        final float lowerMidRange = 216.0f;
-                        final float upperMidRange = 2024.0f;
-
-                        final float lowerHighMid = 2025.0f;
-                        final float upperHighMid = 6029.0f;
-
-                        final float lowerHighFreq = 6030.0f;
-                        final float upperHighFreq = 22050.0f;
-
-                        float subBassValue = 0.0f;
-                        float bassValue = 0.0f;
-                        float bassValue2 = 0.0f;
-                        float midRangeValue = 0.0f;
-                        float highMidValue = 0.0f;
-                        float highFreqValue = 0.0f;
-
-                        int subBassCounter = 0;
-                        int bassCounter = 0;
-                        int bassCounter2 = 0;
-                        int midRangeCounter = 0;
-                        int highMidCounter = 0;
-                        int highFreqCounter = 0;
-
-                        for(int i = 0; i < spectrum.length;i++) {
-                            float freq = i * 44100 / 1024;
-                            float value = spectrum[i] / 1000.0f;
-                            if(freq >= lowerSubBass && freq <= upperSubBass) {
-                                subBassCounter++;
-                                subBassValue += value;
-                            }
-                            if(freq >= lowerBass && freq <= upperBass) {
-                                bassCounter++;
-                                bassValue += value;
-                            }
-                            if(freq >= lowerBass2 && freq <= upperBass2) {
-                                bassCounter2++;
-                                bassValue2 += value;
-                            }
-                            if(freq >= lowerMidRange && freq <= upperMidRange) {
-                                midRangeCounter++;
-                                midRangeValue += value;
-                            }
-                            if(freq >= lowerHighMid && freq <= upperHighMid) {
-                                highMidCounter++;
-                                highMidValue += value;
-                            }
-                            if(freq >= lowerHighFreq && freq <= upperHighFreq) {
-                                highFreqCounter++;
-                                highFreqValue += value;
-                            }
-
-                            //Log.i("FFT","Band[" + i + "] = " + freq + " Hz, Amplitude: " + value);
-                        }
-                        subBassValue /= subBassCounter;
-                        bassValue /= bassCounter;
-                        bassValue2 /= bassCounter2;
-                        midRangeValue /= midRangeCounter;
-                        highMidValue /= highMidCounter;
-                        highFreqValue /= highFreqCounter;
-
-                        subBassValueTotal += subBassValue;
-                        bassValueTotal += bassValue;
-                        bassValueTotal2 += bassValue2;
-                        midRangeValueTotal += midRangeValue;
-                        highMidValueTotal += highMidValue;
-                        highFreqValueTotal += highFreqValue;
-
-                        float maxFreq = subBassValue;
-                        String maxStr = "SubBass";
-                        if (maxFreq < bassValue) {
-                            maxFreq = bassValue;
-                            maxStr = "Bass";
-                        }
-                        if (maxFreq < bassValue2) {
-                            maxFreq = bassValue2;
-                            maxStr = "Bass2";
-                        }
-                        if (maxFreq < midRangeValue) {
-                            maxFreq = midRangeValue;
-                            maxStr = "MidRange";
-                        }
-                        if (maxFreq < highMidValue) {
-                            maxFreq = highMidValue;
-                            maxStr = "HighMid";
-                        }
-                        if (maxFreq < highFreqValue) {
-                            maxFreq = highFreqValue;
-                            maxStr = "HighFreq";
-                        }
-                        freqSpectrumValues.add(maxStr);
-
-//                        Log.i("FFT","[" + bassCounter + "] Bass " + lowerBass + " - " + upperBass + " Hz = " + bassValue);
-//                        Log.i("FFT","[" + bassCounter2 + "] Bass2 " + lowerBass2 + " - " + upperBass2 + " Hz = " + bassValue2);
-//                        Log.i("FFT","[" + midRangeCounter + "] MidRange " + lowerMidRange + " - " + upperMidRange + " Hz = " + midRangeValue);
-//                        Log.i("FFT","[" + highMidCounter + "] HighMid " + lowerHighMid + " - " + upperHighMid + " Hz = " + highMidValue);
-//                        Log.i("FFT","[" + highFreqCounter + "] HighFreq " + lowerHighFreq + " - " + upperHighFreq + " Hz = " + highFreqValue);
+                        s_spectralFluxes.add(flux);
 
                         // compute bumpers
-                        if(spectralFlux.size() == bumperSampleSize + currentBumperIndex) {
-                            float average = 0;
-                            float min = spectralFlux.get(currentBumperIndex);
-                            float max = spectralFlux.get(currentBumperIndex);
+                        if(s_spectralFluxes.size() == bumperSampleSize + currentBumperIndex) {
+                            Flux fluxToBump = s_spectralFluxes.get(currentBumperIndex);
 
-                            float[] fluxSample = new float[bumperSampleSize];
+                            float average = 0;
+                            float min = fluxToBump.getValue();
+                            float max = min;
+
+                            Flux[] fluxSample = new Flux[bumperSampleSize];
                             for(int i = 0; i < bumperSampleSize; i++) {
-                                float value = spectralFlux.get(currentBumperIndex);
+                                fluxToBump = s_spectralFluxes.get(currentBumperIndex);
+                                float value = fluxToBump.getValue();
+
                                 average += value;
                                 if(min > value) {
                                     min = value;
@@ -321,12 +226,12 @@ public class AudioAnalyser {
                                     max = value;
                                 }
 
-                                fluxSample[i] = value;
+                                fluxSample[i] = fluxToBump;
                                 currentBumperIndex++;
                             }
                             average /= bumperSampleSize;
 
-                            bumper.computeBumps(fluxSample, average, max, min);
+                            Bumper.computeBumps(fluxSample, average, max, min);
                             isReadyToGo = true;
                             //Log.i("AudioAnalyser", "Computed: " + bumperSampleSize + " bumper samples");
                             //Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
@@ -340,13 +245,16 @@ public class AudioAnalyser {
                 // compute the leftovers of flux
                 int fluxLeftOver = spectralFlux.size() - currentBumperIndex;
                 if(fluxLeftOver > 0) {
-                    float average = 0;
-                    float min = spectralFlux.get(currentBumperIndex);
-                    float max = spectralFlux.get(currentBumperIndex);
+                    Flux flux = s_spectralFluxes.get(currentBumperIndex);
 
-                    float[] fluxSample = new float[fluxLeftOver];
+                    float average = 0;
+                    float min = flux.getValue();
+                    float max = min;
+
+                    Flux[] fluxSample = new Flux[fluxLeftOver];
                     for(int i = 0; i < fluxLeftOver; i++) {
-                        float value = spectralFlux.get(currentBumperIndex);
+                        flux = s_spectralFluxes.get(currentBumperIndex);
+                        float value = flux.getValue();
                         average += value;
                         if(min > value) {
                             min = value;
@@ -354,11 +262,11 @@ public class AudioAnalyser {
                         if(max < value) {
                             max = value;
                         }
-                        fluxSample[i] = value;
+                        fluxSample[i] = flux;
                         currentBumperIndex++;
                     }
                     average /= fluxLeftOver;
-                    bumper.computeBumps(fluxSample, average, max, min);
+                    Bumper.computeBumps(fluxSample, average, max, min);
                     isReadyToGo = true;
                     //Log.i("AudioAnalyser", "Computed leftover: " + fluxLeftOver + " bumper samples");
                     //Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
@@ -373,17 +281,10 @@ public class AudioAnalyser {
                 long delta = endTime - startTime;
                 Log.i("AudioAnalyser", "Finished analyzing entire audio after: " + Long.toString(delta) + " milliseconds");
                 Log.i("AudioAnalyser", "Spectral size: " + Integer.toString(spectralFlux.size()));
-                Log.i("AudioAnalyser", "Bumper size: " + bumper.getCurrentBumpSize());
+
                 totalBytes = spectralFlux.size() * sampleSize / 2;
                 Log.i("AudioAnalyser", "Total bytes read: " + totalBytes);
                 Log.i("AudioAnalyser", "Audio Length in milliseconds: " + totalBytes * SAMPLE_LENGTH_MS);
-
-                // freq spectrum test
-                Log.i("AudioAnalyser", "Bass value: " + bassValueTotal);
-                Log.i("AudioAnalyser", "Bass2 value: " + bassValueTotal2);
-                Log.i("AudioAnalyser", "MidRange value: " + midRangeValueTotal);
-                Log.i("AudioAnalyser", "HighMid value: " + highMidValueTotal);
-                Log.i("AudioAnalyser", "HighFreq value: " + highFreqValueTotal);
             }
         });
         analyzerThread.start();
@@ -488,6 +389,10 @@ public class AudioAnalyser {
             fluxSemaphore.release();
         }catch (InterruptedException e){e.printStackTrace();}
         return size;
+    }
+
+    public boolean isReadyToGo() {
+        return isReadyToGo;
     }
 
     public Bumper getBumper() {
