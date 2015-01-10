@@ -95,6 +95,8 @@ public class LauncherActivity extends ActionBarActivity {
             Intent intent = new Intent(view.getContext(), MyActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("filePath", songPath);
+
+
             intent.putExtras(bundle);
             startActivity(intent);
             finish();
