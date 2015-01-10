@@ -102,6 +102,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
         // TODO LOADING screen
         while(!GlobalState.isAnalyserReadyToGo()){}
+
         Log.i("GAME_RENDERER","Anal is ready for action");
         gameBoard = new GameBoard();
 
