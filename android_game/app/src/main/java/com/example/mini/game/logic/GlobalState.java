@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.mini.game.audio.AudioAnalyser;
 import com.example.mini.game.audio.AudioPlayer;
 import com.example.mini.game.audio.NativeMP3Decoder;
+import com.example.mini.game.launcher.Song;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,8 @@ public class GlobalState {
     static private int currentPlayListIndexAudioPlayer = 0;
     static private int currentPlayListIndexAudioAnalyser = 0;
 
+    static private List<Song> songList = new ArrayList<Song>();
+
     static private AudioPlayer audioPlayer;
     static private AudioAnalyser audioAnalyser;
 
@@ -48,6 +51,10 @@ public class GlobalState {
 
     public static void addFile(String filePath) {
         playList.add(filePath);
+    }
+
+    public static void addSong(Song song) {
+        songList.add(song);
     }
 
     public static boolean createNextAudioAnalyser(){
@@ -95,5 +102,9 @@ public class GlobalState {
         return audioPlayer.isDonePlaying();
     }
 
-
+    public static boolean isGameDoneLoading() {
+        if(isAnalyserReadyToGo())
+            return true;
+        return false;
+    }
 }

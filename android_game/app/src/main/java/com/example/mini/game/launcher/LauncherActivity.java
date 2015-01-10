@@ -4,36 +4,30 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.opengl.GLSurfaceView;
-import com.example.mini.game.GameRenderer;
+
 import com.example.mini.game.MyActivity;
 import com.example.mini.game.R;
+import com.example.mini.game.logic.GlobalState;
 
-import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class LauncherActivity extends ActionBarActivity {
 
     private ListView musicList;
-    private ArrayAdapter<Song> adapter;
-    private List<Song> songNames = new ArrayList<Song>();
+    private CustomSongAdapter adapter;
+    private ArrayList<Song> songs = new ArrayList<Song>();
     private Song m_song;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,19 +61,25 @@ public class LauncherActivity extends ActionBarActivity {
         final MusicChooser musicChooser = new MusicChooser(cursor);
         Song song;
         while((song = musicChooser.getNextSong()) != null){
-            songNames.add(song);
+            songs.add(song);
         }
 
         musicList = (ListView) findViewById(R.id.musicList);
 
-        adapter = new ArrayAdapter<Song>(getApplicationContext(),  R.layout.custom_text_view, songNames);
+        adapter = new CustomSongAdapter(this, songs);
         musicList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
         musicList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                m_song = (Song) adapter.getItemAtPosition(position);
+                //m_song = (Song) adapter.getItemAtPosition(position);
+                int count = adapter.getAdapter().getCount();
+                //m_song = adapter.getAdapter().getItem(position);
+
+
+                m_song = (Song) adapter.getAdapter().getItem(position);
+
                 if( m_song==null)
                     Log.i("Getting song path","something went wrong Harry");
                 else {
@@ -92,10 +92,8 @@ public class LauncherActivity extends ActionBarActivity {
     public void starGameButton_Click(View view)
     {
         if(m_song != null) {
+            GlobalState.addSong(m_song);
             Intent intent = new Intent(view.getContext(), MyActivity.class);
-
-
-            intent.putExtra("song", (Parcelable) m_song);
             startActivity(intent);
             finish();
         }
@@ -114,6 +112,11 @@ public class LauncherActivity extends ActionBarActivity {
             dlgAlert.create().show();
         }
     }
+
+    public void widthTestButton_Click(View view){
+        LinearLayout layout = (LinearLayout) findViewById(R.id.listLayout);
+       layout.setLayoutParams( new LinearLayout.LayoutParams(480,320));
+  }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

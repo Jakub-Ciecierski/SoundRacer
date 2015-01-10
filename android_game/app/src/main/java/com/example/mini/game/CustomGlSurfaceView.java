@@ -28,7 +28,7 @@ public class CustomGlSurfaceView extends GLSurfaceView {
         /*
         GameRenderer now takes song path as second parameter
          */
-        gameRenderer = new GameRenderer(context,filePath);
+        gameRenderer = new GameRenderer(context);
         movementController = new MovementController();
         setEGLContextClientVersion(2);
         setRenderer(gameRenderer);
