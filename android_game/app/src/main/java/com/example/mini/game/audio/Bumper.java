@@ -1,5 +1,7 @@
 package com.example.mini.game.audio;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class Bumper {
         float value = bumps.get(currentReadIndex);
         // increment the pointer
         currentReadIndex++;
-        //Log.i("Bumper","Bumper[" + currentReadIndex + "]: " + value);
+        Log.i("Bumper", "Bumper[" + currentReadIndex + "]: " + value);
         return value;
     }
 
@@ -75,26 +77,6 @@ public class Bumper {
     public int getCurrentBumpSize() {
         synchronized (this) {
             return this.bumps.size();
-        }
-    }
-
-    /**
-     * Gets next i bumps and moves the pointer accordingly
-     * @param i
-     *      Number of bumps to return
-     * @return
-     *      Next i bumps
-     */
-    public float[] getNextBumps(int i) {
-        synchronized (this) {
-            float values[] = new float[i];
-            for(int j = 0; j < i; j++) {
-                float value = this.bumps.get(currentReadIndex);
-                // increment the pointer
-                currentReadIndex++;
-                values[j] = value;
-            }
-            return values;
         }
     }
 
@@ -199,9 +181,9 @@ public class Bumper {
         currentWriteIndex++;
     }
 
-    public static void reset() {
+/*    public static void reset() {
         bumps = new ArrayList<Float>();
         currentReadIndex = 0;
         currentWriteIndex = -1;
-    }
+    }*/
 }

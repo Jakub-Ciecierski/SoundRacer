@@ -1,15 +1,18 @@
 package com.example.mini.game;
 
 import android.content.Context;
+import android.content.Intent;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.Bundle;
 import android.util.Log;
 
 
 import com.example.mini.game.audio.AudioAnalyser;
 import com.example.mini.game.audio.AudioPlayer;
 import com.example.mini.game.audio.NativeMP3Decoder;
+import com.example.mini.game.launcher.LauncherActivity;
 import com.example.mini.game.logic.GlobalState;
 import com.example.mini.game.shapes.complex.CartesianCoordinates;
 import com.example.mini.game.shapes.complex.GameBoard;
@@ -88,14 +91,6 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-        // AUDIO
-        /*
-        NativeMP3Decoder.initLib();
-        audioPlayer = new AudioPlayer(FILE, bufferSize, 44100);
-        audioAnalyser = new AudioAnalyser(FILE, bufferSize, 44100, 400);
-        FLUX_LENGTH_MS = audioAnalyser.FLUX_LENGTH_MS;*/
-
-
         GlobalState.initSystem();
         GlobalState.addFile(FILE);
         GlobalState.addFile(FILE);
@@ -105,13 +100,9 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         GlobalState.createNextAudioAnalyser();
         GlobalState.createNextAudioPlayer();
 
-        //audioAnalyser.startAnalyzing();
-
-
-
-
-        while(!GlobalState.isAnalyserReadyToGo()){}
+        // TODO LOADING screen
         Log.i("GAME_RENDERER","Anal is ready for action");
+        while(!GlobalState.isAnalyserReadyToGo()){}
         gameBoard = new GameBoard();
 
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -143,17 +134,41 @@ public class GameRenderer implements GLSurfaceView.Renderer {
                 cartesianCoordinates.draw(getCurrentCameraMatrix());
             movementButtons.draw(mOrthogonalMatrix);
 
-            if(GlobalState.isAnalyserDone() && GlobalState.isPlayerDone() ) {
-                Log.i("GAME_RENDERER","Creating new set of Audios");
-                if( !GlobalState.createNextAudioPlayer() ||
-                    !GlobalState.createNextAudioAnalyser())
-                    return;
-                while(!GlobalState.isAnalyserReadyToGo()) {}
-                GlobalState.startAudio();
+            if(GlobalState.isAnalyserDone()) {
+                GlobalState.createNextAudioAnalyser();
             }
-        }
-        // AUDIO
 
+            if(GlobalState.isPlayerDone()) {
+                if( !GlobalState.createNextAudioPlayer() ) {
+                    Log.i("GAME_RENDERER","Returning to Menu");
+                    gameRunning = false;
+                    returnToMenu();
+                }
+                else {
+                    GlobalState.startAudio();
+                }
+            }
+
+            /*if(GlobalState.isAnalyserDone() && GlobalState.isPlayerDone() ) {
+                Log.i("GAME_RENDERER","Creating new set of Audios");
+                // Game ends when there are no more songs to be played
+                if( !GlobalState.createNextAudioPlayer() ) {
+                    Log.i("GAME_RENDERER","Returning to Menu");
+                    gameRunning = false;
+                    returnToMenu();
+                }
+                else {
+                    GlobalState.createNextAudioAnalyser();
+                }
+                // TODO loading screen
+                while(!GlobalState.isAnalyserReadyToGo()) {}
+*/
+        }
+    }
+
+    private void returnToMenu() {
+        Intent intent = new Intent(context, LauncherActivity.class);
+        context.startActivity(intent);
     }
 
     private float[] getCurrentCameraMatrix() {

@@ -215,11 +215,12 @@ public class AudioPlayer {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.i("AudioPlayer","Starting timeStamp");
                 long pos = audioTrack.getPlaybackHeadPosition();
                 while(pos < bytesDecoded || !doneDecoding ) {
                     float time = SAMPLE_LENGTH_MS * pos;
                     pos = audioTrack.getPlaybackHeadPosition();
-                   // Log.i("AudioPlayer","Audio playing with pos: " + pos );
+                    //Log.i("AudioPlayer","Audio playing with pos: " + pos );
                     if(fluxCounter * GlobalState.FLUX_LENGTH < time) {
                         fluxCounter++;
                         // add vertex to gameboard.

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.example.mini.game.MyActivity;
 import com.example.mini.game.R;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +32,9 @@ import java.util.List;
 public class LauncherActivity extends ActionBarActivity {
 
     private ListView musicList;
-    private ArrayAdapter<String> adapter;
-    private List<String> songNames = new ArrayList<String>();
-    private String songPath="" ;
+    private ArrayAdapter<Song> adapter;
+    private List<Song> songNames = new ArrayList<Song>();
+    private Song m_song;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -65,24 +67,22 @@ public class LauncherActivity extends ActionBarActivity {
         final MusicChooser musicChooser = new MusicChooser(cursor);
         Song song;
         while((song = musicChooser.getNextSong()) != null){
-            songNames.add(song.getName());
+            songNames.add(song);
         }
 
         musicList = (ListView) findViewById(R.id.musicList);
 
-        adapter = new ArrayAdapter<String>(getApplicationContext(),  R.layout.custom_text_view, songNames);
+        adapter = new ArrayAdapter<Song>(getApplicationContext(),  R.layout.custom_text_view, songNames);
         musicList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
         musicList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                String songName = (String) adapter.getItemAtPosition(position);
-                String path = musicChooser.getSongByName(songName);
-                if(path == "" || path==null)
+                m_song = (Song) adapter.getItemAtPosition(position);
+                if( m_song==null)
                     Log.i("Getting song path","something went wrong Harry");
                 else {
-                    songPath = path;
                     view.setSelected(true);
                 }
             }});
@@ -91,11 +91,11 @@ public class LauncherActivity extends ActionBarActivity {
     //button click passing chosen file path
     public void starGameButton_Click(View view)
     {
-        if(songPath != "") {
+        if(m_song != null) {
             Intent intent = new Intent(view.getContext(), MyActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("filePath", songPath);
-            intent.putExtras(bundle);
+
+
+            intent.putExtra("song", (Parcelable) m_song);
             startActivity(intent);
             finish();
         }

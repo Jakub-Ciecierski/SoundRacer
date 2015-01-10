@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import com.example.mini.game.audio.AudioAnalyser;
 import com.example.mini.game.audio.AudioPlayer;
 import com.example.mini.game.launcher.LauncherActivity;
+import com.example.mini.game.launcher.Song;
 import com.example.mini.game.shapes.complex.Road;
 
 import java.util.List;
@@ -42,10 +43,10 @@ public class MyActivity extends Activity implements SensorEventListener{
         // Make it full Screen
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //getting Intent passed from LauncherActivity
-        String filePath = getIntent().getExtras().getString("filePath");
+        Song song = (Song)getIntent().getExtras().getParcelable("song");
 
         super.onCreate(savedInstanceState);
-        glSurfaceView = new CustomGlSurfaceView(this,filePath);
+        glSurfaceView = new CustomGlSurfaceView(this,"test");
         setContentView(glSurfaceView);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 

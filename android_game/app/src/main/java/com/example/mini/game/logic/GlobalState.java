@@ -75,8 +75,8 @@ public class GlobalState {
     }
 
     public static void startAudio() {
-        audioPlayer.playAudio();
         audioPlayer.startDecoding();
+        audioPlayer.playAudio();
     }
 
     public static void pauseAudio() {
