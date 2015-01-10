@@ -9,20 +9,16 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.opengl.GLSurfaceView;
-import com.example.mini.game.GameRenderer;
-import com.example.mini.game.MyActivity;
-import com.example.mini.game.R;
 
-import java.io.File;
+import com.example.mini.game.R;
+import com.example.mini.game.logic.GlobalState;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +31,9 @@ public class LauncherActivity extends ActionBarActivity {
     private String songPath="" ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // initialize the system
+        GlobalState.initSystem();
 
         // Erase the title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -92,10 +91,14 @@ public class LauncherActivity extends ActionBarActivity {
     public void starGameButton_Click(View view)
     {
         if(songPath != "") {
-            Intent intent = new Intent(view.getContext(), MyActivity.class);
+            //Intent intent = new Intent(view.getContext(), MyActivity.class);
+            Log.i("Launcher","Starting intent");
+            Intent intent = new Intent(view.getContext(), LoadingActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("filePath", songPath);
 
+            // TODO just for testing
+            GlobalState.addFile(songPath);
 
             intent.putExtras(bundle);
             startActivity(intent);

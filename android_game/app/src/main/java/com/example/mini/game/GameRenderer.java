@@ -33,49 +33,22 @@ import static android.opengl.GLES20.glViewport;
  */
 public class GameRenderer implements GLSurfaceView.Renderer {
 
-    private boolean gameRunning;
+    private boolean gameRunning = true;
     private boolean isFirstTime = true;
 
     private float[] mProjectionMatrix = new float[16];
     private float[] mOrthogonalMatrix = new float[16];
     private CartesianCoordinates cartesianCoordinates;
     private SetOfButtons movementButtons;
-    private GameBoard gameBoard;
-
-    // path to file
-    //final String FILE1 = "/sdcard/external_sd/Music/Billy_Talent/Billy Talent - Diamond on a Landmine with Lyrics.mp3";
-    //final String FILE = "/sdcard/external_sd/Music/samples/tests/limit.mp3";
-    //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/judith.mp3";
-    //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/judith.mp3";
-    //final String FILE = "/sdcard/external_sd/Music/Billy_Talent/explosivo.mp3";
-    //final String FILE = "/sdcard/external_sd/Music/samples/jazz.mp3";
-
-
-    //final String FILE1 = "/sdcard/external_sd/Music/Billy_Talent/explosivo.mp3";
-    //final String FILE2 = "/sdcard/external_sd/Music/samples/jazz.mp3";
-
-    //String FILE1 = "/storage/sdcard0/music/explosivo.mp3";
-    String FILE2 = "/storage/sdcard0/music/judith.mp3";
-
-    //final String FILE = "/sdcard/music/kat - 04 - stworzylem piekna rzecz.mp3";
-    //String FILE = "/storage/sdcard0/red.mp3";
-    //final String FILE = "/storage/sdcard0/red.mp3";
-    String FILE;// = "/storage/extSdCard/music/judith.mp3";
-    //final String FILE = "/storage/extSdCard/music/explosivo.mp3";
-    AudioAnalyser audioAnalyser;
-    AudioPlayer audioPlayer;
-    final int bufferSize = 1024;
+    static private GameBoard gameBoard;
 
     public static Context context;
     public static CameraType currentCamera = CameraType.PLAYER_CAMERA;
 
-    public static float FLUX_LENGTH_MS = 0;
-
-    public GameRenderer(Context context, String filePath) {
+    public GameRenderer(Context context) {
         this.context = context;
-        FILE = filePath;
 
-        gameRunning = false;
+        gameRunning = true;
     }
 
     @Override
@@ -91,20 +64,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-        GlobalState.initSystem();
-        GlobalState.addFile(FILE);
-        GlobalState.addFile(FILE);
-
-        Log.i("GAME_RENDERER","Creating anal and player");
-
-        GlobalState.createNextAudioAnalyser();
-        GlobalState.createNextAudioPlayer();
-
-        // TODO LOADING screen
-        while(!GlobalState.isAnalyserReadyToGo()){}
-
-        Log.i("GAME_RENDERER","Anal is ready for action");
-        gameBoard = new GameBoard();
+        // TODO put this in loading screen
+        GlobalState.loadGraphics();
 
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GLES20.glClearDepthf(1.0f);
@@ -149,22 +110,11 @@ public class GameRenderer implements GLSurfaceView.Renderer {
                     GlobalState.startAudio();
                 }
             }
-
-            /*if(GlobalState.isAnalyserDone() && GlobalState.isPlayerDone() ) {
-                Log.i("GAME_RENDERER","Creating new set of Audios");
-                // Game ends when there are no more songs to be played
-                if( !GlobalState.createNextAudioPlayer() ) {
-                    Log.i("GAME_RENDERER","Returning to Menu");
-                    gameRunning = false;
-                    returnToMenu();
-                }
-                else {
-                    GlobalState.createNextAudioAnalyser();
-                }
-                // TODO loading screen
-                while(!GlobalState.isAnalyserReadyToGo()) {}
-*/
         }
+    }
+
+    static public void initGameBoard() {
+        gameBoard = new GameBoard();
     }
 
     private void returnToMenu() {
@@ -187,11 +137,6 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     public static float[] getEyePosition() {
         Vector3 temp = PlayerStaticSphereCamera.getEyeVector();
         return new float[]{temp.getX(), temp.getY(), temp.getZ(), 1.0f};
-    }
-
-
-    public void startAnalyzing() {
-        audioAnalyser.startAnalyzing();
     }
 
     public void startAudio() {
