@@ -1,0 +1,36 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.mini.game.gameMenu.StartGameActivity"
+    android:background="#F74A4A"
+    android:orientation="vertical">
+
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/red_back_button"
+        android:id="@+id/button"
+        android:onClick="backButton_Click"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="Single song"
+            android:onClick="singleSongButton_Click"/>
+        <android.support.v7.widget.Space
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            />
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="Playlist" />
+
+        </LinearLayout>
+</LinearLayout>

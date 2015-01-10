@@ -43,10 +43,10 @@ public class MovementController {
                 /* Check which part of the screen was touched and decide
                    about movement direction */
                 if (e.getX() > CustomGlSurfaceView.screenWidth / 2) {
-                    firstFinger = MoveType.MOVE_RIGHT;
-                } else {
-                    firstFinger = MoveType.MOVE_LEFT;
-                }
+                firstFinger = MoveType.MOVE_RIGHT;
+            } else {
+                firstFinger = MoveType.MOVE_LEFT;
+            }
                 secondFinger = firstFinger;
                 /* Fire up the background runnable */
                 shipMovement = new ShipMovement(firstFinger);
