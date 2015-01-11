@@ -117,6 +117,11 @@ public class LauncherActivity extends ActionBarActivity {
         }
     }
 
+    public void setLayout(){
+        LinearLayout layout = (LinearLayout) findViewById(R.id.listLayout);
+        layout.setLayoutParams( new LinearLayout.LayoutParams(480,320));
+    }
+
     public void widthTestButton_Click(View view){
         LinearLayout layout = (LinearLayout) findViewById(R.id.listLayout);
        layout.setLayoutParams( new LinearLayout.LayoutParams(480,320));
