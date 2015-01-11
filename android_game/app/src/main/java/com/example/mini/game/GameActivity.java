@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 
 import com.example.mini.game.audio.AudioAnalyser;
 import com.example.mini.game.audio.AudioPlayer;
+import com.example.mini.game.launcher.GIFView;
 import com.example.mini.game.launcher.LauncherActivity;
 import com.example.mini.game.launcher.Song;
 import com.example.mini.game.shapes.complex.Road;
@@ -29,7 +30,7 @@ import com.example.mini.game.shapes.complex.Road;
 import java.util.List;
 
 
-public class MyActivity extends Activity implements SensorEventListener{
+public class GameActivity extends Activity implements SensorEventListener{
     private CustomGlSurfaceView glSurfaceView;
     protected void onStart() {
         super.onStart();
@@ -43,28 +44,27 @@ public class MyActivity extends Activity implements SensorEventListener{
         // Make it full Screen
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //getting Intent passed from LauncherActivity
-        Song song = (Song)getIntent().getExtras().getParcelable("song");
+        //Song song = (Song)getIntent().getExtras().getParcelable("song");
 
         super.onCreate(savedInstanceState);
-        glSurfaceView = new CustomGlSurfaceView(this,"test");
+        glSurfaceView = new CustomGlSurfaceView(this);
+
+
         setContentView(glSurfaceView);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         Button startAudio = new Button(this);
         Button stopAudio = new Button(this);
-        Button startAnalyzing = new Button(this);
         Button backToFileChooser = new Button(this);
 
         stopAudio.setText("Stop audio");
         startAudio.setText("Start audio");
-        startAnalyzing.setText("Start anal");
         backToFileChooser.setText("Back");
 
         LinearLayout ll = new LinearLayout(this);
 
         ll.addView(startAudio);
         ll.addView(stopAudio);
-        //ll.addView(startAnalyzing);
         ll.addView(backToFileChooser);
         ll.setGravity(Gravity.LEFT | Gravity.RIGHT);
         this.addContentView(ll,
@@ -85,37 +85,31 @@ public class MyActivity extends Activity implements SensorEventListener{
             }
         });
 
-        startAnalyzing.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-               glSurfaceView.onClickAnal();
-            }
-        });
+        backToFileChooser.setOnClickListener(new View.OnClickListener(){
+                    public void onClick(View v){
 
-            backToFileChooser.setOnClickListener(new View.OnClickListener(){
-                        public void onClick(View v){
-
-                            if(!AudioAnalyser.doneAnalysing){
-                                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(v.getContext());
-                                dlgAlert.setMessage("Please wait until the end of audio analysing");
-                                dlgAlert.setTitle("lel");
-                                dlgAlert.setPositiveButton("Ok",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                //dismiss the dialog
-                                            }
-                                        });
-                                dlgAlert.setCancelable(true);
-                                dlgAlert.create().show();
-                            }
-                            else{
-                              //  AudioPlayer.doneDecoding=true;
-                             Intent intent = new Intent(v.getContext(), LauncherActivity.class);
-                             startActivity(intent);
-                             glSurfaceView.onClickstopAudio();
-                             finish();
-                         }
+                        if(!AudioAnalyser.doneAnalysing){
+                            AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(v.getContext());
+                            dlgAlert.setMessage("Please wait until the end of audio analysing");
+                            dlgAlert.setTitle("lel");
+                            dlgAlert.setPositiveButton("Ok",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            //dismiss the dialog
+                                        }
+                                    });
+                            dlgAlert.setCancelable(true);
+                            dlgAlert.create().show();
                         }
-                    });
+                        else{
+                          //  AudioPlayer.doneDecoding=true;
+                         Intent intent = new Intent(v.getContext(), LauncherActivity.class);
+                         startActivity(intent);
+                         glSurfaceView.onClickstopAudio();
+                         finish();
+                     }
+                    }
+                });
 }
 
     @Override

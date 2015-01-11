@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
-import com.example.mini.game.MyActivity;
+//import com.example.mini.game.MyActivity;
 import com.example.mini.game.R;
 import com.example.mini.game.launcher.LauncherActivity;
 

@@ -6,6 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_audio_sample">AudioSample</string>
     <string name="title_activity_collision">CollisionActivity</string>
+ <string name="title_activity_loading">LoadingActivity</string>
     <string name="title_activity_menu">MenuActivity</string>
     <string name="title_activity_game_settings">GameSettingsActivity</string>
     <string name="title_activity_start_game">StartGameActivity</string>

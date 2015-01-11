@@ -15,8 +15,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-
-import com.example.mini.game.MyActivity;
 import com.example.mini.game.R;
 import com.example.mini.game.logic.GlobalState;
 
@@ -31,6 +29,9 @@ public class LauncherActivity extends ActionBarActivity {
     private Song m_song;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // initialize the system
+        GlobalState.initSystem();
 
         // Erase the title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -93,7 +94,10 @@ public class LauncherActivity extends ActionBarActivity {
     {
         if(m_song != null) {
             GlobalState.addSong(m_song);
-            Intent intent = new Intent(view.getContext(), MyActivity.class);
+
+
+            Log.i("Launcher","Starting intent");
+            Intent intent = new Intent(view.getContext(), LoadingActivity.class);
             startActivity(intent);
             finish();
         }

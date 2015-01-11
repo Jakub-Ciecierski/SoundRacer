@@ -3,6 +3,7 @@ package com.example.mini.game.audio;
 import android.util.Log;
 
 import com.example.mini.game.audio.analysis.FFT;
+import com.example.mini.game.logic.GlobalState;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -100,6 +101,8 @@ public class AudioAnalyser {
         if(!file.exists()) {
             Log.w("AudioAnalyser","File: " + filePath + " does not exist");
         }
+
+        Log.w("AudioAnalyser","File: " + filePath );
 
         this.sampleRate = sampleRate;
 
@@ -232,7 +235,12 @@ public class AudioAnalyser {
                             average /= bumperSampleSize;
 
                             Bumper.computeBumps(fluxSample, average, max, min);
+
+                            Log.i("AudioAnalyser", "Notifying LoadingThread");
                             isReadyToGo = true;
+                            synchronized (GlobalState.loadingMutex) {
+                                GlobalState.loadingMutex.notify();
+                            }
                             //Log.i("AudioAnalyser", "Computed: " + bumperSampleSize + " bumper samples");
                             //Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
                         }
@@ -267,7 +275,13 @@ public class AudioAnalyser {
                     }
                     average /= fluxLeftOver;
                     Bumper.computeBumps(fluxSample, average, max, min);
+
+                    Log.i("AudioAnalyser", "Notifying LoadingThread");
                     isReadyToGo = true;
+                    synchronized (GlobalState.loadingMutex) {
+                        GlobalState.loadingMutex.notify();
+                    }
+
                     //Log.i("AudioAnalyser", "Computed leftover: " + fluxLeftOver + " bumper samples");
                     //Log.i("AudioAnalyser", "Current BumperIndex: " + currentBumperIndex);
                 }

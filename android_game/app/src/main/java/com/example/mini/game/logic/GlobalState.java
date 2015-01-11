@@ -2,6 +2,7 @@ package com.example.mini.game.logic;
 
 import android.util.Log;
 
+import com.example.mini.game.GameRenderer;
 import com.example.mini.game.audio.AudioAnalyser;
 import com.example.mini.game.audio.AudioPlayer;
 import com.example.mini.game.audio.NativeMP3Decoder;
@@ -31,9 +32,11 @@ public class GlobalState {
     static private int currentPlayListIndexAudioAnalyser = 0;
 
     static private List<Song> songList = new ArrayList<Song>();
-
     static private AudioPlayer audioPlayer;
     static private AudioAnalyser audioAnalyser;
+
+    static public Thread loadingThread;
+    static public Object loadingMutex = new Object();
 
     /**
      * Includes everything that needs to be initiated before starting game
@@ -106,5 +109,9 @@ public class GlobalState {
         if(isAnalyserReadyToGo())
             return true;
         return false;
+    }
+
+    public static void loadGraphics() {
+        GameRenderer.initGameBoard();
     }
 }
