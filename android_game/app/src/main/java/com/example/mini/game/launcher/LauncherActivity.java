@@ -25,6 +25,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.example.mini.game.R;
+import com.example.mini.game.gameMenu.MenuActivity;
+import com.example.mini.game.gameMenu.StartGameActivity;
 import com.example.mini.game.logic.GlobalState;
 
 import java.util.ArrayList;
@@ -189,15 +191,13 @@ public class LauncherActivity extends ActionBarActivity {
         float layoutWidth = (float)screenWidth * (75.0f/100.0f);
         musicRelativeLayout.setLayoutParams(new LinearLayout.LayoutParams((int)layoutWidth, ViewGroup.LayoutParams.MATCH_PARENT));
     }
-    /*public void setLayout(){
-        LinearLayout layout = (LinearLayout) findViewById(R.id.listLayout);
-        layout.setLayoutParams( new LinearLayout.LayoutParams(480,320));
+    public void onBackPressed(){
+        Intent intent = new Intent(this, StartGameActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        this.overridePendingTransition(R.anim.push_bottom_in,R.anim.push_top_out);
+        finish();
     }
-
-    public void widthTestButton_Click(View view){
-        LinearLayout layout = (LinearLayout) findViewById(R.id.listLayout);
-       layout.setLayoutParams( new LinearLayout.LayoutParams(480,320));
-  }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

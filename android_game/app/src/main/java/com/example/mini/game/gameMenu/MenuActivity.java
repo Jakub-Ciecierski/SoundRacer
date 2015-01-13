@@ -23,14 +23,17 @@ public class MenuActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
     }
+
+    
     public void settingsButton_Click(View view)
     {
-            Intent intent = new Intent(view.getContext(), GameSettingsActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            this.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
-            finish();
+        Intent intent = new Intent(this, GameSettingsActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        this.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
+        finish();
     }
+
     public void startButton_Click(View view)
     {
         Intent intent = new Intent(view.getContext(), StartGameActivity.class);

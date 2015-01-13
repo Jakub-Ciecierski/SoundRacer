@@ -27,9 +27,18 @@ public class StartGameActivity extends ActionBarActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
     }
+
+    @Override
+    public void onBackPressed() {
+        previousActivity();
+    }
+
     public void backButton_Click(View view)
     {
-        Intent intent = new Intent(view.getContext(), MenuActivity.class);
+        previousActivity();
+    }
+    public void previousActivity(){
+        Intent intent = new Intent(this, MenuActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         this.overridePendingTransition(R.anim.push_bottom_in,R.anim.push_bottom_out);
