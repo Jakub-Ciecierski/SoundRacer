@@ -24,7 +24,7 @@ public class MenuActivity extends Activity {
         setContentView(R.layout.activity_menu);
     }
 
-    
+
     public void settingsButton_Click(View view)
     {
         Intent intent = new Intent(this, GameSettingsActivity.class);
