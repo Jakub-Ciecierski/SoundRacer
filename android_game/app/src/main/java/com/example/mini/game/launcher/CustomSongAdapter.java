@@ -52,6 +52,7 @@ public class CustomSongAdapter extends BaseAdapter implements View.OnClickListen
     public Object getItem(int position) {
         return data.get(position);
     }
+    public void removeItem(int position){data.remove(position);}
 
     @Override
     public long getItemId(int position) {
@@ -91,6 +92,8 @@ public class CustomSongAdapter extends BaseAdapter implements View.OnClickListen
         if(data.size()<=0)
         {
             holder.songName.setText("No Data");
+            holder.songDuration.setText("");
+            holder.songAuthor.setText("");
 
         }
         else

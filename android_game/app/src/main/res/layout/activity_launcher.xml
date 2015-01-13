@@ -4,37 +4,65 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
-    <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="200dp" android:id="@+id/listLayout" android:orientation="vertical" android:layout_gravity="right">
         <LinearLayout
-            android:layout_width="800dp"
-            android:layout_height="200dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:orientation="vertical">
-            <ListView android:layout_height="150dp"
-                android:layout_width="fill_parent"
-            android:id="@+id/musicList"
-            android:layout_below="@+id/startGame"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:listSelector="@drawable/list_selector"
-            />
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="50dp" android:layout_gravity="left">
                 <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Start Game"
-                android:id="@+id/startGame"
-                android:onClick="starGameButton_Click" />
-                <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="test"
-                    android:id="@+id/widthTestButton"
-                    android:onClick="widthTestButton_Click" />
+                    android:text="Start Game"
+                    android:id="@+id/startGame"
+                    android:onClick="starGameButton_Click" />
+            </LinearLayout>
+            <LinearLayout android:layout_height="fill_parent"
+                          android:layout_width="fill_parent"
+                          android:orientation="horizontal">
+                <RelativeLayout
+                    android:layout_width="300dp"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/musicRelativeLayout">
+                    <ListView android:layout_height="fill_parent"
+                        android:layout_width="fill_parent"
+                        android:id="@+id/musicList"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:listSelector="@drawable/list_selector"
+                        />
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="#99D92A2A"
+                        android:id="@+id/musicLinearLayout"
+                        android:orientation="horizontal"
+                        android:visibility="invisible"
+                        android:onClick="musicLinearLayout_Click"></LinearLayout>
+                    </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/chosenMusicRelativeLayout">
+                    <ListView android:layout_height="fill_parent"
+                        android:layout_width="fill_parent"
+                        android:id="@+id/musicListChosen"
+
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:listSelector="@drawable/list_selector"
+                    />
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="#99D92A2A"
+                        android:id="@+id/chosenMusicLinearLayout"
+                        android:orientation="horizontal"
+                        android:onClick="chosenMusicLinearLayout_Click"></LinearLayout>
+                    </RelativeLayout>
+
             </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 </LinearLayout>

@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 
 //import com.example.mini.game.MyActivity;
 import com.example.mini.game.R;
@@ -20,6 +21,7 @@ public class StartGameActivity extends ActionBarActivity {
         // Erase the title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         // Make it full Screen
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_game);
         ActionBar actionBar = getSupportActionBar();
