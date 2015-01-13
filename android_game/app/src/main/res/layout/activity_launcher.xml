@@ -24,7 +24,8 @@
                 <RelativeLayout
                     android:layout_width="300dp"
                     android:layout_height="fill_parent"
-                    android:id="@+id/musicRelativeLayout">
+                    android:id="@+id/musicRelativeLayout"
+                    android:background="@drawable/background_with_shadow">
                     <ListView android:layout_height="fill_parent"
                         android:layout_width="fill_parent"
                         android:id="@+id/musicList"
@@ -45,7 +46,8 @@
                 <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:id="@+id/chosenMusicRelativeLayout">
+                    android:id="@+id/chosenMusicRelativeLayout"
+                    android:background="@drawable/background_with_shadow">
                     <ListView android:layout_height="fill_parent"
                         android:layout_width="fill_parent"
                         android:id="@+id/musicListChosen"

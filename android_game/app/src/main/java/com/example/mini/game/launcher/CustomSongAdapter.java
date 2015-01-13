@@ -106,7 +106,18 @@ public class CustomSongAdapter extends BaseAdapter implements View.OnClickListen
 
             holder.songName.setText( tempValues.getName());
             holder.songAuthor.setText(tempValues.getArtist());
-            holder.songDuration.setText(tempValues.getDuration());
+            int duration = Integer.parseInt(tempValues.getDuration());
+            int minutes = duration/60000;
+            int seconds = (duration/1000)%60;
+            String sec;
+            if(seconds<10) {
+                 sec = "0" + seconds;
+            }
+            else{
+                sec = Integer.toString(seconds);
+            }
+
+            holder.songDuration.setText(""+minutes+":"+sec);
             /******** Set Item Click Listner for LayoutInflater for each row *******/
 
            // vi.setOnClickListener(new OnItemClickListener( position ));

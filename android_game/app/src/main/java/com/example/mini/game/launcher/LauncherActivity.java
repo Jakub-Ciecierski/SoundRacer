@@ -80,6 +80,9 @@ public class LauncherActivity extends ActionBarActivity {
         final MusicChooser musicChooser = new MusicChooser(cursor);
         Song song;
         while((song = musicChooser.getNextSong()) != null){
+            String songName = song.getName();
+            String songFormat = songName.substring(songName.length()-3);
+            if(songFormat.equals("mp3"))
             songs.add(song);
         }
 
@@ -124,7 +127,13 @@ public class LauncherActivity extends ActionBarActivity {
                 if( m_song==null)
                     Log.i("Getting song path","something went wrong Harry");
                 else {
-                    songs.add(chosenSongsPrevPosition.get(position),m_song);
+                    if(chosenSongsPrevPosition.get(position)<= songs.size()) {
+                        songs.add(chosenSongsPrevPosition.get(position), m_song);
+                    }
+                    else
+                    {
+                        songs.add(m_song);
+                    }
                     chosenMusicListAdapter.removeItem(position);
                     chosenSongsPrevPosition.remove(position);
                     chosenMusicListAdapter.notifyDataSetChanged();

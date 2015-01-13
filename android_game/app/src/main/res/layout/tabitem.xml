@@ -30,19 +30,21 @@
                 android:layout_span="1"/>
 
         </LinearLayout>
-    <LinearLayout
-        android:layout_width="30dp"
-        android:layout_height="30dp">
+        <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:gravity="right">
         <TextView
             android:id="@+id/songDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" android:layout_gravity="left|center_vertical"
+
             android:textSize="16sp"
-            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
             android:layout_marginTop="4dip"
             android:textColor="#000000"
-            android:layout_span="1"/>
+           />
         </LinearLayout>
 
 
