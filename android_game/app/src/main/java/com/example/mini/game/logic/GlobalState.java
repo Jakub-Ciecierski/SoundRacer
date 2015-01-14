@@ -26,12 +26,11 @@ public class GlobalState {
 
     /**
      * Keeps track of all songs to be played
-     */
-    static private List<String> playList = new ArrayList<String>();
+     */;
+    static private List<Song> songList = new ArrayList<Song>();
     static private int currentPlayListIndexAudioPlayer = 0;
     static private int currentPlayListIndexAudioAnalyser = 0;
 
-    static private List<Song> songList = new ArrayList<Song>();
     static private AudioPlayer audioPlayer;
     static private AudioAnalyser audioAnalyser;
 
@@ -52,34 +51,30 @@ public class GlobalState {
         NativeMP3Decoder.cleanupLib();
     }
 
-    public static void addFile(String filePath) {
-        playList.add(filePath);
-    }
-
     public static void addSong(Song song) {
         songList.add(song);
     }
 
     public static boolean createNextAudioAnalyser(){
-        if(currentPlayListIndexAudioAnalyser == playList.size())
+        if(currentPlayListIndexAudioAnalyser == songList.size())
             return false;
         if(audioAnalyser != null && !audioAnalyser.isDoneAnalysing())
             return false;
-        String file = playList.get(currentPlayListIndexAudioAnalyser);
+        Song song = songList.get(currentPlayListIndexAudioAnalyser);
         currentPlayListIndexAudioAnalyser++;
-        audioAnalyser = new AudioAnalyser(file, SAMPLE_SIZE, SAMPLE_RATE, FLUX_SAMPLE_RATE);
+        audioAnalyser = new AudioAnalyser(song.getPath(), SAMPLE_SIZE, SAMPLE_RATE, FLUX_SAMPLE_RATE);
         audioAnalyser.startAnalyzing();
         return true;
     }
 
     public static boolean createNextAudioPlayer() {
-        if(currentPlayListIndexAudioPlayer == playList.size())
+        if(currentPlayListIndexAudioPlayer == songList.size())
             return false;
         if(audioPlayer != null && !audioPlayer.isDonePlaying())
             return false;
-        String file = playList.get(currentPlayListIndexAudioPlayer);
+        Song song = songList.get(currentPlayListIndexAudioPlayer);
         currentPlayListIndexAudioPlayer++;
-        audioPlayer = new AudioPlayer(file, SAMPLE_SIZE, SAMPLE_RATE);
+        audioPlayer = new AudioPlayer(song.getPath(), SAMPLE_SIZE, SAMPLE_RATE);
 
         return true;
     }

@@ -148,9 +148,10 @@ public class LauncherActivity extends ActionBarActivity {
     //button click passing chosen file path
     public void starGameButton_Click(View view)
     {
-        if(m_song != null) {
-            GlobalState.addSong(m_song);
-
+        if(!chosenSongs.isEmpty()) {
+            for(Song song : chosenSongs) {
+                GlobalState.addSong(song);
+            }
 
             Log.i("Launcher","Starting intent");
             Intent intent = new Intent(view.getContext(), LoadingActivity.class);
