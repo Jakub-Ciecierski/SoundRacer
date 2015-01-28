@@ -37,7 +37,7 @@ public class Bumper {
         float value = bumps.get(currentReadIndex);
         // increment the pointer
         currentReadIndex++;
-        Log.i("Bumper", "Bumper[" + currentReadIndex + "]: " + value);
+        //Log.i("Bumper", "Bumper[" + currentReadIndex + "]: " + value);
         return value;
     }
 

@@ -58,12 +58,12 @@
                     <android.support.v7.widget.Space
                         android:layout_width="wrap_content"
                         android:layout_height="10dp" />
-                    <Button
-                        android:layout_width="130dp"
-                        android:layout_height="60dp"
-                        android:textColor="@drawable/button_text_color"
-                        android:text="Music manager"
-                        android:background="#A80CCF"/>
+                    <!--<Button-->
+                        <!--android:layout_width="130dp"-->
+                        <!--android:layout_height="60dp"-->
+                        <!--android:textColor="@drawable/button_text_color"-->
+                        <!--android:text="Music manager"-->
+                        <!--android:background="#A80CCF"/>-->
 
 
                     </LinearLayout>

@@ -39,7 +39,7 @@ public class GameSettingsActivity extends ActionBarActivity {
         Intent intent = new Intent(this, MenuActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        this.overridePendingTransition(R.anim.push_right_in,R.anim.push_right_out);
+        this.overridePendingTransition(R.anim.push_right_in,R.anim.do_nothing);
         finish();
     }
     public void applyButton_Click(View view){
@@ -52,7 +52,7 @@ public class GameSettingsActivity extends ActionBarActivity {
         Intent intent = new Intent(view.getContext(), MenuActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        this.overridePendingTransition(R.anim.push_right_in,R.anim.push_right_out);
+        this.overridePendingTransition(R.anim.push_right_in,R.anim.do_nothing);
         finish();
     }
 }

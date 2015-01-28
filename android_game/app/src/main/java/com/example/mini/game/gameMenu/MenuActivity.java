@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.mini.game.R;
+import com.example.mini.game.launcher.LauncherActivity;
 
 public class MenuActivity extends Activity {
 
@@ -30,16 +31,16 @@ public class MenuActivity extends Activity {
         Intent intent = new Intent(this, GameSettingsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        this.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
+        this.overridePendingTransition(R.anim.push_left_in,R.anim.do_nothing);
         finish();
     }
 
     public void startButton_Click(View view)
     {
-        Intent intent = new Intent(view.getContext(), StartGameActivity.class);
+        Intent intent = new Intent(view.getContext(), LauncherActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        this.overridePendingTransition(R.anim.push_top_in,R.anim.push_top_out);
+        this.overridePendingTransition(R.anim.push_top_in,R.anim.do_nothing);
         finish();
     }
 

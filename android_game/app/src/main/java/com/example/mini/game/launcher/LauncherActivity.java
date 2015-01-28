@@ -193,10 +193,10 @@ public class LauncherActivity extends ActionBarActivity {
         musicRelativeLayout.setLayoutParams(new LinearLayout.LayoutParams((int)layoutWidth, ViewGroup.LayoutParams.MATCH_PARENT));
     }
     public void onBackPressed(){
-        Intent intent = new Intent(this, StartGameActivity.class);
+        Intent intent = new Intent(this, MenuActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        this.overridePendingTransition(R.anim.push_bottom_in,R.anim.push_top_out);
+        this.overridePendingTransition(R.anim.push_bottom_in,R.anim.do_nothing);
         finish();
     }
 
