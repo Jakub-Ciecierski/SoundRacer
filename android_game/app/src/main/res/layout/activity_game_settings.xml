@@ -1,4 +1,12 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/settingsRelativeLayout">
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/settingsActivityImageView"/>
+<ScrollView
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -6,14 +14,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F74A4A">
+    >
     <!--tools:context="com.example.mini.game.gameMenu.GameSettingsActivity"-->
-
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/red_back_button"
-        android:onClick="backButton_Click"/>
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -81,3 +83,4 @@
         </LinearLayout>
 </LinearLayout>
 </ScrollView>
+</RelativeLayout>

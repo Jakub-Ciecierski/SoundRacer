@@ -22,7 +22,7 @@ public class LoadingActivity extends ActionBarActivity {
         // Make it full Screen
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        GIFView gifView = new GIFView(this);
+        GIFView gifView = new GIFView(this,1);
         setContentView(gifView);
 
         //ActionBar actionBar = getSupportActionBar();
@@ -49,7 +49,7 @@ public class LoadingActivity extends ActionBarActivity {
                     e.printStackTrace();
                 }
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(20000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

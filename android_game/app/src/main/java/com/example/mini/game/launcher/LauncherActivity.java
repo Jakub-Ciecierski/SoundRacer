@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
+import android.graphics.drawable.AnimationDrawable;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -20,12 +21,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.example.mini.game.R;
 import com.example.mini.game.gameMenu.MenuActivity;
+import com.example.mini.game.gameMenu.ResizeAnimation;
 import com.example.mini.game.gameMenu.StartGameActivity;
 import com.example.mini.game.logic.GlobalState;
 
@@ -58,8 +61,16 @@ public class LauncherActivity extends ActionBarActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        ImageView img = (ImageView)findViewById(R.id.launcherActivityImageView);
+        img.setBackgroundResource(R.drawable.speaker_animation);
+
+        // Get the background, which has been compiled to an AnimationDrawable object.
+        AnimationDrawable frameAnimation = (AnimationDrawable) img.getBackground();
+
+        // Start the animation (looped playback by default).
+        frameAnimation.start();
+//        ActionBar actionBar = getSupportActionBar();
+//        actionBar.hide();
         //Some audio may be explicitly marked as not being music
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
 
@@ -181,7 +192,10 @@ public class LauncherActivity extends ActionBarActivity {
         musicLinearLayout.setVisibility(View.VISIBLE);
         RelativeLayout musicRelativeLayout = (RelativeLayout) findViewById(R.id.musicRelativeLayout);
         float layoutWidth = (float)screenWidth * (25.0f/100.0f);
-        musicRelativeLayout.setLayoutParams(new LinearLayout.LayoutParams((int)layoutWidth, ViewGroup.LayoutParams.MATCH_PARENT));
+        ResizeAnimation anim = new ResizeAnimation(musicRelativeLayout, (int)layoutWidth);
+        anim.setDuration(200);
+        musicLinearLayout.startAnimation(anim);
+        //musicRelativeLayout.setLayoutParams(new LinearLayout.LayoutParams((int)layoutWidth, ViewGroup.LayoutParams.MATCH_PARENT));
     }
     public void musicLinearLayout_Click(View view){
         LinearLayout chosenMusicLinearLayout = (LinearLayout) findViewById(R.id.chosenMusicLinearLayout);
@@ -190,7 +204,11 @@ public class LauncherActivity extends ActionBarActivity {
         musicLinearLayout.setVisibility(View.INVISIBLE);
         RelativeLayout musicRelativeLayout = (RelativeLayout) findViewById(R.id.musicRelativeLayout);
         float layoutWidth = (float)screenWidth * (75.0f/100.0f);
-        musicRelativeLayout.setLayoutParams(new LinearLayout.LayoutParams((int)layoutWidth, ViewGroup.LayoutParams.MATCH_PARENT));
+        int tmp = (int)layoutWidth;
+        ResizeAnimation anim = new ResizeAnimation(musicRelativeLayout, tmp);
+        anim.setDuration(200);
+        musicLinearLayout.startAnimation(anim);
+        //musicRelativeLayout.setLayoutParams(new LinearLayout.LayoutParams((int)layoutWidth, ViewGroup.LayoutParams.MATCH_PARENT));
     }
     public void onBackPressed(){
         Intent intent = new Intent(this, MenuActivity.class);

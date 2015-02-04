@@ -1,6 +1,7 @@
 package com.example.mini.game.gameMenu;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -10,9 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import com.example.mini.game.R;
+import com.example.mini.game.launcher.GIFView;
 import com.example.mini.game.util.screenMovement.ShipMovement;
 
 public class GameSettingsActivity extends ActionBarActivity {
@@ -25,15 +28,17 @@ public class GameSettingsActivity extends ActionBarActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_settings);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        ImageView img = (ImageView)findViewById(R.id.settingsActivityImageView);
+        img.setBackgroundResource(R.drawable.speaker_animation);
+
+        // Get the background, which has been compiled to an AnimationDrawable object.
+        AnimationDrawable frameAnimation = (AnimationDrawable) img.getBackground();
+
+        // Start the animation (looped playback by default).
+        frameAnimation.start();
     }
     public void onBackPressed() {
     previousActivity();
-    }
-    public void backButton_Click(View view)
-    {
-        previousActivity();
     }
     public void previousActivity(){
         Intent intent = new Intent(this, MenuActivity.class);

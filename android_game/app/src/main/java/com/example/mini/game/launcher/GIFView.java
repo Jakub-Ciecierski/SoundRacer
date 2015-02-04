@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.example.mini.game.R;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -19,15 +20,28 @@ public class GIFView extends View {
 
     private Movie movie;
     private long movieStart;
+    private int id;
 
-    public GIFView(Context context) {
+    public GIFView(Context context,int id) {
         super(context);
+        this.id=id;
         initializeView();
     }
 
     private void initializeView() {
         //InputStream is = getContext().getResources().openRawResource(R.raw.loading_screen);
-        InputStream is = getContext().getResources().openRawResource(R.raw.gaben_loading);
+        InputStream is = new InputStream() {
+            @Override
+            public int read() throws IOException {
+                return 0;
+            }
+        };
+        if(id==1) {
+             is = getContext().getResources().openRawResource(R.raw.speaker);
+        }
+        if(id==2){
+            is = getContext().getResources().openRawResource(R.raw.sand);
+        }
         movie = Movie.decodeStream(is);
     }
 

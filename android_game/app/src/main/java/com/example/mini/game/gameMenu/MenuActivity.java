@@ -2,6 +2,7 @@ package com.example.mini.game.gameMenu;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,8 +10,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.example.mini.game.R;
+import com.example.mini.game.launcher.GIFView;
 import com.example.mini.game.launcher.LauncherActivity;
 
 public class MenuActivity extends Activity {
@@ -22,7 +27,21 @@ public class MenuActivity extends Activity {
         // Make it full Screen
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu);
+//        GIFView gifView = new GIFView(this,1);
+//        setContentView(gifView);
+          setContentView(R.layout.activity_menu);
+        ImageView img = (ImageView)findViewById(R.id.menuActivityImageView);
+        img.setBackgroundResource(R.drawable.speaker_animation);
+
+        // Get the background, which has been compiled to an AnimationDrawable object.
+        AnimationDrawable frameAnimation = (AnimationDrawable) img.getBackground();
+
+        // Start the animation (looped playback by default).
+        frameAnimation.start();
+
+//        RelativeLayout lin = (RelativeLayout) findViewById(R.id.menuRelativeLayout);
+//        lin.addView(gifView);
+
     }
 
 
