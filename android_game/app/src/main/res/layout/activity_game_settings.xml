@@ -1,11 +1,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:id="@+id/settingsRelativeLayout">
+    android:id="@+id/settingsRelativeLayout"
+    android:background="#333">
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/settingsActivityImageView"/>
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="20"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:textSize="35dp"
+        android:text="Settings"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        />
 <ScrollView
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -16,43 +30,48 @@
     android:orientation="vertical"
     >
     <!--tools:context="com.example.mini.game.gameMenu.GameSettingsActivity"-->
-
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Enable vibrations"
-        android:id="@+id/vibrationsCheckBox" />
+        android:id="@+id/vibrationsCheckBox"
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Controls"
-        android:id="@+id/textView" />
+        android:id="@+id/textView"
+        android:textColor="#FFFFFF"/>
 
     <RadioGroup
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
         <RadioButton
             android:id="@+id/accelerometerOn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Accelerometer"
-            android:checked="true" />
+            android:checked="true"
+            android:textColor="#FFFFFF"/>
         <RadioButton
             android:id="@+id/touchScreenOn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Touch screen"
-            android:checked="false" />
+            android:checked="false"
+            android:textColor="#FFFFFF"/>
         </RadioGroup>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Accelerometer sensivity"
-        android:id="@+id/textView2" />
+        android:text="Accelerometer sensitivity"
+        android:id="@+id/textView2"
+        android:textColor="#FFFFFF"/>
 
     <SeekBar
         android:layout_width="match_parent"
@@ -63,8 +82,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Touchscreen sensivity"
-        android:id="@+id/textView3" />
+        android:text="Touchscreen sensitivity"
+        android:id="@+id/textView3"
+        android:textColor="#FFFFFF"/>
 
     <SeekBar
         android:layout_width="match_parent"
@@ -79,8 +99,13 @@
             android:layout_width="125dp"
             android:layout_height="50dp"
             android:text="Apply"
-            android:onClick="applyButton_Click"/>
-        </LinearLayout>
+            android:onClick="applyButton_Click"
+            android:background="@drawable/button"
+            style="@style/button_text"/>
+    </LinearLayout>
 </LinearLayout>
 </ScrollView>
+
+
+</LinearLayout>
 </RelativeLayout>

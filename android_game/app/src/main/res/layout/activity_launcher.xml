@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="#333">
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -22,6 +23,7 @@
                 android:text="Select song"
                 android:gravity="center"
                 android:textSize="30dp"
+
                 android:textColor="#FFFFFF"
                 />
             <LinearLayout
@@ -33,23 +35,28 @@
                     android:layout_height="fill_parent"
                     android:hint="Name or author"
                     android:inputType="text"
-                    android:layout_weight="15"/>
+                    android:layout_weight="15"
+                    android:textColorHint="#99FFFFFF"
+                    android:textColor="#FFFFFF"/>
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Start Game"
                     android:id="@+id/startGame"
                     android:onClick="starGameButton_Click"
-                    android:layout_weight="5"/>
+                    android:layout_weight="5"
+                    android:background="@drawable/button"
+                    style="@style/button_text"/>
             </LinearLayout>
             <LinearLayout android:layout_height="fill_parent"
                           android:layout_width="fill_parent"
-                          android:orientation="horizontal">
+                          android:orientation="horizontal"
+                          android:background="@android:color/transparent">
                 <RelativeLayout
                     android:layout_width="300dp"
                     android:layout_height="fill_parent"
-                    android:id="@+id/musicRelativeLayout"
-                    android:background="@drawable/background_with_shadow">
+                    android:id="@+id/musicRelativeLayout">
+                    <!--android:background="@drawable/background_with_shadow">-->
                     <ListView android:layout_height="fill_parent"
                         android:layout_width="fill_parent"
                         android:id="@+id/musicList"
@@ -57,11 +64,13 @@
                         android:layout_alignParentStart="true"
                         android:listSelector="@drawable/list_selector"
                         android:paddingTop="25dp"
+                        android:background="@android:color/transparent"
+                        android:cacheColorHint="#00000000"
                         />
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:background="#99D92A2A"
+                        android:background="#995195F5"
                         android:id="@+id/musicLinearLayout"
                         android:orientation="horizontal"
                         android:visibility="invisible"
@@ -70,18 +79,19 @@
                         android:layout_width="fill_parent"
                         android:layout_height="25dp"
                         android:text="Available"
+                        android:textColor="@android:color/white"
                         android:textSize="20dp"
                         android:gravity="center_vertical"
                         android:paddingLeft="3dp"
-                        android:background="#FFFFFF"
+                        android:background="#00000000"
                         />
                     </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:id="@+id/chosenMusicRelativeLayout"
-                    android:background="@drawable/background_with_shadow">
+                    android:id="@+id/chosenMusicRelativeLayout">
+                    <!--android:background="@drawable/background_with_shadow">-->
 
                         <ListView android:layout_height="fill_parent"
                         android:layout_width="fill_parent"
@@ -90,11 +100,12 @@
                         android:layout_alignParentStart="true"
                         android:listSelector="@drawable/list_selector"
                             android:paddingTop="25dp"
+                            android:cacheColorHint="#00000000"
                         />
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:background="#99D92A2A"
+                        android:background="#995195F5"
                         android:id="@+id/chosenMusicLinearLayout"
                         android:orientation="horizontal"
                         android:onClick="chosenMusicLinearLayout_Click"></LinearLayout>
@@ -102,10 +113,11 @@
                         android:layout_width="fill_parent"
                         android:layout_height="25dp"
                         android:text="Chosen"
+                        android:textColor="@android:color/white"
                         android:textSize="20dp"
                         android:gravity="center_vertical"
                         android:paddingLeft="3dp"
-                        android:background="#FFFFFF"/>
+                        android:background="#00000000"/>
 
                     </RelativeLayout>
 

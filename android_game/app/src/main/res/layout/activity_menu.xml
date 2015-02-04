@@ -4,6 +4,7 @@
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
     android:id="@+id/menuRelativeLayout"
+    android:background="#333"
     >
     <ImageView
         android:layout_width="fill_parent"
@@ -59,8 +60,8 @@
                     <Button
                         android:layout_width="130dp"
                         android:layout_height="60dp"
-                        android:background="#A80CCF"
-                        android:textColor="@drawable/button_text_color"
+                        android:background="@drawable/button"
+                        style="@style/button_text"
                         android:text="Start"
                         android:onClick="startButton_Click"/>
                     <android.support.v7.widget.Space
@@ -69,9 +70,10 @@
                     <Button
                         android:layout_width="130dp"
                         android:layout_height="60dp"
-                        android:textColor="@drawable/button_text_color"
-                        android:text="Leader Board"
-                        android:background="#A80CCF"/>
+                        android:background="@drawable/button"
+                        style="@style/button_text"
+                        android:text="Leader Board"/>
+
                     <android.support.v7.widget.Space
                         android:layout_width="wrap_content"
                         android:layout_height="10dp" />
