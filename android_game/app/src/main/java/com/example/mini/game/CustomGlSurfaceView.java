@@ -16,7 +16,7 @@ public class CustomGlSurfaceView extends GLSurfaceView {
     public static Context context;
     public static float screenHeight;
     public static float screenWidth;
-    private GameRenderer gameRenderer;
+    protected GameRenderer gameRenderer;
 
 
     /**
