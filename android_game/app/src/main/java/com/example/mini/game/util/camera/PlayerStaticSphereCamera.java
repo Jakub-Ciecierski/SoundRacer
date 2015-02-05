@@ -15,8 +15,13 @@ public abstract class PlayerStaticSphereCamera {
     private static Vector3 upVector = new Vector3(0f, 1f, 0f);
 
     public static void moveCameraBy(float y) {
+        /* basic eye-look triangle */
+        float basicZ = Math.abs(eyeCoordinates.getZ()) + Math.abs(lookAtCoordinates.getZ());
+        /* new eye-look triangle */
+        float newZ = basicZ*y / eyeCoordinates.getY();
+
         eyeCoordinates.setY(y);
-        //lookAtCoordinates.setY(y);
+        lookAtCoordinates.setZ(newZ);
     }
 
     public static float[] getCameraMatrix(float[] projectionMatrix) {
