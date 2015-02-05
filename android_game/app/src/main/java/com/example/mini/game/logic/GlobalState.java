@@ -1,7 +1,9 @@
 package com.example.mini.game.logic;
 
 import android.util.Log;
+import android.widget.ImageView;
 
+import com.example.mini.game.GameActivity;
 import com.example.mini.game.GameRenderer;
 import com.example.mini.game.audio.AudioAnalyser;
 import com.example.mini.game.audio.AudioPlayer;
@@ -15,6 +17,10 @@ import java.util.List;
  * Created by kuba on 1/4/15.
  */
 public class GlobalState {
+    /**
+     * GameActivity object for turning off imageView
+     */
+    static public GameActivity gameActivity;
     /**
      * Constants for audio
      */
