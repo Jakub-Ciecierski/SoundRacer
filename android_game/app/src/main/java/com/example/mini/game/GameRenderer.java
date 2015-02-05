@@ -33,7 +33,7 @@ import static android.opengl.GLES20.glViewport;
  */
 public class GameRenderer implements GLSurfaceView.Renderer {
 
-    private boolean gameRunning = true;
+    protected boolean gameRunning = true;
     private boolean isFirstTime = true;
 
     private float[] mProjectionMatrix = new float[16];

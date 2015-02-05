@@ -1,7 +1,9 @@
 package com.example.mini.game;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,7 +37,7 @@ import java.util.List;
 
 
 public class GameActivity extends Activity implements SensorEventListener{
-    private CustomGlSurfaceView glSurfaceView;
+    protected CustomGlSurfaceView glSurfaceView;
     protected void onStart() {
         super.onStart();
     }
@@ -141,6 +143,7 @@ public class GameActivity extends Activity implements SensorEventListener{
 
     @Override
     public void onBackPressed() {
+        this.glSurfaceView.gameRenderer.gameRunning = false;
         GlobalState.pauseAudio();
 
         AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
@@ -155,20 +158,28 @@ public class GameActivity extends Activity implements SensorEventListener{
         dlgAlert.setNegativeButton("Cancel",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        glSurfaceView.gameRenderer.gameRunning = true;
                         GlobalState.playAudio();
                     }
                 });
         dlgAlert.setCancelable(true);
         dlgAlert.create().show();
-
     }
 
     private void returnToMenu(){
-        Intent intent = new Intent(this, MenuActivity.class);
+        /*Intent intent = new Intent(this, MenuActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         GlobalState.shutDownSystem();
-        finish();
+        finish();*/
+
+        Intent mStartActivity = new Intent(this, MenuActivity.class);
+        int mPendingIntentId = 123456;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        GlobalState.shutDownSystem();
+        System.exit(0);
     }
 
     @Override
