@@ -29,7 +29,7 @@ public class MenuActivity extends Activity {
         super.onCreate(savedInstanceState);
 //        GIFView gifView = new GIFView(this,1);
 //        setContentView(gifView);
-          setContentView(R.layout.activity_menu);
+        setContentView(R.layout.activity_menu);
         ImageView img = (ImageView)findViewById(R.id.menuActivityImageView);
         img.setBackgroundResource(R.drawable.speaker_animation);
 

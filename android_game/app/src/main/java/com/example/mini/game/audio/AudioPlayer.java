@@ -48,6 +48,7 @@ public class AudioPlayer {
 
     private boolean doneDecoding = false;
 
+    public Thread audioThread;
     /**
      *
      * @param filePath
@@ -84,7 +85,7 @@ public class AudioPlayer {
      * Decodes, writes to audio buffer
      */
     public void startDecoding() {
-        new Thread(new Runnable() {
+        audioThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 timeStamp();
@@ -97,6 +98,15 @@ public class AudioPlayer {
                 while (!done) {
                     try {
                         audioSemaphore.acquire();
+                        if (!isPlaying()) {
+                            audioSemaphore.release();
+                            Log.i("AudioPlayer","Decoder waiting...");
+                            synchronized (GlobalState.audioPlayerMutex) {
+                                GlobalState.audioPlayerMutex.wait();
+                            }
+                            Log.i("AudioPlayer","Decoder awaken");
+                            audioSemaphore.acquire();
+                        }
                         short[] sample = new short[sampleSize];
 
                         //currentTimeMs = SAMPLE_LENGTH_MS * audioTrack.getPlaybackHeadPosition();
@@ -125,7 +135,8 @@ public class AudioPlayer {
 
                 Log.i("AudioPlayer","Finished decoding audio");
             }
-        }).start();
+        });
+        audioThread.start();
     }
 
     /**
@@ -238,19 +249,40 @@ public class AudioPlayer {
      * Starts playing audio
      */
     public void playAudio() {
+        try {
+            audioSemaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         this.audioTrack.play();
 
         this.isPlaying = true;
+
+        synchronized (GlobalState.audioPlayerMutex) {
+            GlobalState.audioPlayerMutex.notify();
+        }
+
         Log.i("AudioPlayer","Playing audio");
+
+        audioSemaphore.release();
     }
 
     /**
      * Pauses the audio
      */
     public void pauseAudio() {
+        try {
+            audioSemaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         this.audioTrack.pause();
         this.isPlaying = false;
         Log.i("AudioPlayer","Paused playing audio");
+
+        audioSemaphore.release();
     }
 
     /**

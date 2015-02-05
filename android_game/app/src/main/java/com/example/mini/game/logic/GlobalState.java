@@ -37,6 +37,8 @@ public class GlobalState {
     static public Thread loadingThread;
     static public Object loadingMutex = new Object();
 
+    static public Object audioPlayerMutex = new Object();
+
     /**
      * Includes everything that needs to be initiated before starting game
      */
@@ -49,6 +51,14 @@ public class GlobalState {
      */
     public static void shutDownSystem() {
         NativeMP3Decoder.cleanupLib();
+
+        songList = new ArrayList<Song>();
+        currentPlayListIndexAudioPlayer = 0;
+        currentPlayListIndexAudioAnalyser = 0;
+
+        audioPlayer = null;
+        audioAnalyser = null;
+
     }
 
     public static void addSong(Song song) {
@@ -81,6 +91,10 @@ public class GlobalState {
 
     public static void startAudio() {
         audioPlayer.startDecoding();
+        audioPlayer.playAudio();
+    }
+
+    public static void playAudio() {
         audioPlayer.playAudio();
     }
 
