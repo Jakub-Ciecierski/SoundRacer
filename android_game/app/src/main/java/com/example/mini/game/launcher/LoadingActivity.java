@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.example.mini.game.GameActivity;
 import com.example.mini.game.R;
@@ -23,8 +25,9 @@ public class LoadingActivity extends ActionBarActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         GIFView gifView = new GIFView(this,1);
-        setContentView(gifView);
-
+        setContentView(R.layout.activity_loading);
+        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.loadingActivityRelativeLayout);
+        relativeLayout.addView(gifView,0,new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,RelativeLayout.LayoutParams.FILL_PARENT));
         //ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
@@ -48,11 +51,6 @@ public class LoadingActivity extends ActionBarActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                try {
-                    Thread.sleep(20000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 Log.i("LoadingThread", "Awaken");
                 startGame();
             }
@@ -65,6 +63,7 @@ public class LoadingActivity extends ActionBarActivity {
     private void startGame() {
         Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
+        this.overridePendingTransition(R.anim.do_nothing,R.anim.do_nothing);
         finish();
     }
 

@@ -6,7 +6,9 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 
 
 import com.example.mini.game.audio.AudioAnalyser;
@@ -44,10 +46,10 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
     public static Context context;
     public static CameraType currentCamera = CameraType.PLAYER_CAMERA;
-
+    public GameActivity gameActivity;
     public GameRenderer(Context context) {
         this.context = context;
-
+        //this.gameActivity = gameActivity;
         gameRunning = true;
     }
 
@@ -70,6 +72,17 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GLES20.glClearDepthf(1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        /*
+            turning off loading animation in GameActivity
+         */
+        GlobalState.gameActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                GlobalState.gameActivity.turnOffImageView();
+            }
+        });
+
+
     }
 
     @Override

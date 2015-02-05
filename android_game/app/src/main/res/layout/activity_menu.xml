@@ -72,7 +72,8 @@
                         android:layout_height="60dp"
                         android:background="@drawable/button"
                         style="@style/button_text"
-                        android:text="Leader Board"/>
+                        android:text="Settings"
+                        android:onClick="settingsButton_Click"/>
 
                     <android.support.v7.widget.Space
                         android:layout_width="wrap_content"
@@ -93,18 +94,18 @@
                 android:layout_height="fill_parent"
                 android:orientation="vertical"
                 android:gravity="bottom">
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="right">
-                    <Button
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:id="@+id/settingsButton"
-                        android:background="@drawable/settings_button"
-                        android:onClick="settingsButton_Click"/>
-                    </LinearLayout>
+                <!--<LinearLayout-->
+                    <!--android:layout_width="fill_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:gravity="right">-->
+                    <!--<Button-->
+                        <!--android:layout_width="50dp"-->
+                        <!--android:layout_height="50dp"-->
+                        <!--android:id="@+id/settingsButton"-->
+                        <!--android:background="@drawable/settings_button"-->
+                        <!--android:onClick="settingsButton_Click"/>-->
+                    <!--</LinearLayout>-->
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

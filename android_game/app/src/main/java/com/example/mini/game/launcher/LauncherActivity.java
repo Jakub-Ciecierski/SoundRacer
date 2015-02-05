@@ -63,10 +63,8 @@ public class LauncherActivity extends ActionBarActivity {
         setContentView(R.layout.activity_launcher);
         ImageView img = (ImageView)findViewById(R.id.launcherActivityImageView);
         img.setBackgroundResource(R.drawable.speaker_animation);
-
         // Get the background, which has been compiled to an AnimationDrawable object.
         AnimationDrawable frameAnimation = (AnimationDrawable) img.getBackground();
-
         // Start the animation (looped playback by default).
         frameAnimation.start();
 //        ActionBar actionBar = getSupportActionBar();

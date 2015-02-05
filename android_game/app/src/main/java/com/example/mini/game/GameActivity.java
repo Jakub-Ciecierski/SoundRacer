@@ -6,38 +6,54 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.Image;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.mini.game.audio.AudioAnalyser;
 import com.example.mini.game.audio.AudioPlayer;
 import com.example.mini.game.launcher.GIFView;
 import com.example.mini.game.launcher.LauncherActivity;
 import com.example.mini.game.launcher.Song;
+import com.example.mini.game.logic.GlobalState;
+import com.example.mini.game.shapes.basic.Line;
 import com.example.mini.game.shapes.complex.Road;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
 
 public class GameActivity extends Activity implements SensorEventListener{
     private CustomGlSurfaceView glSurfaceView;
+    public ImageView imageView;
+    public TextView textViewLoading;
+    public TextView textViewSongName;
     protected void onStart() {
         super.onStart();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        GlobalState.gameActivity = this;
         Log.i("MyActivity","OnCreate has been started");
         // Erase the title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -45,30 +61,65 @@ public class GameActivity extends Activity implements SensorEventListener{
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //getting Intent passed from LauncherActivity
         //Song song = (Song)getIntent().getExtras().getParcelable("song");
-
         super.onCreate(savedInstanceState);
         glSurfaceView = new CustomGlSurfaceView(this);
-
-
         setContentView(glSurfaceView);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
         Button startAudio = new Button(this);
         Button stopAudio = new Button(this);
         Button backToFileChooser = new Button(this);
-
+        imageView = new ImageView(this);
         stopAudio.setText("Stop audio");
         startAudio.setText("Start audio");
         backToFileChooser.setText("Back");
-
+        RelativeLayout relativeLayout = new RelativeLayout(this);
         LinearLayout ll = new LinearLayout(this);
-
+        textViewSongName = new TextView(this);
+        textViewSongName.setText("songName");
+        textViewSongName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
+        textViewSongName.setTextColor(Color.parseColor("#FFFFFF"));
+        float pixelsLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
+        int intPixelsLeft = (int)pixelsLeft;
+        float pixelsTop = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
+        int intPixelsTop = (int)pixelsTop;
+        textViewSongName.setPadding(intPixelsLeft,intPixelsTop,0,0);
         ll.addView(startAudio);
         ll.addView(stopAudio);
         ll.addView(backToFileChooser);
         ll.setGravity(Gravity.LEFT | Gravity.RIGHT);
-        this.addContentView(ll,
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+        relativeLayout.addView(ll, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+        relativeLayout.addView(textViewSongName,new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT));
+        relativeLayout.addView(imageView,new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,RelativeLayout.LayoutParams.FILL_PARENT));
+
+        imageView.setBackgroundResource(R.drawable.speaker_animation);
+        /**
+         * loading textView
+         */
+        LinearLayout linearLayout1 = new LinearLayout(this);
+        linearLayout1.setOrientation(LinearLayout.VERTICAL);
+        linearLayout1.setGravity(Gravity.BOTTOM);
+        LinearLayout linearLayout2 = new LinearLayout(this);
+        linearLayout2.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout2.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+        float pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, getResources().getDisplayMetrics());
+        int intPixels = (int)pixels;
+        linearLayout2.setPadding(intPixels,0,0,0);
+        textViewLoading = new TextView(this);
+        textViewLoading.setText("Loading");
+        textViewLoading.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 45);
+        textViewLoading.setTextColor(Color.parseColor("#FFFFFF"));
+         pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, getResources().getDisplayMetrics());
+         intPixels = (int)pixels;
+        linearLayout2.addView(textViewLoading,new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, intPixels));
+        linearLayout1.addView(linearLayout2,new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        relativeLayout.addView(linearLayout1,new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+        // Get the background, which has been compiled to an AnimationDrawable object.
+        AnimationDrawable frameAnimation = (AnimationDrawable) imageView.getBackground();
+        // Start the animation (looped playback by default).
+        frameAnimation.start();
+
+        this.addContentView(relativeLayout,
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT));
 
         startAudio.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -98,6 +149,7 @@ public class GameActivity extends Activity implements SensorEventListener{
                                             //dismiss the dialog
                                         }
                                     });
+
                             dlgAlert.setCancelable(true);
                             dlgAlert.create().show();
                         }
@@ -144,6 +196,12 @@ public class GameActivity extends Activity implements SensorEventListener{
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    public void turnOffImageView(){
+        imageView.setVisibility(View.GONE);
+        textViewLoading.setVisibility(View.GONE);
 
     }
 }
