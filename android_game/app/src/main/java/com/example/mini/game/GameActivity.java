@@ -58,7 +58,7 @@ public class GameActivity extends Activity implements SensorEventListener{
 
         setContentView(glSurfaceView);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
+/*
         Button startAudio = new Button(this);
         Button stopAudio = new Button(this);
         Button backToFileChooser = new Button(this);
@@ -115,7 +115,7 @@ public class GameActivity extends Activity implements SensorEventListener{
                          finish();
                      }
                     }
-                });
+                });*/
 }
 
     @Override
