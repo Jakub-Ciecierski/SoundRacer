@@ -1,6 +1,8 @@
 package com.example.mini.game.util.animation;
 
 
+import android.util.Log;
+
 import com.example.mini.game.shapes.basic.Obstacle;
 import com.example.mini.game.shapes.complex.GameBoard;
 import com.example.mini.game.util.obstacles.AvailableObstacleBuffer;
@@ -48,6 +50,7 @@ public class ObstacleWorkshopAnimation {
         spawnCounter++;
         if (spawnCounter == GameBoard.OBSTACLE_GENERATION_TIME) {
             renderedObstacles.addToBuffer(availableObstacles.getObstacles(2));
+            Log.i("OBSTACLE_RRENDER", "OBSTACLE_RENDER");
             spawnCounter = 0;
         }
 

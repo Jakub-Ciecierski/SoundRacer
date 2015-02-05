@@ -82,7 +82,7 @@ public class GameBoard {
      * More vertices  and lower {@link #TIME_UNIT_LENGTH}, higher the accuracy.
      * Also with {@link #TIME_UNIT_LENGTH} sets {@link #road} length.
      */
-    public static final int ROAD_VERTICES_PER_BORDER = 200;
+    public static final int ROAD_VERTICES_PER_BORDER = 150;
     /**
      * Standard angle of a turn curve for turning right.
      */
@@ -100,7 +100,7 @@ public class GameBoard {
      * <p></p>
      * Can also be interpreted as space "between two vertices" of the road border.
      */
-    public static final float TIME_UNIT_LENGTH = GlobalState.FLUX_LENGTH/6;
+    public static final float TIME_UNIT_LENGTH = GlobalState.FLUX_LENGTH/5;
     /**
      * To save memory, class generates finite amount of obstacle
      * objects and then rearrange them on the scene using transformation
