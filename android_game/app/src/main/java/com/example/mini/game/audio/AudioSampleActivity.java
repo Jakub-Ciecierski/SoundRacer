@@ -11,9 +11,6 @@ import android.widget.LinearLayout;
 import com.example.mini.game.R;
 
 
-import com.example.mini.game.graphview.GraphView;
-import com.example.mini.game.graphview.GraphViewSeries;
-import com.example.mini.game.graphview.LineGraphView;
 
 
 public class AudioSampleActivity extends ActionBarActivity {

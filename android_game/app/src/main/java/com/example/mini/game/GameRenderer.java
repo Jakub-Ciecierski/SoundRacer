@@ -33,7 +33,7 @@ import static android.opengl.GLES20.glViewport;
  */
 public class GameRenderer implements GLSurfaceView.Renderer {
 
-    private boolean gameRunning = true;
+    protected boolean gameRunning = true;
     private boolean isFirstTime = true;
 
     private float[] mProjectionMatrix = new float[16];
@@ -70,6 +70,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GLES20.glClearDepthf(1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
     }
 
     @Override
@@ -86,16 +87,20 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
+        if(isFirstTime){
+            startAudio();
+            isFirstTime = false;
+        }
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClearDepthf(1.0f);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
+        gameBoard.render(getCurrentCameraMatrix());
+        if (currentCamera == CameraType.DEVELOPER_CAMERA)
+            cartesianCoordinates.draw(getCurrentCameraMatrix());
+        movementButtons.draw(mOrthogonalMatrix);
+
         if(gameRunning) {
-            GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            GLES20.glClearDepthf(1.0f);
-            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
-            gameBoard.render(getCurrentCameraMatrix());
-            if (currentCamera == CameraType.DEVELOPER_CAMERA)
-                cartesianCoordinates.draw(getCurrentCameraMatrix());
-            movementButtons.draw(mOrthogonalMatrix);
-
             if(GlobalState.isAnalyserDone()) {
                 GlobalState.createNextAudioAnalyser();
             }

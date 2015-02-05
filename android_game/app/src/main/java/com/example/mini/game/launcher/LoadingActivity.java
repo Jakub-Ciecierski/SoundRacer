@@ -48,11 +48,11 @@ public class LoadingActivity extends ActionBarActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                try {
+/*                try {
                     Thread.sleep(20000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
+                }*/
                 Log.i("LoadingThread", "Awaken");
                 startGame();
             }
