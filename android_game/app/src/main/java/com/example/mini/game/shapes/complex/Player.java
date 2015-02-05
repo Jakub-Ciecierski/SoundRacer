@@ -21,7 +21,7 @@ public class Player {
      * All information needed to draw model of Player are encapsulated in
      * ths field.
      */
-    ObjModel shipModel = new ObjModel(R.raw.player_ship);
+    ObjModel shipModel = new ObjModel(R.raw.player_ship, R.drawable.ship_texture);
     /**
      * Buffer between Dalvik's heap and the native one for vertices coordinates.
      */
@@ -30,6 +30,10 @@ public class Player {
      * Buffer between Dalvik's heap and the native one for drawing order.
      */
     private ShortBuffer facesVbo;
+    /**
+     * Buffer between Dalvik's heap and the native one for texture coordinates.
+     */
+    private FloatBuffer textureVbo;
     /**
      * Vector represents translation of the final drawing position of Player.
      * It is in the form: x, y, z.
@@ -48,9 +52,9 @@ public class Player {
 
     public Player() {
         /* Compile OpenGL program */
-        program = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.vertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
+        this.program = ShadersController.createProgram(
+                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.textureVertexShader),
+                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.textureFragmentShader));
         loadBuffers();
     }
 
@@ -62,44 +66,60 @@ public class Player {
         facesVbo = ByteBuffer.allocateDirect(shipModel.getFacesSize() * 2)
                 .order(ByteOrder.nativeOrder()).asShortBuffer().put(shipModel.getFaces());
         facesVbo.position(0);
+
+        textureVbo = ByteBuffer.allocateDirect(shipModel.getTexturesSize() * 4)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(shipModel.getTextures());
+        textureVbo.position(0);
     }
 
     public void draw(float[] mvpMatrix) {
         /* Use compiled program to refer shaders attributes/uniforms */
         GLES20.glUseProgram(program);
 
-        /* Get handle to vPosition */
-        int attributePositionId = GLES20.glGetAttribLocation(program, "vPosition");
-        /* Get handle to vColor */
-        int uniformColorId = GLES20.glGetUniformLocation(program, "vColor");
-        // get handle to shape's transformation matrix
-        int mvpId = GLES20.glGetUniformLocation(program, "uMVPMatrix");
+        int a_VertexPositionHandle = GLES20.glGetAttribLocation(program, "a_Position");
+        int a_TextureCoordinatesHandle = GLES20.glGetAttribLocation(program, "a_TextureCoordinates");
+        int u_TransformationMatrixHandle = GLES20.glGetUniformLocation(program, "u_Matrix");
+        int u_TextureSamplerHandle = GLES20.glGetUniformLocation(program, "u_TextureUnit");
 
         /* Enable handle (I don't get it ) */
-        GLES20.glEnableVertexAttribArray(attributePositionId);
+        GLES20.glEnableVertexAttribArray(a_VertexPositionHandle);
+        GLES20.glEnableVertexAttribArray(a_TextureCoordinatesHandle);
 
         /* Connect vPosition with our buffer */
-        GLES20.glVertexAttribPointer(attributePositionId, 3,
+        GLES20.glVertexAttribPointer(a_VertexPositionHandle, 3,
                 GLES20.GL_FLOAT, false,
         /*stride*/  0, verticesVbo);
+        GLES20.glVertexAttribPointer(a_TextureCoordinatesHandle, 2,
+                GLES20.GL_FLOAT, false,/*stride*/  0, textureVbo);
+
+
+        /* Active texture unit = 0 */
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+
+        /* Bind our loaded texture to this unit */
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, shipModel.getTextureId());
+
+        /* Set unit sampler in shader to use this unit */
+        GLES20.glUniform1i(u_TextureSamplerHandle, 0);
+
 
         // Pass the projection and view transformation to the shader
         float[] scratch = new float[16];
         Matrix.translateM(scratch, 0, mvpMatrix, 0, translate[0], translate[1], translate[2]);
         Matrix.rotateM(scratch, 0, rotate[0], rotate[1], rotate[2], rotate[3]);
+        GLES20.glUniformMatrix4fv(u_TransformationMatrixHandle, 1, false, scratch, 0);
 
-        GLES20.glUniformMatrix4fv(mvpId, 1, false, scratch, 0);
-
-        /* Set vColor to our color float table */
-        GLES20.glUniform4fv(uniformColorId, 1, new float[]{0, 1.0f, 0.5f, 1.0f}, 0);
 
         // Draw the cube
         GLES20.glDrawElements(
                 GLES20.GL_TRIANGLES, shipModel.getFacesSize(),
                 GLES20.GL_UNSIGNED_SHORT, facesVbo);
+//        int offset = 0;
+//        GLES20.glDrawArrays(GLES20.GL_TRIANGLES,0,shipModel.getVerticesSize());
 
         /* Safe bullshit */
-        GLES20.glDisableVertexAttribArray(attributePositionId);
+        GLES20.glDisableVertexAttribArray(a_VertexPositionHandle);
+        GLES20.glDisableVertexAttribArray(a_TextureCoordinatesHandle);
     }
 
     public void switchFrame() {

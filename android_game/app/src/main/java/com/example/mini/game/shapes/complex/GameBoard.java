@@ -82,7 +82,7 @@ public class GameBoard {
      * More vertices  and lower {@link #TIME_UNIT_LENGTH}, higher the accuracy.
      * Also with {@link #TIME_UNIT_LENGTH} sets {@link #road} length.
      */
-    public static final int ROAD_VERTICES_PER_BORDER = 100;
+    public static final int ROAD_VERTICES_PER_BORDER = 200;
     /**
      * Standard angle of a turn curve for turning right.
      */
@@ -100,7 +100,7 @@ public class GameBoard {
      * <p></p>
      * Can also be interpreted as space "between two vertices" of the road border.
      */
-    public static final float TIME_UNIT_LENGTH = GlobalState.FLUX_LENGTH;
+    public static final float TIME_UNIT_LENGTH = GlobalState.FLUX_LENGTH/6;
     /**
      * To save memory, class generates finite amount of obstacle
      * objects and then rearrange them on the scene using transformation
@@ -177,7 +177,7 @@ public class GameBoard {
      */
     public static final Vector3 HORIZON_RIBBON_DEFAULT_TRANSLATION = new Vector3(ROAD_WIDTH / 2,
             -HORIZON_RIBBON_HEIGHT * 0.4f,
-            ROAD_VERTICES_PER_BORDER * TIME_UNIT_LENGTH * 0.2f);
+            ROAD_VERTICES_PER_BORDER * TIME_UNIT_LENGTH * 0.1f);
     /**
      * If {@link #HORIZON_RIBBON_ANGLE} is different than 180(particularly, when it is > 180),
      * we are interested in slight rotation around Y axis.
