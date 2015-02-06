@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.mini.game.GameRenderer;
 import com.example.mini.game.R;
+import com.example.mini.game.util.RoadVertex;
 import com.example.mini.game.util.enums.TurnStage;
 import com.example.mini.game.util.ShadersController;
 import com.example.mini.game.util.TexturesLoader;
@@ -16,6 +17,8 @@ import com.example.mini.game.util.mathematics.Vector3;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.util.FloatMath.cos;
 import static android.util.FloatMath.sin;
@@ -28,21 +31,17 @@ public class Road {
     public static float totalZTranslation = 0.0f;
     private final int fogLightsProgram;
     private float[] color;
-    public static float[] vertices;
+//    public static float[] vertices;
+    public static List<RoadVertex> vertices = new ArrayList<RoadVertex>();
     private static FloatBuffer verticesVbo;
     private static FloatBuffer textureVbo;
     private static FloatBuffer normalsVbo;
-    private VBORoadAnimation vboRoadAnimation;
+    private static VBORoadAnimation vboRoadAnimation;
     private static Vector3 translation = new Vector3(0f, 0f, 0f);
     public float[] rotation = new float[]{0.0f, 1.0f, 1.0f, 1.0f};
     private int program;
     private int texture;
-    private static float[] textureWinding; /*= new float[]{
-        0.0f, 1.0f,     // bottom left
-                0.0f, 0.0f,     // top left
-                1.0f, 1.0f,     // bottom right
-                1.0f, 0.0f      // top right
-    };*/
+    private static float[] textureWinding;
     int fogProgram;
     public static TurnStage currentTurnStage = TurnStage.STRAIGHT;
     private static float[] normals;
@@ -75,36 +74,37 @@ public class Road {
      * @param vertices
      * @return
      */
-    private float[] generateNormals(float[] vertices) {
-        float[] normalPerVertex = new float[vertices.length];
+    private float[] generateNormals(List<RoadVertex> vertices) {
+        float[] normalPerVertex = new float[vertices.size()*3];
         /* All vertices but last two, since we do not see them we set
           (0,0,0) vectors as normals*/
-        for (int i = 0; i < vertices.length - 6; i += 6) {
+        int d =0;
+        for (int i = 0; i < vertices.size()-2; i+=2) {
             /* Vector from current inned vertex to next inner vertex */
             float[] innersVector = new float[]{
-                    vertices[i + 6] - vertices[i],
-                    vertices[i + 7] - vertices[i + 1],
-                    vertices[i + 8] - vertices[i + 2]
+                    vertices.get(i + 2).x - vertices.get(i).x,
+                    vertices.get(i + 2).y - vertices.get(i).y,
+                    vertices.get(i + 2).z - vertices.get(i).z
             };
             /* Vector from current inner vertex to corresponding outer vertex */
             float[] innerOuterVector = new float[]{
-                    vertices[i + 3] - vertices[i],
-                    vertices[i + 4] - vertices[i + 1],
-                    vertices[i + 5] - vertices[i + 2]
+                    vertices.get(i + 1).x - vertices.get(i).x,
+                    vertices.get(i + 1).y - vertices.get(i).y,
+                    vertices.get(i + 1).z - vertices.get(i).z
             };
             /* Calculate and normalize cross product of the two above */
             float[] crossProduct = Vector.crossProduct(innersVector, innerOuterVector);
             crossProduct = Vector.normalize(crossProduct);
 
             /* Assign normal to inner vertex */
-            normalPerVertex[i] = crossProduct[0];
-            normalPerVertex[i + 1] = crossProduct[1];
-            normalPerVertex[i + 2] = crossProduct[1];
+            normalPerVertex[d++] = crossProduct[0];
+            normalPerVertex[d++] = crossProduct[1];
+            normalPerVertex[d++] = crossProduct[1];
 
             /* Assign normal to outer vertex */
-            normalPerVertex[i + 3] = crossProduct[0];
-            normalPerVertex[i + 4] = crossProduct[1];
-            normalPerVertex[i + 5] = crossProduct[2];
+            normalPerVertex[d++] = crossProduct[0];
+            normalPerVertex[d++] = crossProduct[1];
+            normalPerVertex[d++] = crossProduct[2];
 
             //Log.i("i: " + i, "[" + crossProduct[0] + " , " + crossProduct[1] + " , " + crossProduct[2] + "]");
         }
@@ -150,7 +150,7 @@ public class Road {
         //GLES20.glUniform4fv(uniformColorId, 1, color, 0);
 
          /* Draw */
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertices.length / 3);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertices.size());
 
         /* Safe bullshit */
         GLES20.glDisableVertexAttribArray(a_VertexPositionHandle);
@@ -160,10 +160,10 @@ public class Road {
 
     public void switchFrame() {
         /* Main road update */
-        vertices = vboRoadAnimation.generateNextFrame(vertices, translation);
+//        vertices = vboRoadAnimation.generateNextFrame(vertices, translation);
         normals = generateNormals(vertices);
-        textureWinding = vboRoadAnimation.generateNextTexture(textureWinding);
-        loadBuffers();
+       // textureWinding = vboRoadAnimation.generateNextTexture(textureWinding);
+       // loadBuffers();
         /* Adapt translation vector to the next frame of the animation */
         vboRoadAnimation.translateByTimeUnit(translation);
 
@@ -173,14 +173,27 @@ public class Road {
         vertices = VBORoadAnimation.generateNewShit(vertices, translation);
         textureWinding = VBORoadAnimation.generateNextTexture(textureWinding);
         loadBuffers();
+//        vboRoadAnimation.translateByTimeUnit(translation);
     }
 
+    private static float[] transformRoadVerticesToFloatArray() {
+        float[] returnArray = new float[vertices.size()*3];
+        int i = 0;
+
+        for (RoadVertex f : vertices) {
+            returnArray[i++] = f.x;
+            returnArray[i++] = f.y;
+            returnArray[i++] = f.z;
+        }
+        return returnArray;
+    }
     /**
      *
      */
     private static void loadBuffers() {
-        verticesVbo = ByteBuffer.allocateDirect(vertices.length * 4)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(vertices);
+        float[] roadVertices = transformRoadVerticesToFloatArray();
+        verticesVbo = ByteBuffer.allocateDirect(roadVertices.length * 4)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(roadVertices);
         verticesVbo.position(0);
 
         textureVbo = ByteBuffer.allocateDirect(textureWinding.length * 4)
@@ -245,7 +258,7 @@ public class Road {
         //GLES20.glUniform4fv(uniformColorId, 1, color, 0);
 
          /* Draw */
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertices.length / 3);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertices.size());
 
         /* Safe bullshit */
         GLES20.glDisableVertexAttribArray(a_VertexPositionHandle);
@@ -317,7 +330,7 @@ public class Road {
         //GLES20.glUniform4fv(uniformColorId, 1, color, 0);
 
          /* Draw */
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertices.length / 3);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertices.size());
 
         /* Safe bullshit */
         GLES20.glDisableVertexAttribArray(a_VertexPositionHandle);
@@ -334,15 +347,16 @@ public class Road {
      * @return Array with coordinates of appropriate vertices.
      */
     public static float[] getVertices(int numberOfVertex) {
-        if (numberOfVertex > 0 && numberOfVertex <= GameBoard.ROAD_VERTICES_PER_BORDER) {
-            int k = (numberOfVertex - 1) * 6;
-            return new float[]{
-             /* Inner vertex */
-                    vertices[k], vertices[k + 1], (vertices[k + 2] - totalZTranslation),
-             /* Outer vertex */
-                    vertices[k + 3], vertices[k + 4], (vertices[k + 5] - totalZTranslation),
-            };
-        } else
-            return null;
+//        if (numberOfVertex > 0 && numberOfVertex <= GameBoard.ROAD_VERTICES_PER_BORDER) {
+//            int k = (numberOfVertex - 1) * 6;
+//            return new float[]{
+//             /* Inner vertex */
+//                    vertices[k], vertices[k + 1], (vertices[k + 2] - totalZTranslation),
+//             /* Outer vertex */
+//                    vertices[k + 3], vertices[k + 4], (vertices[k + 5] - totalZTranslation),
+//            };
+//        } else
+//            return null;
+        return null;
     }
 }

@@ -133,7 +133,7 @@ public class Bumper {
      */
     private static void interpolate(BumpType bumType) {
         // TODO determine length of bumps, Take 1 Flux length in time
-        final float INTERPOLATION_LENGTH = 100;
+        final float INTERPOLATION_LENGTH = 50;
         final int LENGTH_TO_PEAK = (int)INTERPOLATION_LENGTH / 2;
 
         // Skip first iteration which would make divider equal to 0

@@ -21,7 +21,7 @@ public class Player {
      * All information needed to draw model of Player are encapsulated in
      * ths field.
      */
-    ObjModel shipModel = new ObjModel(R.raw.player_ship, R.drawable.ship_texture);
+    ObjModel shipModel = new ObjModel(R.raw.samochod, R.drawable.ship_texture);
     /**
      * Buffer between Dalvik's heap and the native one for vertices coordinates.
      */
