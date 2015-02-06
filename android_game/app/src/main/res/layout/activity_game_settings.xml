@@ -30,12 +30,12 @@
     android:orientation="vertical"
     >
     <!--tools:context="com.example.mini.game.gameMenu.GameSettingsActivity"-->
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enable vibrations"
-        android:id="@+id/vibrationsCheckBox"
-        android:textColor="#FFFFFF"/>
+    <!--<CheckBox-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Enable vibrations"-->
+        <!--android:id="@+id/vibrationsCheckBox"-->
+        <!--android:textColor="#FFFFFF"/>-->
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,34 +55,41 @@
             android:layout_height="wrap_content"
             android:text="Accelerometer"
             android:checked="true"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF"
+            android:onClick="setAccelerometerControl"
+            />
+            <!--android:onClick="setAccelerometerControl"-->
+
         <RadioButton
             android:id="@+id/touchScreenOn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Touch screen"
             android:checked="false"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF"
+            android:onClick="setTouchScreenControl"
+            />
+        <!--android:onClick="setTouchScreenControl"-->
         </RadioGroup>
 
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+        <!--android:text="Accelerometer sensitivity"-->
+        <!--android:id="@+id/textView2"-->
+        <!--android:textColor="#FFFFFF"/>-->
+
+    <!--<SeekBar-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/seekBarAcc" />-->
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Accelerometer sensitivity"
-        android:id="@+id/textView2"
-        android:textColor="#FFFFFF"/>
-
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/seekBarAcc" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Touchscreen sensitivity"
+        android:text="Movement Speed"
         android:id="@+id/textView3"
         android:textColor="#FFFFFF"/>
 

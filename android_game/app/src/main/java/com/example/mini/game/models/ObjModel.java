@@ -139,10 +139,10 @@ public class ObjModel {
                             faces.add((short) (Short.parseShort(facePart.nextToken()) - 1));
                             uvOrder.add((short) (Short.parseShort(facePart.nextToken()) - 1));
                             //
-                            Log.i("FACES", "" + faces.get(faces.size() - 3)
-                                            + " " + faces.get(faces.size() - 2)
-                                            + " " + faces.get(faces.size() - 1)
-                            );
+//                            Log.i("FACES", "" + faces.get(faces.size() - 3)
+//                                            + " " + faces.get(faces.size() - 2)
+//                                            + " " + faces.get(faces.size() - 1)
+                           // );
                             break;
                         case QUADRILATERAL_FACE:
                             break;

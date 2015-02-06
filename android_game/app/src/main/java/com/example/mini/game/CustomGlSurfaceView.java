@@ -22,22 +22,12 @@ import static com.example.mini.game.logic.GlobalState.*;
 /**
  * Created by dybisz on 2014-11-23.
  */
-public class CustomGlSurfaceView extends GLSurfaceView implements SensorEventListener {
+public class CustomGlSurfaceView extends GLSurfaceView{
     MovementController movementController;
     public static Context context;
     public static float screenHeight;
     public static float screenWidth;
     protected GameRenderer gameRenderer;
-
-    private float mSensorX;
-    private float mSensorY;
-    private Display mDisplay;
-    private SensorManager sm;
-    private PowerManager mPowerManager;
-    private WindowManager mWindowManager;
-
-    private ShipMovement shipMovement;
-
     /**
      * @param context
      */
@@ -75,20 +65,4 @@ public class CustomGlSurfaceView extends GLSurfaceView implements SensorEventLis
 
     public void onClickstopAudio(){gameRenderer.stopAudio();}
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        Log.i("ROTATION_VECTOR_SENSOR", "[0]: " + event.values[0] + " [1]: " + event.values[1]
-                + " [2]: " + event.values[2]);
-        if(event.values[1]<-4) {
-            shipMovement = new ShipMovement(MoveType.MOVE_LEFT);
-        }
-        else if(event.values[1]>4){
-            shipMovement = new ShipMovement(MoveType.MOVE_RIGHT);
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
 }

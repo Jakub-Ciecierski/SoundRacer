@@ -18,8 +18,7 @@ public class ShipMovement implements Runnable {
     public ShipMovement(MoveType moveType) {
         this.moveType = moveType;
         //this.player = player;
-
-        //MovementController.stabilising = false;
+        MovementController.stabilising = false;
     }
 
     @Override

@@ -33,6 +33,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -47,6 +48,7 @@ import com.example.mini.game.logic.GlobalState;
 import com.example.mini.game.shapes.basic.Line;
 import com.example.mini.game.shapes.complex.Road;
 import com.example.mini.game.util.enums.MoveType;
+import com.example.mini.game.util.screenMovement.MovementController;
 import com.example.mini.game.util.screenMovement.ShipMovement;
 
 import org.w3c.dom.Text;
@@ -206,9 +208,16 @@ public class GameActivity extends Activity implements SensorEventListener{
 //                    }
 //                });
 //
+       // RadioButton radioButton = (RadioButton) findViewById(R.id.accelerometerOn);
         if(!GlobalState.isTouch){
+
+            //radioButton.setSelected(true);
             shipMovement = new ShipMovement(MoveType.MOVE_LEFT);
             (new Handler()).post(shipMovement);
+        }
+        else
+        {
+            //radioButton.setSelected(false);
         }
     }
     @Override
@@ -280,20 +289,23 @@ public class GameActivity extends Activity implements SensorEventListener{
     public void onSensorChanged(SensorEvent event) {
         Log.i("ROTATION_VECTOR_SENSOR", "[0]: " + event.values[0] + " [1]: " + event.values[1]
                 + " [2]: " + event.values[2]);
-        if(event.values[1]<(-4)) {
+        if(event.values[1]<(-2)) {
             if(!GlobalState.isOnMove) {
                 shipMovement = new ShipMovement(MoveType.MOVE_LEFT);
                 (new Handler()).post(shipMovement);
             }
+            GlobalState.isOnMove=true;
         }
-        else if(event.values[1]>4){
+        else if(event.values[1]>2){
             if(!GlobalState.isOnMove) {
                 shipMovement = new ShipMovement(MoveType.MOVE_RIGHT);
                 (new Handler()).post(shipMovement);
             }
+            GlobalState.isOnMove=true;
         }
         else
         {
+            MovementController.stabilising=true;
             GlobalState.isOnMove = false;
         }
     }
@@ -318,5 +330,11 @@ public class GameActivity extends Activity implements SensorEventListener{
         textViewSongName.setText("Currently playing:\""+name+"\"");
         else
         textViewSongName.setText("");
+    }
+    public void setAccelerometerControl(View view){
+        GlobalState.isTouch=false;
+    }
+    public void setTouchScreenControl(View view){
+        GlobalState.isTouch=true;
     }
 }
