@@ -31,12 +31,12 @@ public class GameBoard {
      * obstacles objects produced {@link #obstaclesWorkshop obstacle workshop}
      * or not.
      */
-    private static final boolean OBSTACLES_WORKSHOP_RENDERING = true;
+    private static final boolean OBSTACLES_WORKSHOP_RENDERING = false;
     /**
      * Represents a need for animation of the {@link #obstaclesWorkshop} or not.
      * See {@link #switchFrame()} method's body.
      */
-    private static final boolean OBSTACLES_WORKSHOP_ANIMATION = true;
+    private static final boolean OBSTACLES_WORKSHOP_ANIMATION = false;
     /**
      * Tells {@link #render(float[]) render method} whether draw
      * {@link #lattice lattice} or not.
