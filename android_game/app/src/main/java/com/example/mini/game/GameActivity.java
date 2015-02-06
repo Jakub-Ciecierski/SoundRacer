@@ -3,6 +3,7 @@ package com.example.mini.game;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -81,7 +83,7 @@ public class GameActivity extends Activity implements SensorEventListener{
         RelativeLayout relativeLayout = new RelativeLayout(this);
         LinearLayout ll = new LinearLayout(this);
         textViewSongName = new TextView(this);
-        textViewSongName.setText("songName");
+        textViewSongName.setText("");
         textViewSongName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
         textViewSongName.setTextColor(Color.parseColor("#FFFFFF"));
         float pixelsLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
@@ -121,7 +123,7 @@ public class GameActivity extends Activity implements SensorEventListener{
         textViewLoading.setText("Loading");
         textViewLoading.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 45);
         textViewLoading.setTextColor(Color.parseColor("#FFFFFF"));
-        pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
+        pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 70, getResources().getDisplayMetrics());
         intPixels = (int) pixels;
         linearLayout2.addView(textViewLoading, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, intPixels));
         linearLayout1.addView(linearLayout2, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -205,7 +207,7 @@ public class GameActivity extends Activity implements SensorEventListener{
         this.glSurfaceView.gameRenderer.gameRunning = false;
         GlobalState.pauseAudio();
 
-        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+        final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
         dlgAlert.setMessage("Do you want to exit the game ?");
         dlgAlert.setTitle("Exit");
         dlgAlert.setPositiveButton("Ok",
@@ -221,7 +223,8 @@ public class GameActivity extends Activity implements SensorEventListener{
                         GlobalState.playAudio();
                     }
                 });
-        dlgAlert.setCancelable(true);
+
+        dlgAlert.setCancelable(false);
         dlgAlert.create().show();
     }
 
@@ -261,5 +264,11 @@ public class GameActivity extends Activity implements SensorEventListener{
             textViewStartSongCounter.setVisibility(View.GONE);
         }
         textViewStartSongCounter.setText(Integer.toString(i));
+    }
+    public void changeSongNameText(String name){
+        if(name != null && name!="")
+        textViewSongName.setText("Currently playing:\""+name+"\"");
+        else
+        textViewSongName.setText("");
     }
 }

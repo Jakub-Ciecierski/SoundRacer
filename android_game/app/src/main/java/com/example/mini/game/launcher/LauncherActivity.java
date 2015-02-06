@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -31,6 +32,7 @@ import com.example.mini.game.gameMenu.MenuActivity;
 import com.example.mini.game.gameMenu.ResizeAnimation;
 import com.example.mini.game.gameMenu.StartGameActivity;
 import com.example.mini.game.logic.GlobalState;
+import com.example.mini.game.logic.OnSwipeTouchListener;
 
 import java.util.ArrayList;
 
@@ -152,7 +154,34 @@ public class LauncherActivity extends ActionBarActivity {
 
                 }
             }});
+        //Swipe Detector for chosen music
+        final LinearLayout chosenMusicLinearLayout = (LinearLayout) findViewById(R.id.chosenMusicLinearLayout);
+        chosenMusicLinearLayout.setOnTouchListener(new OnSwipeTouchListener(this) {
+            public void onSwipeLeft() {
+               // chosenMusicLinearLayout.performClick();
+            }
+            @Override
+            public void onClick_Click() {
+                chosenMusicLinearLayout.performClick();
+            }
 
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
+        final LinearLayout musicLinearLayout = (LinearLayout) findViewById(R.id.musicLinearLayout);
+        musicLinearLayout.setOnTouchListener(new OnSwipeTouchListener(this) {
+            public void onSwipeLeft() {
+            //    musicLinearLayout.performClick();
+            }
+            @Override
+            public void onClick_Click() {
+                musicLinearLayout.performClick();
+            }
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
     }
     //button click passing chosen file path
     public void starGameButton_Click(View view)

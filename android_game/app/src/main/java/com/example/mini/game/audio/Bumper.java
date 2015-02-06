@@ -181,7 +181,7 @@ public class Bumper {
         currentWriteIndex++;
     }
 
-/*    public static void reset() {
+    /*    public static void reset() {
         bumps = new ArrayList<Float>();
         currentReadIndex = 0;
         currentWriteIndex = -1;

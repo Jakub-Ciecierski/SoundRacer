@@ -17,6 +17,9 @@ import java.util.List;
  * Created by kuba on 1/4/15.
  */
 public class GlobalState {
+    // Current song for displaying title
+    static public Song currentSong;
+    static public boolean displaySongName=false;
     /**
      * GameActivity object for turning off imageView
      */
@@ -91,16 +94,32 @@ public class GlobalState {
         Song song = songList.get(currentPlayListIndexAudioPlayer);
         currentPlayListIndexAudioPlayer++;
         audioPlayer = new AudioPlayer(song.getPath(), SAMPLE_SIZE, SAMPLE_RATE);
-
+        currentSong = song;
         return true;
     }
 
     public static void startAudio() {
+        final String name  = GlobalState.currentSong.getName();
+        GlobalState.gameActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                GlobalState.gameActivity.changeSongNameText(name);
+                GlobalState.displaySongName=true;
+            }
+        });
         audioPlayer.startDecoding();
         audioPlayer.playAudio();
     }
 
     public static void playAudio() {
+        final String name  = GlobalState.currentSong.getName();
+        GlobalState.gameActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                GlobalState.gameActivity.changeSongNameText(name);
+                GlobalState.displaySongName=true;
+            }
+        });
         audioPlayer.playAudio();
     }
 

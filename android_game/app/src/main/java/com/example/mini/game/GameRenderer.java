@@ -38,8 +38,11 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     protected boolean gameRunning = true;
     private boolean timerEnd = false;
     private boolean isFirstTime = true;
+    private boolean isFirstTimeSongNameDisplay=true;
     private long beginningTime=0;
     private long currentTime;
+    private long beginningTimeSongName=0;
+    private long currentTimeSongName;
     private float[] mProjectionMatrix = new float[16];
     private float[] mOrthogonalMatrix = new float[16];
     private CartesianCoordinates cartesianCoordinates;
@@ -110,6 +113,23 @@ public class GameRenderer implements GLSurfaceView.Renderer {
             if counter == 3
         * */
 
+        if(GlobalState.displaySongName){
+            if(isFirstTimeSongNameDisplay){
+                currentTimeSongName=System.currentTimeMillis();
+                isFirstTimeSongNameDisplay=false;
+            }
+            if((System.currentTimeMillis()-currentTimeSongName)>3000){
+                GlobalState.gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        GlobalState.gameActivity.changeSongNameText("");
+                    }
+                });
+
+                isFirstTimeSongNameDisplay=true;
+                GlobalState.displaySongName=false;
+            }
+        }
          if(isFirstTime){
             beginningTime = System.currentTimeMillis();
             //startAudio();
@@ -180,6 +200,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private void returnToMenu() {
         Intent intent = new Intent(context, LauncherActivity.class);
         context.startActivity(intent);
+        GlobalState.gameActivity.finish();
     }
 
     private float[] getCurrentCameraMatrix() {
