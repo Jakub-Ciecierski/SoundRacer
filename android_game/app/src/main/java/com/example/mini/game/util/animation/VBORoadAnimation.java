@@ -1,11 +1,8 @@
 package com.example.mini.game.util.animation;
 
 
-import android.util.Log;
-
-import com.example.mini.game.audio.AudioAnalyser;
-import com.example.mini.game.audio.Bumper;
-import com.example.mini.game.logic.GlobalState;
+import com.example.mini.game.audio.BumperAnalyser;
+import com.example.mini.game.audio.analysis.Bump;
 import com.example.mini.game.shapes.complex.GameBoard;
 import com.example.mini.game.shapes.complex.Player;
 import com.example.mini.game.shapes.complex.Road;
@@ -17,9 +14,6 @@ import com.example.mini.game.util.mathematics.Vector3;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.util.FloatMath.cos;
-import static android.util.FloatMath.sin;
-import static android.util.FloatMath.sqrt;
 import static java.lang.Math.abs;
 
 /**
@@ -97,9 +91,10 @@ public class VBORoadAnimation {
         oldVertices.subList(0, 2).clear();
 
 
-        float value = Bumper.getNextBumper();
-        oldVertices.add(new RoadVertex(0,value,GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
-        oldVertices.add(new RoadVertex(GameBoard.ROAD_WIDTH,value,GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
+        //float value = BumperAnalyser.getNextBumper();
+        Bump bump = BumperAnalyser.getNextBumperObj();
+        oldVertices.add(new RoadVertex(0,bump.getValue(),GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
+        oldVertices.add(new RoadVertex(GameBoard.ROAD_WIDTH,bump.getValue(),GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
 
         Player.setTranslate(Player.getTranslationX(), Road.vertices.get(0).y + 2, Player.getTranslationZ());
         PlayerStaticSphereCamera.moveCameraBy(Player.getTranslationY() + 4);
@@ -116,8 +111,8 @@ public class VBORoadAnimation {
 
         switch (Road.currentTurnStage) {
             case STRAIGHT:
-                oldVertices.add(new RoadVertex(0,Bumper.getNextBumper(),GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
-                oldVertices.add(new RoadVertex(GameBoard.ROAD_WIDTH,Bumper.getNextBumper(),GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
+                oldVertices.add(new RoadVertex(0, BumperAnalyser.getNextBumper(),GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
+                oldVertices.add(new RoadVertex(GameBoard.ROAD_WIDTH, BumperAnalyser.getNextBumper(),GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
                 // Update help counter
                 timeCounter++;
                 rememberZ = GameBoard.TIME_UNIT_LENGTH * timeCounter;
@@ -140,9 +135,10 @@ public class VBORoadAnimation {
         //float[] vertices = new float[arrayOfVerticesLength];
         ArrayList vertices = new ArrayList();
         for (int i = 0; i < verticesPerBorder; i++) {
-            float value = Bumper.getNextBumper();
-            vertices.add(new RoadVertex(0.0f,value,GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
-            vertices.add(new RoadVertex(GameBoard.ROAD_WIDTH,value,GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
+            //float value = BumperAnalyser.getNextBumper();
+            Bump bump = BumperAnalyser.getNextBumperObj();
+            vertices.add(new RoadVertex(0.0f,bump.getValue(),GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
+            vertices.add(new RoadVertex(GameBoard.ROAD_WIDTH,bump.getValue(),GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
 
             /* Update vertex counter <=> position on road */
             timeCounter++;
