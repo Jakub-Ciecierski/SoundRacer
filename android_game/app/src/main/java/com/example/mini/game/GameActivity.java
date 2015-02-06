@@ -18,9 +18,12 @@ import android.hardware.SensorManager;
 import android.media.Image;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -43,6 +46,8 @@ import com.example.mini.game.launcher.Song;
 import com.example.mini.game.logic.GlobalState;
 import com.example.mini.game.shapes.basic.Line;
 import com.example.mini.game.shapes.complex.Road;
+import com.example.mini.game.util.enums.MoveType;
+import com.example.mini.game.util.screenMovement.ShipMovement;
 
 import org.w3c.dom.Text;
 
@@ -59,6 +64,15 @@ public class GameActivity extends Activity implements SensorEventListener{
         super.onStart();
     }
 
+    private float mSensorX;
+    private float mSensorY;
+    private Display mDisplay;
+    private SensorManager sm;
+    private PowerManager mPowerManager;
+    private WindowManager mWindowManager;
+
+    private ShipMovement shipMovement;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         GlobalState.gameActivity = this;
@@ -70,6 +84,20 @@ public class GameActivity extends Activity implements SensorEventListener{
         //getting Intent passed from LauncherActivity
         //Song song = (Song)getIntent().getExtras().getParcelable("song");
         super.onCreate(savedInstanceState);
+        // Get an instance of the SensorManager
+        sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if(sm.getSensorList(Sensor.TYPE_ACCELEROMETER).size()!=0){
+            Sensor s = sm.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
+            sm.registerListener(this,s, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+        // Get an instance of the PowerManager
+        mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
+
+        // Get an instance of the WindowManager
+        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        mDisplay = mWindowManager.getDefaultDisplay();
+
         glSurfaceView = new CustomGlSurfaceView(this);
         setContentView(glSurfaceView);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -178,6 +206,10 @@ public class GameActivity extends Activity implements SensorEventListener{
 //                    }
 //                });
 //
+        if(!GlobalState.isTouch){
+            shipMovement = new ShipMovement(MoveType.MOVE_LEFT);
+            (new Handler()).post(shipMovement);
+        }
     }
     @Override
     protected void onPause() {
@@ -248,6 +280,22 @@ public class GameActivity extends Activity implements SensorEventListener{
     public void onSensorChanged(SensorEvent event) {
         Log.i("ROTATION_VECTOR_SENSOR", "[0]: " + event.values[0] + " [1]: " + event.values[1]
                 + " [2]: " + event.values[2]);
+        if(event.values[1]<(-4)) {
+            if(!GlobalState.isOnMove) {
+                shipMovement = new ShipMovement(MoveType.MOVE_LEFT);
+                (new Handler()).post(shipMovement);
+            }
+        }
+        else if(event.values[1]>4){
+            if(!GlobalState.isOnMove) {
+                shipMovement = new ShipMovement(MoveType.MOVE_RIGHT);
+                (new Handler()).post(shipMovement);
+            }
+        }
+        else
+        {
+            GlobalState.isOnMove = false;
+        }
     }
 
     @Override

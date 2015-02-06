@@ -3,6 +3,7 @@ package com.example.mini.game.util.screenMovement;
 import android.os.Handler;
 import android.util.Log;
 
+import com.example.mini.game.logic.GlobalState;
 import com.example.mini.game.shapes.complex.Player;
 import com.example.mini.game.util.enums.MoveType;
 
@@ -11,12 +12,14 @@ import com.example.mini.game.util.enums.MoveType;
  */
 public class ShipMovement implements Runnable {
     private MoveType moveType;
+    private boolean isOnMove;
     private Player player;
     public static float movementSensitivity=0.1f;
     public ShipMovement(MoveType moveType) {
         this.moveType = moveType;
         //this.player = player;
-        MovementController.stabilising = false;
+
+        //MovementController.stabilising = false;
     }
 
     @Override
@@ -39,7 +42,13 @@ public class ShipMovement implements Runnable {
                 Log.i("ShipMovement", Float.toString(movementSensitivity));
                 break;
         }
-        if (MovementController.isPlayerOnMove)
+        if(GlobalState.isTouch) {
+           isOnMove =  MovementController.isPlayerOnMove;
+        }
+        else{
+            isOnMove = GlobalState.isOnMove;
+        }
+        if (isOnMove)
             (new Handler()).postDelayed(this, 10);
         else
             (new Handler()).postDelayed(new ShipStabilising(), 10);
