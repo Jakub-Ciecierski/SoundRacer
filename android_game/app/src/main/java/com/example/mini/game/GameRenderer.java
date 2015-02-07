@@ -1,5 +1,7 @@
 package com.example.mini.game;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.opengl.GLES20;
@@ -14,6 +16,7 @@ import android.view.View;
 import com.example.mini.game.audio.AudioAnalyser;
 import com.example.mini.game.audio.AudioPlayer;
 import com.example.mini.game.audio.NativeMP3Decoder;
+import com.example.mini.game.gameMenu.MenuActivity;
 import com.example.mini.game.launcher.LauncherActivity;
 import com.example.mini.game.logic.GlobalState;
 import com.example.mini.game.shapes.complex.CartesianCoordinates;
@@ -201,6 +204,14 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         Intent intent = new Intent(context, LauncherActivity.class);
         context.startActivity(intent);
         GlobalState.gameActivity.finish();
+
+//        Intent mStartActivity = new Intent(context, MenuActivity.class);
+//        int mPendingIntentId = 123456;
+//        PendingIntent mPendingIntent = PendingIntent.getActivity(context, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+//        AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+//        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+//        GlobalState.shutDownSystem();
+//        System.exit(0);
     }
 
     private float[] getCurrentCameraMatrix() {

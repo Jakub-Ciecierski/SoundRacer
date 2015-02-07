@@ -2,6 +2,7 @@ package com.example.mini.game.gameMenu;
 
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,10 +13,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 
 import com.example.mini.game.R;
 import com.example.mini.game.launcher.GIFView;
+import com.example.mini.game.logic.GlobalState;
+import com.example.mini.game.util.enums.MoveType;
 import com.example.mini.game.util.screenMovement.ShipMovement;
 
 public class GameSettingsActivity extends ActionBarActivity {
@@ -36,6 +40,16 @@ public class GameSettingsActivity extends ActionBarActivity {
 
         // Start the animation (looped playback by default).
         frameAnimation.start();
+        RadioButton radioButton = (RadioButton) findViewById(R.id.accelerometerOn);
+        if(!GlobalState.isTouch){
+
+            radioButton.setSelected(true);
+
+        }
+        else
+        {
+            radioButton.setSelected(false);
+        }
     }
     public void onBackPressed() {
     previousActivity();
@@ -59,5 +73,11 @@ public class GameSettingsActivity extends ActionBarActivity {
         startActivity(intent);
         this.overridePendingTransition(R.anim.push_right_in,R.anim.do_nothing);
         finish();
+    }
+    public void setAccelerometerControl(View view){
+        GlobalState.isTouch=false;
+    }
+    public void setTouchScreenControl(View view){
+        GlobalState.isTouch=true;
     }
 }

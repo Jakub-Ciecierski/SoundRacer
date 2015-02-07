@@ -208,7 +208,7 @@ public class GameActivity extends Activity implements SensorEventListener{
 //                    }
 //                });
 //
-       // RadioButton radioButton = (RadioButton) findViewById(R.id.accelerometerOn);
+        //RadioButton radioButton = (RadioButton) findViewById(R.id.accelerometerOn);
         if(!GlobalState.isTouch){
 
             //radioButton.setSelected(true);
@@ -331,10 +331,5 @@ public class GameActivity extends Activity implements SensorEventListener{
         else
         textViewSongName.setText("");
     }
-    public void setAccelerometerControl(View view){
-        GlobalState.isTouch=false;
-    }
-    public void setTouchScreenControl(View view){
-        GlobalState.isTouch=true;
-    }
+
 }
