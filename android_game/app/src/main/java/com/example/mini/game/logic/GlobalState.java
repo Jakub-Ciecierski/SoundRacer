@@ -20,7 +20,7 @@ public class GlobalState {
     /*
     type of ship steering
      */
-    static public boolean isTouch=false
+    static public boolean isTouch=true
             ;
     static public boolean isOnMove=false;
     // Current song for displaying title

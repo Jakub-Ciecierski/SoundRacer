@@ -166,7 +166,10 @@ public class Road {
        // loadBuffers();
         /* Adapt translation vector to the next frame of the animation */
         vboRoadAnimation.translateByTimeUnit(translation);
+<<<<<<< remotes/origin/dla_dybcia
 
+=======
+>>>>>>> local
     }
 
     public static void nextVertexRoad() {

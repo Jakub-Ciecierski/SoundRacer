@@ -135,6 +135,14 @@ public class VBORoadAnimation {
         //float[] vertices = new float[arrayOfVerticesLength];
         ArrayList vertices = new ArrayList();
         for (int i = 0; i < verticesPerBorder; i++) {
+<<<<<<< remotes/origin/dla_dybcia
+=======
+
+            float value = BumperAnalyser.getNextBumper();
+            vertices.add(new RoadVertex(0.0f,value,GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
+            vertices.add(new RoadVertex(GameBoard.ROAD_WIDTH,value,GameBoard.TIME_UNIT_LENGTH * timeCounter,true));
+
+>>>>>>> local
             //float value = BumperAnalyser.getNextBumper();
             Bump bump = BumperAnalyser.getNextBumperObj();
             vertices.add(new RoadVertex(0.0f,bump.getValue(),GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
