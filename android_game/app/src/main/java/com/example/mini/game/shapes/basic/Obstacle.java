@@ -52,9 +52,9 @@ public class Obstacle {
 
     public Obstacle(float width, float height, float depth, float[] color) {
         this.color = color;
-        program = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.vertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
+//        program = ShadersController.createProgram(
+//                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.vertexShader),
+//                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
         fogProgram = ShadersController.createProgram(
                 ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.fogVertexShader),
                 ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fogFragmentShader));

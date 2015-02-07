@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.mini.game.GameRenderer;
 import com.example.mini.game.R;
+import com.example.mini.game.shapes.basic.NowyKurwaObstacle;
 import com.example.mini.game.util.RoadVertex;
 import com.example.mini.game.util.enums.TurnStage;
 import com.example.mini.game.util.ShadersController;
@@ -13,6 +14,7 @@ import com.example.mini.game.util.TexturesLoader;
 import com.example.mini.game.util.animation.VBORoadAnimation;
 import com.example.mini.game.util.mathematics.Vector;
 import com.example.mini.game.util.mathematics.Vector3;
+import com.example.mini.game.util.obstacles.ChujTamRenderujOdbyty;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -36,6 +38,7 @@ public class Road {
     private static FloatBuffer verticesVbo;
     private static FloatBuffer textureVbo;
     private static FloatBuffer normalsVbo;
+    private static FloatBuffer obstacleVbo;
     private static VBORoadAnimation vboRoadAnimation;
     private static Vector3 translation = new Vector3(0f, 0f, 0f);
     public float[] rotation = new float[]{0.0f, 1.0f, 1.0f, 1.0f};
@@ -46,6 +49,7 @@ public class Road {
     public static TurnStage currentTurnStage = TurnStage.STRAIGHT;
     private static float[] normals;
     private float lightCounter = 0.0f;
+    public static ArrayList<NowyKurwaObstacle> obstacle = new ArrayList<NowyKurwaObstacle>();
 
     public Road(int verticesPerBorder, float timeUnitLength, float roadWidth, float[] color) {
         this.color = color;
@@ -166,6 +170,9 @@ public class Road {
        // loadBuffers();
         /* Adapt translation vector to the next frame of the animation */
         vboRoadAnimation.translateByTimeUnit(translation);
+        ChujTamRenderujOdbyty.translate();
+
+
 
     }
 
@@ -203,6 +210,13 @@ public class Road {
         normalsVbo = ByteBuffer.allocateDirect(normals.length * 4)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer().put(normals);
         normalsVbo.position(0);
+
+        ////////////////////////
+        float[] obstacleACoTam =
+        obstacle = ByteBuffer.allocateDirect(normals.length * 4)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(normals);
+        obstacle.position(0);
+
     }
 
     public void fogDraw(float[] mvpMatrix) {
@@ -336,6 +350,8 @@ public class Road {
         GLES20.glDisableVertexAttribArray(a_VertexPositionHandle);
         GLES20.glDisableVertexAttribArray(a_TextureCoordinatesHandle);
         GLES20.glDisableVertexAttribArray(a_Normal_HANDLE);
+
+
     }
 
     /**
@@ -358,5 +374,9 @@ public class Road {
 //        } else
 //            return null;
         return null;
+    }
+
+    public void renderObstacles() {
+
     }
 }

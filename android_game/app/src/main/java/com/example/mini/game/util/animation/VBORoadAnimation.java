@@ -142,7 +142,7 @@ public class VBORoadAnimation {
         for (int i = 0; i < verticesPerBorder; i++) {
             float value = Bumper.getNextBumper();
             vertices.add(new RoadVertex(0.0f,value,GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
-            vertices.add(new RoadVertex(GameBoard.ROAD_WIDTH,value,GameBoard.TIME_UNIT_LENGTH * timeCounter,false));
+            vertices.add(new RoadVertex(GameBoard.ROAD_WIDTH,value,GameBoard.TIME_UNIT_LENGTH * timeCounter,true));
 
             /* Update vertex counter <=> position on road */
             timeCounter++;
