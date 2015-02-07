@@ -8,6 +8,8 @@ package com.example.mini.game.audio;
  */
 public class Flux {
 
+    private static final float OBSTACLE_TOLERANCE = 0.75f;
+
     private float value;
     private FrequencySpectrum.SpectrumBand spectrumBand;
 
@@ -60,9 +62,10 @@ public class Flux {
      * @return
      *  True if flux is to be calculated for obstacle spawning
      */
-    public boolean isValidObstacle() {
+    public boolean isValidObstacle(float max) {
         if(spectrumBand != FrequencySpectrum.SpectrumBand.SUB_BASS
-                && spectrumBand != FrequencySpectrum.SpectrumBand.LOW_BASS) {
+                && spectrumBand != FrequencySpectrum.SpectrumBand.LOW_BASS
+                && value > max * OBSTACLE_TOLERANCE) {
             return true;
         }
         return false;

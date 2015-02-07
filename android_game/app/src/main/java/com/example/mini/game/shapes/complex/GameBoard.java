@@ -4,7 +4,7 @@ package com.example.mini.game.shapes.complex;
 import com.example.mini.game.GameRenderer;
 import com.example.mini.game.logic.GlobalState;
 import com.example.mini.game.util.mathematics.Vector3;
-import com.example.mini.game.util.obstacles.ChujTamRenderujOdbyty;
+
 
 /**
  * Class represents objects concerning player's movement,
@@ -267,7 +267,6 @@ public class GameBoard {
         if (ROAD_RENDERING) {
             //road.draw(mvpMatrix);
             road.lightsFogDraw(mvpMatrix);
-            ChujTamRenderujOdbyty.render(mvpMatrix);
         }
         if (OBSTACLES_WORKSHOP_RENDERING) {
             obstaclesWorkshop.draw(mvpMatrix);

@@ -211,11 +211,6 @@ public class Road {
                 .order(ByteOrder.nativeOrder()).asFloatBuffer().put(normals);
         normalsVbo.position(0);
 
-        ////////////////////////
-        float[] obstacleACoTam =
-        obstacle = ByteBuffer.allocateDirect(normals.length * 4)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(normals);
-        obstacle.position(0);
 
     }
 

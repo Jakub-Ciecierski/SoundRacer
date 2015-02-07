@@ -17,6 +17,12 @@ import java.util.List;
  * Created by kuba on 1/4/15.
  */
 public class GlobalState {
+    /*
+    type of ship steering
+     */
+    static public boolean isTouch=false
+            ;
+    static public boolean isOnMove=false;
     // Current song for displaying title
     static public Song currentSong;
     static public boolean displaySongName=false;

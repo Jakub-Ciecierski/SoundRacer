@@ -73,7 +73,7 @@ public class AudioAnalyser {
     // lengths of one flux in milliseconds
     public float FLUX_LENGTH_MS;
 
-    private Bumper bumper;
+    private BumperAnalyser bumper;
     private int bumperSampleSize;
     private int currentBumperIndex;
 
@@ -234,7 +234,7 @@ public class AudioAnalyser {
                             }
                             average /= bumperSampleSize;
 
-                            Bumper.computeBumps(fluxSample, average, max, min);
+                            BumperAnalyser.computeBumps(fluxSample, average, max, min);
 
                             Log.i("AudioAnalyser", "Notifying LoadingThread");
                             isReadyToGo = true;
@@ -274,7 +274,7 @@ public class AudioAnalyser {
                         currentBumperIndex++;
                     }
                     average /= fluxLeftOver;
-                    Bumper.computeBumps(fluxSample, average, max, min);
+                    BumperAnalyser.computeBumps(fluxSample, average, max, min);
 
                     Log.i("AudioAnalyser", "Notifying LoadingThread");
                     isReadyToGo = true;
@@ -409,7 +409,7 @@ public class AudioAnalyser {
         return isReadyToGo;
     }
 
-    public Bumper getBumper() {
+    public BumperAnalyser getBumper() {
         return this.bumper;
     }
 }
