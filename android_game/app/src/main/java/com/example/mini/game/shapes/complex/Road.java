@@ -107,6 +107,9 @@ public class Road {
 
 
     public void switchFrame() {
+//        vertices = VBORoadAnimation.generateNewShit(vertices, translation);
+//        textureWinding = VBORoadAnimation.generateNextTexture(textureWinding);
+//        loadBuffers();
     }
 
     public static void nextVertexRoad() {
@@ -142,6 +145,7 @@ public class Road {
     DRAW TEXTURES< LIGHTS AND FOOOOOOGGGGG MAAAAN!
      */
     public void lightsFogDraw(float[] mvpMatrix) {
+        //obstacles.draw(mvpMatrix);
            /* Use compiled program to refer shaders attributes/uniforms */
         GLES20.glUseProgram(fogLightsProgram);
 
@@ -209,8 +213,6 @@ public class Road {
         GLES20.glDisableVertexAttribArray(a_VertexPositionHandle);
         GLES20.glDisableVertexAttribArray(a_TextureCoordinatesHandle);
         GLES20.glDisableVertexAttribArray(a_Normal_HANDLE);
-
-        obstacles.draw(mvpMatrix);
     }
 
     /**

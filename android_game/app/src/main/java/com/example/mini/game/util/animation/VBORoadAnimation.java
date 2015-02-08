@@ -17,6 +17,7 @@ import com.example.mini.game.util.mathematics.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static java.lang.Math.abs;
 
@@ -24,8 +25,10 @@ import static java.lang.Math.abs;
  * Created by dybisz on 2014-11-30.
  */
 public class VBORoadAnimation {
+    private static int OBSTACLE_GENERATION_TIMER = 0;
     private final static int TEXTURE_COMPONENTS_PER_VERTEX = 2;
     private static float timeCounter = 0.0f;
+    static Random rand = new Random();
     /**
      * Updates given set of texture coordinates by 'rolling it'.
      * 'Rolling' means moving all texture coordinates down by one vertex and
@@ -54,14 +57,14 @@ public class VBORoadAnimation {
     public static RoadVerticesList generateNewShit(RoadVerticesList oldVertices, Vector3 translation) {
         oldVertices.remove(0, 2);
         Bump bump = BumperAnalyser.getNextBumperObj();
-        oldVertices.add(new RoadVertex(0, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * timeCounter, bump.isValidObstacle()));
-        oldVertices.add(new RoadVertex(GameBoard.ROAD_WIDTH, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * timeCounter, bump.isValidObstacle()));
-        if(bump.isValidObstacle()) {
-            Road.obstacles.add(new RoadObstacle(0.0f, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * timeCounter));
+        oldVertices.add(new RoadVertex(0, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * timeCounter, (timeCounter%25 == 0)));
+        oldVertices.add(new RoadVertex(GameBoard.ROAD_WIDTH, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * timeCounter, (timeCounter%25 == 0)));
+        if(timeCounter%25 == 0) {
+            Road.obstacles.add(new RoadObstacle(rand.nextInt(6)*GameBoard.ROAD_WIDTH/5, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * timeCounter));
         }
 
         Player.setTranslate(Player.getTranslationX(), Road.vertices.get(0).y + 2, Player.getTranslationZ());
-        PlayerStaticSphereCamera.moveCameraBy(Player.getTranslationY() + 4);
+        PlayerStaticSphereCamera.moveCameraBy(Player.getTranslationY()+3);
 
         //
         timeCounter++;
@@ -80,11 +83,12 @@ public class VBORoadAnimation {
         for (int i = 0; i < GameBoard.ROAD_VERTICES_PER_BORDER; i++) {
             Bump bump = BumperAnalyser.getNextBumperObj();
             /* 2 new vertices*/
-            Road.vertices.add(new RoadVertex(0.0f, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * timeCounter, true));
-            Road.vertices.add(new RoadVertex(GameBoard.ROAD_WIDTH, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * timeCounter, true));
+            Road.vertices.add(new RoadVertex(0.0f, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * timeCounter, (timeCounter%25 == 0)));
+            Road.vertices.add(new RoadVertex(GameBoard.ROAD_WIDTH, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * timeCounter, (timeCounter%25 == 0)));
             /* New bump if needed */
-            if (true) {
-                Road.obstacles.add(new RoadObstacle(0.0f, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * timeCounter));
+            if (timeCounter% 25 == 0) {
+                Road.obstacles.add(new RoadObstacle(
+                        rand.nextInt(6)*GameBoard.ROAD_WIDTH/5, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * timeCounter));
             }
             /* Update vertex counter <=> position on road */
             timeCounter++;

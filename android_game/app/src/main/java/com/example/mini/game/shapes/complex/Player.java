@@ -5,7 +5,6 @@ import android.opengl.Matrix;
 
 import com.example.mini.game.R;
 import com.example.mini.game.models.ObjModel;
-import com.example.mini.game.shapes.basic.Cube;
 import com.example.mini.game.util.ShadersController;
 
 import java.nio.ByteBuffer;
@@ -21,7 +20,7 @@ public class Player {
      * All information needed to draw model of Player are encapsulated in
      * ths field.
      */
-    ObjModel shipModel = new ObjModel(R.raw.samochod, R.drawable.ship_texture);
+    ObjModel shipModel = new ObjModel(R.raw.hope_final, R.drawable.ship_tex);
     /**
      * Buffer between Dalvik's heap and the native one for vertices coordinates.
      */
@@ -60,15 +59,15 @@ public class Player {
 
     private void loadBuffers() {
         verticesVbo = ByteBuffer.allocateDirect(shipModel.getVerticesSize() * 4)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(shipModel.getVertices());
+                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(shipModel.verticesAsFloats());
         verticesVbo.position(0);
 
-        facesVbo = ByteBuffer.allocateDirect(shipModel.getFacesSize() * 2)
-                .order(ByteOrder.nativeOrder()).asShortBuffer().put(shipModel.getFaces());
-        facesVbo.position(0);
+//        facesVbo = ByteBuffer.allocateDirect(shipModel.getFacesSize() * 2)
+//                .order(ByteOrder.nativeOrder()).asShortBuffer().put(shipModel.getFaces());
+//        facesVbo.position(0);
 
-        textureVbo = ByteBuffer.allocateDirect(shipModel.getTexturesSize() * 4)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(shipModel.getTextures());
+        textureVbo = ByteBuffer.allocateDirect(shipModel.getUvsSize() * 4)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(shipModel.uvAsFloats());
         textureVbo.position(0);
     }
 
@@ -111,11 +110,11 @@ public class Player {
 
 
         // Draw the cube
-        GLES20.glDrawElements(
-                GLES20.GL_TRIANGLES, shipModel.getFacesSize(),
-                GLES20.GL_UNSIGNED_SHORT, facesVbo);
+//        GLES20.glDrawElements(
+//                GLES20.GL_TRIANGLES, shipModel.getFacesSize(),
+//                GLES20.GL_UNSIGNED_SHORT, facesVbo);
 //        int offset = 0;
-//        GLES20.glDrawArrays(GLES20.GL_TRIANGLES,0,shipModel.getVerticesSize());
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES,0,shipModel.getVerticesSize()/3);
 
         /* Safe bullshit */
         GLES20.glDisableVertexAttribArray(a_VertexPositionHandle);

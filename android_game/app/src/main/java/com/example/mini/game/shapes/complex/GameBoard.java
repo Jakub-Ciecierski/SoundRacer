@@ -100,7 +100,7 @@ public class GameBoard {
      * <p></p>
      * Can also be interpreted as space "between two vertices" of the road border.
      */
-    public static final float TIME_UNIT_LENGTH = GlobalState.FLUX_LENGTH/5;
+    public static final float TIME_UNIT_LENGTH = GlobalState.FLUX_LENGTH/10;
     /**
      * To save memory, class generates finite amount of obstacle
      * objects and then rearrange them on the scene using transformation
@@ -268,7 +268,7 @@ public class GameBoard {
             road.lightsFogDraw(mvpMatrix);
         }
         if (OBSTACLES_WORKSHOP_RENDERING) {
-            obstaclesWorkshop.draw(mvpMatrix);
+            //obstaclesWorkshop.draw(mvpMatrix);
         }
         if(PLAYER_RENDERING) {
             player.draw(mvpMatrix);
@@ -288,10 +288,10 @@ public class GameBoard {
             road.switchFrame();
         }
         if (LATTICE_ANIMATION) {
-            lattice.switchFrame();
+            //lattice.switchFrame();
         }
         if (OBSTACLES_WORKSHOP_ANIMATION) {
-            obstaclesWorkshop.switchFrame();
+            //obstaclesWorkshop.switchFrame();
         }
         if(PLAYER_ANIMATION) {
             player.switchFrame();

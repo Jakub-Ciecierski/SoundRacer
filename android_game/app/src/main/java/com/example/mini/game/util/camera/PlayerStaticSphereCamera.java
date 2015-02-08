@@ -10,7 +10,7 @@ import com.example.mini.game.util.mathematics.Vector3;
  */
 public abstract class PlayerStaticSphereCamera {
     private static float[] cameraMatrix = new float[16];
-    private static Vector3 eyeCoordinates = new Vector3(10f, 6f, -3f);
+    private static Vector3 eyeCoordinates = new Vector3(10f, 4f, -3f);
     private static Vector3 lookAtCoordinates = new Vector3(10f, 4f, 6f);
     private static Vector3 upVector = new Vector3(0f, 1f, 0f);
 

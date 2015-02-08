@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.example.mini.game.CustomGlSurfaceView;
 import com.example.mini.game.GameRenderer;
-import com.example.mini.game.R;
 import com.example.mini.game.util.TexturesLoader;
 
 import java.io.BufferedReader;
@@ -16,77 +15,29 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 /**
- * Class has huge constraints i.e.:<p/>
- * >> it loads only vertices coordinates and faces drawing order<p/>
- * >> faces coordinates must be length 3 i.e all face must be a triangle.
- * <p><p/>
- * When we consider Blender program, all faces must be 'beautify' and no textures,
- * lights, animation etc. can be applied. Just a raw model.
- * <p></p>
- * Created by dybisz on 2014-12-11.
+ * Created by user on 2015-02-08.
  */
 public class ObjModel {
-    /**
-     * Vertex prefix in .obj standard.
-     */
-    private static final String VERTEX = "v";
-    /**
-     * Face prefix in .obj standard.
-     */
-    private static final String FACE = "f";
-    /**
-     * UV prefix in .obj standard.
-     */
-    private static final String UV = "vt";
-    /**
-     * Constant indicates that we deal with  triangle face.
-     */
-    private static final int TRIANGLE_FACE = 4;
-    /**
-     * Constant indicates that we deal with quadrilateral face
-     * and some extra actions need to be performed.
-     */
-    private static final int QUADRILATERAL_FACE = 5;
+    //
+    List<Integer> vertexIndices = new ArrayList<Integer>();
+    List<Integer> uvIndices = new ArrayList<Integer>();
+    List<Integer> normalIndices = new ArrayList<Integer>();
+    // Temp
+    List<Vec3> temp_vertices = new ArrayList<Vec3>();
+    List<Vec2> temp_uvs = new ArrayList<Vec2>();
+    List<Vec3> temp_normals = new ArrayList<Vec3>();
+    // Out
+    List<Vec3> out_vertices = new ArrayList<Vec3>();
+    List<Vec2> out_uvs = new ArrayList<Vec2>();
+    List<Vec3> out_normals = new ArrayList<Vec3>();
 
-    /**
-     * Array for vertices coordinates.
-     */
-    private List<Float> vertices = new ArrayList<Float>();
-    /**
-     * Array for faces drawing order.
-     */
-    private List<Short> faces = new ArrayList<Short>();
-    /**
-     * Array for UV coordinates. Just to store them - no order involved.
-     */
-    private List<Float> uvCoordinates = new ArrayList<Float>();
-    public List<Float> tempUV;
-    /**
-     * Array for uvCoordinates<->vertex association. In other words mapping
-     * to the {@link #faces} telling when, which uvCoordinates need to be drawn.ł
-     */
-    private List<Short> uvOrder = new ArrayList<Short>();
-    /**
-     * Texture ID in OpenGL program
-     */
     private int textureId;
 
-    /**
-     * Main constructor.
-     *
-     * @param objId Name of an .obj file to load.
-     */
     public ObjModel(int objId, int texId) {
         processObj(objId);
         this.textureId = TexturesLoader.loadTexture(GameRenderer.context, texId);
     }
 
-    /**
-     * Method parse .obj and extract information(for now only vertices and faces).
-     *
-     * @param objId Name of an .obj file to process.
-     *              Given file must be in models/obj folder.
-     */
     private void processObj(int objId) {
         BufferedReader buffer;
 
@@ -103,9 +54,10 @@ public class ObjModel {
 
         String line;
 
+
+        // split data
         try {
             while ((line = buffer.readLine()) != null) {
-                /* Split current line into tokes separated by whitespaces */
                 StringTokenizer parts = new StringTokenizer(line, " ");
 
                 /* If line is empty skip it */
@@ -116,132 +68,131 @@ public class ObjModel {
                 /* First token in the line is always a type of data */
                 String type = parts.nextToken();
 
-                /* Depending on data type we perform adequate actions */
-                if (type.equals(VERTEX)) {
-                    vertices.add(Float.parseFloat(parts.nextToken()));
-                    vertices.add(Float.parseFloat(parts.nextToken()));
-                    vertices.add(Float.parseFloat(parts.nextToken()));
-                } else if (type.equals(FACE)) {
-                    switch (tokensCount) {
-                        case TRIANGLE_FACE:
-                            /* Split next token to vertex and uv*/
-
-                            // X
-                            StringTokenizer facePart = new StringTokenizer(parts.nextToken(), "/");
-                            faces.add((short) (Short.parseShort(facePart.nextToken()) - 1));
-                            uvOrder.add((short) (Short.parseShort(facePart.nextToken()) - 1));
-                            // Y
-                            facePart = new StringTokenizer(parts.nextToken(), "/");
-                            faces.add((short) (Short.parseShort(facePart.nextToken()) - 1));
-                            uvOrder.add((short) (Short.parseShort(facePart.nextToken()) - 1));
-                            // Z
-                            facePart = new StringTokenizer(parts.nextToken(), "/");
-                            faces.add((short) (Short.parseShort(facePart.nextToken()) - 1));
-                            uvOrder.add((short) (Short.parseShort(facePart.nextToken()) - 1));
-                            //
-//                            Log.i("FACES", "" + faces.get(faces.size() - 3)
-//                                            + " " + faces.get(faces.size() - 2)
-//                                            + " " + faces.get(faces.size() - 1)
-                           // );
-                            break;
-                        case QUADRILATERAL_FACE:
-                            break;
+                if (type.equals("v")) {
+                    Vec3 vertex = new Vec3(Float.parseFloat(parts.nextToken()),
+                            Float.parseFloat(parts.nextToken()),
+                            Float.parseFloat(parts.nextToken()));
+                    temp_vertices.add(vertex);
+                } else if (type.equals("vt")) {
+                    Vec2 uv = new Vec2(Float.parseFloat(parts.nextToken()),
+                            1.0f - Float.parseFloat(parts.nextToken()));
+                    temp_uvs.add(uv);
+                } else if (type.equals("vn")) {
+                    Vec3 normal = new Vec3(Float.parseFloat(parts.nextToken()),
+                            Float.parseFloat(parts.nextToken()),
+                            Float.parseFloat(parts.nextToken()));
+                    temp_normals.add(normal);
+                } else if(type.equals("f")) {
+                    for(int i=0; i < 3 ; i++) {
+                        StringTokenizer faceParts = new StringTokenizer(parts.nextToken(), "/");
+                        // vertex
+                        vertexIndices.add(Integer.parseInt(faceParts.nextToken()));
+                        // texture/uv
+                        uvIndices.add(Integer.parseInt(faceParts.nextToken()));
+                        // normals
+                        normalIndices.add(Integer.parseInt(faceParts.nextToken()));
                     }
-                } else if (type.equals(UV)) {
-                    uvCoordinates.add(Float.parseFloat(parts.nextToken()));
-                    uvCoordinates.add(1.0f - Float.parseFloat(parts.nextToken()));
-                    // CHECK
-//                    Log.i("UV COORDS ADDED", "" + uvCoordinates.get(uvCoordinates.size() - 2)
-//                                    + " " + uvCoordinates.get(uvCoordinates.size() - 1)
-//                    );
                 }
+
             }
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
 
-        /* Map UV coordinates to draw order */
-        List<Float> newUvOrder = new ArrayList<Float>();
-//        for (int i = 0; i < uvOrder.size(); i++) {
-//            int currentUvIndex = uvOrder.get(i);
-//            //Log.i("current_index:","" + currentUvIndex);
-//            // -------------------
-//            newUvOrder.add(uvCoordinates.get(2 * currentUvIndex));
-//            newUvOrder.add(uvCoordinates.get((2 * currentUvIndex) + 1));
-//
-//            Log.i("INDEX", "i: " + i +" index: " + currentUvIndex + " U: " + newUvOrder.get(newUvOrder.size() - 2)
-//                            + " V: " + newUvOrder.get(newUvOrder.size() - 1)
-//            );
-//
-//        }
-
-        for(int i =0; i < vertices.size(); i++) {
-
+        for(Vec3 v: temp_vertices){
+            Log.i("TEMP_VERTICES", "x: " + v.x + " y: " + v.y + " z: " + v.z);
         }
 
-        tempUV = newUvOrder;
-        /***********************************/
-    }
-
-    /**
-     * Returns list of vertices coordinates as a float array.
-     *
-     * @return Float array of vertices coordinates.
-     */
-    public float[] getVertices() {
-        float[] floatVertices = new float[vertices.size()];
-        for (int i = 0; i < vertices.size(); i++) {
-            floatVertices[i] = vertices.get(i);
+        // process data
+        ///////////////////////
+        // vertices
+        for(int i = 0; i < vertexIndices.size(); i++) {
+            Log.i("VERTEX_INDICES","" + vertexIndices.get(i));
+            Integer vertexIndex = vertexIndices.get(i);
+            Vec3 vertex = temp_vertices.get(vertexIndex-1);
+            out_vertices.add(vertex);
         }
-        return floatVertices;
-    }
-
-    /**
-     * Returns list of faces draw order coordinates as a float array.
-     *
-     * @return Float array of faces draw order.
-     */
-    public short[] getFaces() {
-        short[] floatFaces = new short[faces.size()];
-        for (int i = 0; i < faces.size(); i++) {
-            floatFaces[i] = faces.get(i);
+        // uv's
+        for(int i = 0; i < uvIndices.size(); i++) {
+            Integer uvIndex = uvIndices.get(i);
+            Vec2 uv = temp_uvs.get(uvIndex-1);
+            out_uvs.add(uv);
         }
-        return floatFaces;
-    }
-
-    /**
-     * Returns size of {@link #vertices} array.
-     *
-     * @return Size of {@link #vertices}.
-     */
-    public int getVerticesSize() {
-        return vertices.size();
-    }
-
-    public float[] getTextures() {
-        float[] floatTextures = new float[tempUV.size()];
-        for (int i = 0; i < tempUV.size(); i++) {
-            floatTextures[i] = tempUV.get(i);
+        // normals
+        for(int i = 0; i < normalIndices.size(); i++) {
+            Integer normalIndex = normalIndices.get(i);
+            Vec3 normal = temp_normals.get(normalIndex-1);
+            out_normals.add(normal);
         }
-        return floatTextures;
     }
 
-    public int getTexturesSize() {
-        return tempUV.size();
+    public float[] verticesAsFloats() {
+       float[] floats = new float[out_vertices.size()*3];
+        int d = 0;
+        for(Vec3 v : out_vertices) {
+            floats[d++] = v.x;
+            floats[d++] = v.y;
+            floats[d++] = v.z;
+        }
+        return floats;
+    }
+    public float[] uvAsFloats() {
+        float[] floats = new float[out_uvs.size()*2];
+        int d = 0;
+        for(Vec2 uv : out_uvs) {
+            floats[d++] = uv.x;
+            floats[d++] = uv.y;
+        }
+        return floats;
     }
 
-
-    /**
-     * Returns size of {@link #faces} array.
-     *
-     * @return Size of {@link #faces}.
-     */
-    public int getFacesSize() {
-        return faces.size();
+    public float[] normalsAsFloats() {
+        float[] floats = new float[out_normals.size()*3];
+        int d = 0;
+        for(Vec3 n : out_normals) {
+            floats[d++] = n.x;
+            floats[d++] = n.y;
+            floats[d++] = n.z;
+        }
+        return floats;
     }
 
     public int getTextureId() {
         return textureId;
+    }
+
+    public int getVerticesSize() {
+        return out_vertices.size()*3;
+    }
+
+    public int getUvsSize() {
+        return out_uvs.size()*2;
+    }
+
+    public int getNormalsSize() {
+        return out_normals.size()*3;
+    }
+}
+
+class Vec3 {
+    public float x;
+    public float y;
+    public float z;
+
+    public Vec3(float x, float y, float z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+}
+
+class Vec2 {
+    public float x;
+    public float y;
+
+    public Vec2(float x, float y) {
+        this.x = x;
+        this.y = y;
     }
 }
