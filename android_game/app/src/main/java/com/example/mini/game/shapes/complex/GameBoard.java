@@ -25,7 +25,7 @@ public class GameBoard {
      * Represents a need for animation of the {@link #road}or not.
      * See {@link #switchFrame()} method's body.
      */
-    private static final boolean ROAD_ANIMATION = false;
+    private static final boolean ROAD_ANIMATION = true;
     /**
      * Tells {@link #render(float[]) render method} whether draw
      * obstacles objects produced {@link #obstaclesWorkshop obstacle workshop}
