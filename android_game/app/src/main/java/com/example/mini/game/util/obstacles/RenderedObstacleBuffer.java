@@ -27,7 +27,7 @@ public class RenderedObstacleBuffer {
      * so maximal position which we can draw is number of vertical lines.
      */
     private int maxRandomNumber = (int) (Math.abs(GameBoard.LATTICE_BOTTOM_RIGHT_CORNER.getX()
-            - GameBoard.LATTICE_WIDTH) / GameBoard.LATTICE_GAP_LENGTH);
+            - 200) / GameBoard.LATTICE_GAP_LENGTH);
 
     /**
      * Method generate integers from <0, {@link #maxRandomNumber}) interval.

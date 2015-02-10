@@ -36,13 +36,13 @@ public class Road {
     private static FloatBuffer verticesVbo;
     private static FloatBuffer textureVbo;
     private static FloatBuffer normalsVbo;
-    private static VBORoadAnimation vboRoadAnimation = new VBORoadAnimation();
+
     public static Vector3 translation = new Vector3(0f, 0f, 0f);
     public float[] rotation = new float[]{0.0f, 1.0f, 1.0f, 1.0f};
-    private int program;
+
     private int texture;
     private static float[] textureWinding;
-    int fogProgram;
+
     public static TurnStage currentTurnStage = TurnStage.STRAIGHT;
     private static float[] normals;
     private float lightCounter = 0.0f;
@@ -54,7 +54,7 @@ public class Road {
                 ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.textureLightsFogFragmentShader));
         this.texture = TexturesLoader.loadTexture(GameRenderer.context, R.drawable.road_alternative);
         this.textureWinding = TexturesLoader.generateUvForTriangleStrip(verticesPerBorder);
-        vboRoadAnimation.generateStartShape();
+        this.vertices.generateStartShape();
         this.normals = generateNormals(vertices);
         loadBuffers();
     }
@@ -98,9 +98,7 @@ public class Road {
             normalPerVertex[d++] = crossProduct[1];
             normalPerVertex[d++] = crossProduct[2];
 
-            //Log.i("i: " + i, "[" + crossProduct[0] + " , " + crossProduct[1] + " , " + crossProduct[2] + "]");
         }
-        //Log.i("!!!!!!!!!!!!!!!IMPORTANT ", "" + normalPerVertex[normalPerVertex.length - 2]);
         return normalPerVertex;
     }
 
@@ -108,18 +106,13 @@ public class Road {
 
     public void switchFrame() {
 //        vertices = VBORoadAnimation.generateNewShit(vertices, translation);
-//        textureWinding = VBORoadAnimation.generateNextTexture(textureWinding);
+        textureWinding = VBORoadAnimation.generateNextTexture(textureWinding);
 //        loadBuffers();
     }
 
     public static void nextVertexRoad() {
-        if (vertices.get(0).obstacleIsAssigned ||
-                vertices.get(1).obstacleIsAssigned) {
-            Road.obstacles.remove(0);
-            Log.i("REMOVING OBSTACLE", "REMOVING OBSTACLE");
-        }
-        vertices = VBORoadAnimation.generateNewShit(vertices, translation);
-        textureWinding = VBORoadAnimation.generateNextTexture(textureWinding);
+        vertices = VBORoadAnimation.generateNewShit(vertices);
+//        textureWinding = VBORoadAnimation.generateNextTexture(textureWinding);
         loadBuffers();
 //        vboRoadAnimation.translateByTimeUnit(translation);
     }

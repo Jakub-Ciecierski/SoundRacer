@@ -100,15 +100,7 @@ public class ObjModel {
             return;
         }
 
-        for(Vec3 v: temp_vertices){
-            Log.i("TEMP_VERTICES", "x: " + v.x + " y: " + v.y + " z: " + v.z);
-        }
-
-        // process data
-        ///////////////////////
-        // vertices
         for(int i = 0; i < vertexIndices.size(); i++) {
-            Log.i("VERTEX_INDICES","" + vertexIndices.get(i));
             Integer vertexIndex = vertexIndices.get(i);
             Vec3 vertex = temp_vertices.get(vertexIndex-1);
             out_vertices.add(vertex);

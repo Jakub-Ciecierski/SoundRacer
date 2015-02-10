@@ -38,16 +38,6 @@ public class GameBoard {
      */
     private static final boolean OBSTACLES_WORKSHOP_ANIMATION = false;
     /**
-     * Tells {@link #render(float[]) render method} whether draw
-     * {@link #lattice lattice} or not.
-     */
-    private static final boolean LATTICE_RENDERING = false;
-    /**
-     * Represents a need for animation of the {@link #lattice} or not.
-     * See {@link #switchFrame()} method's body.
-     */
-    private static final boolean LATTICE_ANIMATION = false;
-    /**
      * TODO
      */
     private static final boolean HORIZON_RIBBON_RENDERING = true;
@@ -68,7 +58,7 @@ public class GameBoard {
      * proceed with animation.
      * Bigger this constant slower the animation of objects.
      */
-    private static final float ANIMATION_FREQUENCY = 3.0f;
+    private static final float ANIMATION_FREQUENCY = 1.0f;
     /**
      * Specifies width of the generated road.
      */
@@ -100,7 +90,7 @@ public class GameBoard {
      * <p></p>
      * Can also be interpreted as space "between two vertices" of the road border.
      */
-    public static final float TIME_UNIT_LENGTH = GlobalState.FLUX_LENGTH/10;
+    public static final float TIME_UNIT_LENGTH = GlobalState.FLUX_LENGTH/5;
     /**
      * To save memory, class generates finite amount of obstacle
      * objects and then rearrange them on the scene using transformation
@@ -111,15 +101,6 @@ public class GameBoard {
      * Color of whole lattice in RGBA format.
      */
     public static final float[] LATTICE_COLOR = new float[]{0.5f, 0.5f, 0.5f, 0.5f};
-    /**
-     * Width of the {@link #lattice}. Should be equal to {@link #ROAD_WIDTH}.
-     */
-    public static final float LATTICE_WIDTH = 20.0f;
-    /**
-     * Length of the {@link #lattice}. Should be equal to {@link #ROAD_VERTICES_PER_BORDER}
-     * times {@link #TIME_UNIT_LENGTH}.
-     */
-    public static final float LATTICE_LENGTH = 100.f;
     /**
      * States what are the coordinates of the bottom right corner of the lattice.
      */
@@ -218,12 +199,6 @@ public class GameBoard {
      */
     private ObstaclesWorkshop obstaclesWorkshop;
     /**
-     * Encapsulation of all methods concerning road.
-     * See {@link  com.example.mini.game.shapes.complex.Lattice Lattice class}
-     * for more details.
-     */
-    private Lattice lattice;
-    /**
      * TODO
      */
     private HorizonRibbon horizonRibbon;
@@ -240,7 +215,6 @@ public class GameBoard {
     public GameBoard() {
         // do poprawki road
         road = new Road(ROAD_VERTICES_PER_BORDER, TIME_UNIT_LENGTH, ROAD_WIDTH, ROAD_COLOR);
-        lattice = new Lattice();
         obstaclesWorkshop = new ObstaclesWorkshop();
         horizonRibbon = new HorizonRibbon();
         player = new Player();
@@ -260,9 +234,6 @@ public class GameBoard {
         if (HORIZON_RIBBON_RENDERING) {
             horizonRibbon.draw(mvpMatrix);
         }
-        if (LATTICE_RENDERING) {
-            lattice.draw(mvpMatrix);
-        }
         if (ROAD_RENDERING) {
             //road.draw(mvpMatrix);
             road.lightsFogDraw(mvpMatrix);
@@ -278,7 +249,6 @@ public class GameBoard {
 
     /**
      * Proceed with animation of objects with appropriate constants value.
-     * See {@link #LATTICE_ANIMATION this constant} for example.
      */
     public void switchFrame() {
         if (HORIZON_RIBBON_ANIMATION) {
@@ -286,9 +256,6 @@ public class GameBoard {
         }
         if (ROAD_ANIMATION) {
             road.switchFrame();
-        }
-        if (LATTICE_ANIMATION) {
-            //lattice.switchFrame();
         }
         if (OBSTACLES_WORKSHOP_ANIMATION) {
             //obstaclesWorkshop.switchFrame();

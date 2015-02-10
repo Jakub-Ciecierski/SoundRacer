@@ -1,6 +1,11 @@
 package com.example.mini.game.util.lists;
 
+import com.example.mini.game.audio.BumperAnalyser;
+import com.example.mini.game.audio.analysis.Bump;
+import com.example.mini.game.shapes.basic.RoadObstacle;
 import com.example.mini.game.shapes.basic.RoadVertex;
+import com.example.mini.game.shapes.complex.GameBoard;
+import com.example.mini.game.shapes.complex.Road;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,5 +84,36 @@ public class RoadVerticesList {
      */
     public synchronized  int length() {
         return vertices.size();
+    }
+
+    public synchronized float getHeight(float v) {
+        int d = 0;
+        while (d* GameBoard.TIME_UNIT_LENGTH < v) {
+            d++;
+        }
+        return vertices.get(d*2).y;
+    }
+
+    public synchronized void keepInPosition() {
+        int vertexCounter = 0;
+        int d = 0;
+        for (int i = 0; i < GameBoard.ROAD_VERTICES_PER_BORDER; i++) {
+            vertices.get(d++).z = vertexCounter * GameBoard.TIME_UNIT_LENGTH;
+            vertices.get(d++).z = vertexCounter * GameBoard.TIME_UNIT_LENGTH;
+            vertexCounter++;
+        }
+    }
+
+    /**
+     * At the beginning we just create a road shape for further animation.
+     */
+    public void generateStartShape() {
+        int vertexCounter = 0;
+        for (int i = 0; i < GameBoard.ROAD_VERTICES_PER_BORDER; i++) {
+            Bump bump = BumperAnalyser.getNextBumperObj();
+            add(new RoadVertex(0.0f, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * vertexCounter, false));
+            add(new RoadVertex(GameBoard.ROAD_WIDTH, bump.getValue(), GameBoard.TIME_UNIT_LENGTH * vertexCounter, false));
+            vertexCounter++;
+        }
     }
 }
