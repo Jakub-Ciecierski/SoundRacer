@@ -2,13 +2,11 @@ package com.example.mini.game.shapes.complex;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import com.example.mini.game.GameRenderer;
-import com.example.mini.game.R;
-import com.example.mini.game.util.enums.TurnStage;
-import com.example.mini.game.util.ShadersController;
-import com.example.mini.game.util.TexturesLoader;
+
+import com.example.mini.game.util.loaders.ShadersLoader;
+import com.example.mini.game.util.loaders.TexturesLoader;
 import com.example.mini.game.util.animation.VBORoadAnimation;
 import com.example.mini.game.util.lists.RoadObstaclesList;
 import com.example.mini.game.util.lists.RoadVerticesList;
@@ -43,16 +41,15 @@ public class Road {
     private int texture;
     private static float[] textureWinding;
 
-    public static TurnStage currentTurnStage = TurnStage.STRAIGHT;
     private static float[] normals;
     private float lightCounter = 0.0f;
 
     public Road(int verticesPerBorder, float timeUnitLength, float roadWidth, float[] color) {
         this.color = color;
-        this.fogLightsProgram = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.textureLightsFogVertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.textureLightsFogFragmentShader));
-        this.texture = TexturesLoader.loadTexture(GameRenderer.context, R.drawable.road_alternative);
+        this.fogLightsProgram = ShadersLoader.createProgram(
+                ShadersLoader.loadShader(GLES20.GL_VERTEX_SHADER, ShadersLoader.readShaderFromResource("texture_lights_fog_vertex_shader.glsl")),
+                ShadersLoader.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersLoader.readShaderFromResource("texture_lights_fog_fragment_shader.glsl")));
+        this.texture = TexturesLoader.loadTexture("road.jpg");
         this.textureWinding = TexturesLoader.generateUvForTriangleStrip(verticesPerBorder);
         this.vertices.generateStartShape();
         this.normals = generateNormals(vertices);

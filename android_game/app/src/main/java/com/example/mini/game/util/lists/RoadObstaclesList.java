@@ -3,27 +3,25 @@ package com.example.mini.game.util.lists;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.example.mini.game.R;
-import com.example.mini.game.models.ObjModel;
+import com.example.mini.game.util.loaders.ObjLoader;
 import com.example.mini.game.shapes.basic.RoadObstacle;
 import com.example.mini.game.shapes.complex.Road;
-import com.example.mini.game.util.ShadersController;
+import com.example.mini.game.util.loaders.ShadersLoader;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * To wrap all {@link com.example.mini.game.shapes.basic.RoadObstacle} elements
  * and provide neat interface for float[] casting.
  * <p></p>
- * Created by user on 2015-02-07.
+ * Created by user on 2015-02-07.7
  */
 public class RoadObstaclesList {
-    private ObjModel coin = new ObjModel(R.raw.coin, R.drawable.coin_tex);
+    private ObjLoader coin = new ObjLoader("coin.obj", "coin.jpg");
     private float MOVEMENT_SPEED_DECREASE = 0.5f;
 
     /**
@@ -33,9 +31,9 @@ public class RoadObstaclesList {
 
     int textureProgram;
     {
-        textureProgram = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.textureVertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.textureFragmentShader));
+        textureProgram = ShadersLoader.createProgram(
+                ShadersLoader.loadShader(GLES20.GL_VERTEX_SHADER, ShadersLoader.readShaderFromResource("texture_vertex_shader.glsl")),
+                ShadersLoader.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersLoader.readShaderFromResource("texture_fragment_shader.glsl")));
     }
     FloatBuffer vertexVbo;
     {

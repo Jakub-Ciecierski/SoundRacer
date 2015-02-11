@@ -4,11 +4,10 @@ import android.content.Context;
 import android.opengl.GLES20;
 
 import com.example.mini.game.GameRenderer;
-import com.example.mini.game.R;
 import com.example.mini.game.shapes.basic.Button;
 import com.example.mini.game.util.enums.MoveType;
-import com.example.mini.game.util.ShadersController;
-import com.example.mini.game.util.TexturesLoader;
+import com.example.mini.game.util.loaders.ShadersLoader;
+import com.example.mini.game.util.loaders.TexturesLoader;
 
 /**
  * Created by user on 2014-11-26.
@@ -33,12 +32,12 @@ public class SetOfButtons {
 
     public SetOfButtons(Context context) {
         /* Compile standard shaders and program for THIS triangle */
-        program = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.textureVertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.textureFragmentShader));
-        leftArrowTexture = TexturesLoader.loadTexture(context, R.drawable.move_arrow);
-        developerCameraTexture = TexturesLoader.loadTexture(context, R.drawable.developer_camera);
-        playerCameraTexture = TexturesLoader.loadTexture(context, R.drawable.player_camera);
+        program = ShadersLoader.createProgram(
+                ShadersLoader.loadShader(GLES20.GL_VERTEX_SHADER, ShadersLoader.readShaderFromResource("texture_vertex_shader.glsl")),
+                ShadersLoader.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersLoader.readShaderFromResource("texture_fragment_shader.glsl")));
+        leftArrowTexture = TexturesLoader.loadTexture("arrow.png");
+        developerCameraTexture = TexturesLoader.loadTexture("developer_camera.bmp");
+        playerCameraTexture = TexturesLoader.loadTexture("player_camera.bmp");
         initializeButtons();
     }
 

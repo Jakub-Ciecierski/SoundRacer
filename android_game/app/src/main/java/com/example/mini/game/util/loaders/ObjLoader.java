@@ -1,10 +1,9 @@
-package com.example.mini.game.models;
+package com.example.mini.game.util.loaders;
 
-import android.util.Log;
-
-import com.example.mini.game.CustomGlSurfaceView;
 import com.example.mini.game.GameRenderer;
-import com.example.mini.game.util.TexturesLoader;
+import com.example.mini.game.util.loaders.TexturesLoader;
+import com.example.mini.game.util.mathematics.Vec2;
+import com.example.mini.game.util.mathematics.Vec3;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +16,7 @@ import java.util.StringTokenizer;
 /**
  * Created by user on 2015-02-08.
  */
-public class ObjModel {
+public class ObjLoader {
     //
     List<Integer> vertexIndices = new ArrayList<Integer>();
     List<Integer> uvIndices = new ArrayList<Integer>();
@@ -33,23 +32,25 @@ public class ObjModel {
 
     private int textureId;
 
-    public ObjModel(int objId, int texId) {
-        processObj(objId);
-        this.textureId = TexturesLoader.loadTexture(GameRenderer.context, texId);
+    public ObjLoader(String objName, String textureName) {
+        processObj(objName);
+        this.textureId = TexturesLoader.loadTexture(textureName);
     }
 
-    private void processObj(int objId) {
-        BufferedReader buffer;
+    private void processObj(String objName) {
+        BufferedReader buffer = null;
 
         /* Try to open a file and adjust buffer reader */
         try {
             InputStream objFile =
-                    CustomGlSurfaceView.context.getResources().openRawResource(objId);
+                    GameRenderer.context.getAssets().open("obj/" + objName);
             buffer = new BufferedReader(
                     new InputStreamReader(objFile));
         } catch (NullPointerException e) {
             e.printStackTrace();
             return;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         String line;
@@ -100,6 +101,10 @@ public class ObjModel {
             return;
         }
 
+
+        // process data
+        ///////////////////////
+        // vertices
         for(int i = 0; i < vertexIndices.size(); i++) {
             Integer vertexIndex = vertexIndices.get(i);
             Vec3 vertex = temp_vertices.get(vertexIndex-1);
@@ -167,24 +172,5 @@ public class ObjModel {
     }
 }
 
-class Vec3 {
-    public float x;
-    public float y;
-    public float z;
 
-    public Vec3(float x, float y, float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-}
 
-class Vec2 {
-    public float x;
-    public float y;
-
-    public Vec2(float x, float y) {
-        this.x = x;
-        this.y = y;
-    }
-}

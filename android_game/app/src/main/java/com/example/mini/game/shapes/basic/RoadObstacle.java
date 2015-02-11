@@ -1,12 +1,5 @@
 package com.example.mini.game.shapes.basic;
 
-import com.example.mini.game.R;
-import com.example.mini.game.models.ObjModel;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-
 /**
  * As we have changed the way in which obstacle are treated
  * (now they are "a part of the road"), new class with desired

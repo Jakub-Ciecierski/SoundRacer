@@ -3,9 +3,8 @@ package com.example.mini.game.shapes.complex;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.example.mini.game.R;
-import com.example.mini.game.models.ObjModel;
-import com.example.mini.game.util.ShadersController;
+import com.example.mini.game.util.loaders.ObjLoader;
+import com.example.mini.game.util.loaders.ShadersLoader;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -19,7 +18,7 @@ public class Player {
      * All information needed to render model of Player are encapsulated in
      * ths field.
      */
-    ObjModel shipModel = new ObjModel(R.raw.spaceship, R.drawable.spaceship_texture);
+    ObjLoader shipModel = new ObjLoader("spaceship.obj", "spaceship.bmp");
     /**
      * Buffer between Dalvik's heap and the native one for vertices coordinates.
      */
@@ -50,9 +49,9 @@ public class Player {
 
     public Player() {
         /* Compile OpenGL program */
-        this.program = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.textureVertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.textureFragmentShader));
+        this.program = ShadersLoader.createProgram(
+                ShadersLoader.loadShader(GLES20.GL_VERTEX_SHADER, ShadersLoader.readShaderFromResource("texture_vertex_shader.glsl")),
+                ShadersLoader.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersLoader.readShaderFromResource("texture_fragment_shader.glsl")));
         loadBuffers();
         loadShaderHandles();
     }

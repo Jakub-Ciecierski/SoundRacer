@@ -3,10 +3,8 @@ package com.example.mini.game.shapes.complex;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.example.mini.game.GameRenderer;
-import com.example.mini.game.R;
-import com.example.mini.game.util.ShadersController;
-import com.example.mini.game.util.TexturesLoader;
+import com.example.mini.game.util.loaders.ShadersLoader;
+import com.example.mini.game.util.loaders.TexturesLoader;
 import com.example.mini.game.util.mathematics.Vector3;
 
 import java.nio.ByteBuffer;
@@ -62,10 +60,10 @@ public class HorizonRibbon {
 
 
     public HorizonRibbon() {
-        this.program = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.textureVertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.textureFragmentShader));
-        this.texture = TexturesLoader.loadTexture(GameRenderer.context, R.drawable.space);
+        this.program = ShadersLoader.createProgram(
+                ShadersLoader.loadShader(GLES20.GL_VERTEX_SHADER, ShadersLoader.readShaderFromResource("texture_vertex_shader.glsl")),
+                ShadersLoader.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersLoader.readShaderFromResource("texture_fragment_shader.glsl")));
+        this.texture = TexturesLoader.loadTexture("space.bmp");
         this.textureCoordinates = TexturesLoader.generateUvForTriangleStrip(GameBoard.HORIZON_RIBBON_VERTICES_PER_BORDER);
         this.verticesCoordinates = generateVertices();
         loadBuffers();
@@ -152,49 +150,4 @@ public class HorizonRibbon {
         GLES20.glDisableVertexAttribArray(a_TextureCoordinatesHandle);
     }
 
-    public void switchFrame() {
-
-        switch (Road.currentTurnStage) {
-            case STRAIGHT:
-                /* Reset this counter for next iteration */
-                rotationSpeedCounter = 0.0f;
-                /* Safe ribbon angle for next turning */
-                currentAngle = rotationVector[0];
-                break;
-            case TURN_RIGHT_START:
-                break;
-            case TURN_LEFT_START:
-                break;
-            case TURN_RIGHT_STABLE:
-                /* Slow rotation around Y axis */
-                rotationVector[0] += 0.05;
-                rotationVector[1] = 0.0f;
-                rotationVector[3] = 0.0f;
-                break;
-            case TURN_LEFT_STABLE:
-                 /* Slow rotation around Y axis */
-                rotationVector[0] -= 0.05;
-                rotationVector[1] = 0.0f;
-                rotationVector[3] = 0.0f;
-                break;
-            case TURN_RIGHT_END:
-                /* To simulate turning right animation correctly we need a function
-                * which grows quicker as its arguments are larger and since
-                * exp() is not available (do not know why) I took f(x) = (x^2)/3 */
-                rotationVector[0] = currentAngle + (rotationSpeedCounter * rotationSpeedCounter) / 3f;
-                rotationVector[1] = 0.0f;
-                rotationVector[3] = 0.0f;
-                rotationSpeedCounter += 0.1;
-                break;
-            case TURN_LEFT_END:
-                /* To simulate turning right animation correctly we need a function
-                * which grows quicker as its arguments are larger and since
-                * exp() is not available (do not know why) I took f(x) = (x^2)/3 */
-                rotationVector[0] = currentAngle - (rotationSpeedCounter * rotationSpeedCounter) / 3f;
-                rotationVector[1] = 0.0f;
-                rotationVector[3] = 0.0f;
-                rotationSpeedCounter += 0.1;
-                break;
-        }
-    }
 }

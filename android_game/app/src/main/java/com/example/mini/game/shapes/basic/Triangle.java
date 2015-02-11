@@ -2,7 +2,7 @@ package com.example.mini.game.shapes.basic;
 
 import android.opengl.GLES20;
 
-import com.example.mini.game.util.ShadersController;
+import com.example.mini.game.util.loaders.ShadersLoader;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -54,9 +54,9 @@ public class Triangle {
         vertexBuffer.position(0);
 
         /* Compile standard shaders and program for THIS triangle */
-        programId = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.vertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
+        programId = ShadersLoader.createProgram(
+                ShadersLoader.loadShader(GLES20.GL_VERTEX_SHADER, ShadersLoader.readShaderFromResource("vertex_shader.glsl")),
+                ShadersLoader.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersLoader.readShaderFromResource("fragment_shader.glsl")));
 
     }
 

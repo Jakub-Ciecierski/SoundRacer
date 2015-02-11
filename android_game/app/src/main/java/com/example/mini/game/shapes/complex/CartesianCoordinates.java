@@ -3,7 +3,7 @@ package com.example.mini.game.shapes.complex;
 import android.opengl.GLES20;
 
 import com.example.mini.game.shapes.basic.Arrow;
-import com.example.mini.game.util.ShadersController;
+import com.example.mini.game.util.loaders.ShadersLoader;
 
 
 /**
@@ -57,9 +57,9 @@ public class CartesianCoordinates {
     public CartesianCoordinates(float[] origin) {
         this.origin = origin;
         /* Compile program for all elements to save memory */
-        programId = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.vertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
+        programId = ShadersLoader.createProgram(
+                ShadersLoader.loadShader(GLES20.GL_VERTEX_SHADER, ShadersLoader.readShaderFromResource("vertex_shader.glsl")),
+                ShadersLoader.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersLoader.readShaderFromResource("fragment_shader.glsl")));
 
         /* Pass information about position, color and program to manage rendering for each arrow */
         xAxis = new Arrow(

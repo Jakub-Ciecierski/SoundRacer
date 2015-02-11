@@ -8,7 +8,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.example.mini.game.shapes.complex.GameBoard;
-import com.example.mini.game.util.ShadersController;
+import com.example.mini.game.util.loaders.ShadersLoader;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -78,9 +78,9 @@ public class Cube {
         drawListBuffer.put(drawOrder);
         drawListBuffer.position(0);
         /* Compile standard shaders and program for THIS triangle */
-        programId = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.vertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
+        programId = ShadersLoader.createProgram(
+                ShadersLoader.loadShader(GLES20.GL_VERTEX_SHADER, ShadersLoader.readShaderFromResource("vertex_shader.glsl")),
+                ShadersLoader.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersLoader.readShaderFromResource("fragment_shader.glsl")));
 
     }
 
@@ -105,9 +105,9 @@ public class Cube {
         drawListBuffer.put(drawOrder);
         drawListBuffer.position(0);
         /* Compile standard shaders and program for THIS triangle */
-        programId = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.vertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
+        programId = ShadersLoader.createProgram(
+                ShadersLoader.loadShader(GLES20.GL_VERTEX_SHADER, ShadersLoader.readShaderFromResource("vertex_shader.glsl")),
+                ShadersLoader.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersLoader.readShaderFromResource("fragment_shader.glsl")));
     }
 
     public Cube(int program, float[] triangleVertices) {

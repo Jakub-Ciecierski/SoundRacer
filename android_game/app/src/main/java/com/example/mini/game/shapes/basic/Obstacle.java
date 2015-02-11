@@ -5,7 +5,7 @@ import android.opengl.Matrix;
 
 import com.example.mini.game.GameRenderer;
 import com.example.mini.game.shapes.complex.GameBoard;
-import com.example.mini.game.util.ShadersController;
+import com.example.mini.game.util.loaders.ShadersLoader;
 import com.example.mini.game.util.mathematics.Vector3;
 
 import java.nio.ByteBuffer;
@@ -52,12 +52,12 @@ public class Obstacle {
 
     public Obstacle(float width, float height, float depth, float[] color) {
         this.color = color;
-        program = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.vertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fragmentShader));
-        fogProgram = ShadersController.createProgram(
-                ShadersController.loadShader(GLES20.GL_VERTEX_SHADER, ShadersController.fogVertexShader),
-                ShadersController.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersController.fogFragmentShader));
+        program = ShadersLoader.createProgram(
+                ShadersLoader.loadShader(GLES20.GL_VERTEX_SHADER, ShadersLoader.readShaderFromResource("vertex_shader.glsl")),
+                ShadersLoader.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersLoader.readShaderFromResource("fragment_shader.glsl")));
+        fogProgram = ShadersLoader.createProgram(
+                ShadersLoader.loadShader(GLES20.GL_VERTEX_SHADER, ShadersLoader.readShaderFromResource("fog_vertex_shader.glsl")),
+                ShadersLoader.loadShader(GLES20.GL_FRAGMENT_SHADER, ShadersLoader.readShaderFromResource("fog_fragment_shader.glsl")));
         generateVertices(width, height, depth);
         loadBuffers();
     }
