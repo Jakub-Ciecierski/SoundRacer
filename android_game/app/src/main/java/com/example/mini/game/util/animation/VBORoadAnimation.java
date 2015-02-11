@@ -55,7 +55,7 @@ public class VBORoadAnimation {
         oldVertices.keepInPosition();
 
         //Player.setTranslate(Player.getTranslationX(), Road.vertices.get(0).y + 2, Player.getTranslationZ());
-        PlayerStaticSphereCamera.moveCameraBy(Player.getTranslationY()+3);
+        //PlayerStaticSphereCamera.moveCameraBy(Player.getTranslationY()+3);
         return oldVertices;
 
     }

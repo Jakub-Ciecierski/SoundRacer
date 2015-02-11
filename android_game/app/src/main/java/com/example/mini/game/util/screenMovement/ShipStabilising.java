@@ -20,7 +20,7 @@ public class ShipStabilising implements Runnable {
         /* Depending on current angle increase or decrease value of the Player's angle
          * such that it converges to 0 */
         Player.rotateAroundZ(Player.getCurrentAngle() +
-                ((Player.getCurrentAngle() < 0) ? 2f : -2f));
+                ((Player.getCurrentAngle() <= 0) ? 2f : -2f));
 
         /* If we reached 0, stabilizing wont be needed */
         if (Player.getCurrentAngle() == 0.0f)

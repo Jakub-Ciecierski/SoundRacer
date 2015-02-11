@@ -160,7 +160,7 @@ public class Road {
                 GameBoard.ROAD_VERTICES_PER_BORDER );
         GLES20.glUniform1f(u_fogMinDist_HANDLE, 50.0f);
         float z = 350*sin(lightCounter+=0.05f)+10.0f;
-        GLES20.glUniform3fv(u_lightPosition_HANDLE, 1,new float[] {50, 120, 90}, 0);
+        GLES20.glUniform3fv(u_lightPosition_HANDLE, 1,new float[] {10, 80, 0}, 0);
         // Log.i("lighCounter",""+lightCounter);
 
 

@@ -19,7 +19,7 @@ public class Player {
      * All information needed to render model of Player are encapsulated in
      * ths field.
      */
-    ObjModel shipModel = new ObjModel(R.raw.hope_final, R.drawable.ship_tex);
+    ObjModel shipModel = new ObjModel(R.raw.spaceship, R.drawable.spaceship_texture);
     /**
      * Buffer between Dalvik's heap and the native one for vertices coordinates.
      */
@@ -32,7 +32,7 @@ public class Player {
      * Vector represents translation of the final drawing position of Player.
      * It is in the form: x, y, z.
      */
-    private static float[] translate = new float[]{GameBoard.ROAD_WIDTH / 2, 4.0f, 4.0f};
+    private static float[] translate = new float[]{GameBoard.ROAD_WIDTH / 2, 3.0f, 3.5f};
     /**
      * Vector represents rotation of the final drawing of Player.
      * It is in the form: angle, x, y, z.
@@ -124,7 +124,7 @@ public class Player {
 
     private void updatePosition() {
         float height = Road.vertices.getHeight(translate[2]);
-        translate[1] = height;
+        translate[1] = height + 2;
     }
 
     public void switchFrame() {
