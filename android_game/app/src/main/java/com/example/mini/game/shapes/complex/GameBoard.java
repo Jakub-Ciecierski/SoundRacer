@@ -193,12 +193,15 @@ public class GameBoard {
      */
     public static int animationCounter = 1;
 
+    private SpaceDust spaceDust;
+
 
     public GameBoard() {
         // do poprawki road
         road = new Road(ROAD_VERTICES_PER_BORDER, TIME_UNIT_LENGTH, ROAD_WIDTH, ROAD_COLOR);
         horizonRibbon = new HorizonRibbon();
         player = new Player();
+        spaceDust = new SpaceDust();
     }
 
     /**
@@ -222,6 +225,8 @@ public class GameBoard {
         if(PLAYER_RENDERING) {
             player.draw(mvpMatrix);
         }
+        spaceDust.fogDraw(mvpMatrix);
+
         incrementAnimationCounter();
     }
 
@@ -235,7 +240,9 @@ public class GameBoard {
         if(PLAYER_ANIMATION) {
             player.switchFrame();
         }
-
+//        spaceDust.translation[2] = (spaceDust.translation[2] < -1) ? 200 :
+//                spaceDust.translation[2] - TIME_UNIT_LENGTH;
+        spaceDust.switchFrame();
     }
 
     /**
