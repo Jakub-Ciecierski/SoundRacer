@@ -137,7 +137,7 @@ public class GameActivity extends Activity implements SensorEventListener{
         relativeLayout.addView(textViewStartSongCounter,new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT));
         relativeLayout.addView(imageView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT));
 
-       // imageView.setBackgroundResource(R.drawable.speaker_animation);
+        imageView.setBackgroundResource(R.drawable.speaker_animation);
         /**
          * loading textView
          */
@@ -159,10 +159,10 @@ public class GameActivity extends Activity implements SensorEventListener{
         linearLayout2.addView(textViewLoading, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, intPixels));
         linearLayout1.addView(linearLayout2, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         relativeLayout.addView(linearLayout1, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
-//        // Get the background, which has been compiled to an AnimationDrawable object.
-//        AnimationDrawable frameAnimation = (AnimationDrawable) imageView.getBackground();
-//        // Start the animation (looped playback by default).
-//        frameAnimation.start();
+        // Get the background, which has been compiled to an AnimationDrawable object.
+        AnimationDrawable frameAnimation = (AnimationDrawable) imageView.getBackground();
+        // Start the animation (looped playback by default).
+        frameAnimation.start();
 
         this.addContentView(relativeLayout,
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT));

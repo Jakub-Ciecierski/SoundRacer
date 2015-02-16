@@ -1,5 +1,6 @@
 package com.example.mini.game.gameMenu;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
@@ -22,7 +23,7 @@ import com.example.mini.game.logic.GlobalState;
 import com.example.mini.game.util.enums.MoveType;
 import com.example.mini.game.util.screenMovement.ShipMovement;
 
-public class GameSettingsActivity extends ActionBarActivity {
+public class GameSettingsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
