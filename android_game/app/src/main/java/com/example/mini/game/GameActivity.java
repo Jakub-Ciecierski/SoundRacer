@@ -46,6 +46,7 @@ import com.example.mini.game.audio.AudioAnalyser;
 import com.example.mini.game.audio.AudioPlayer;
 import com.example.mini.game.gameMenu.GameSettingsActivity;
 import com.example.mini.game.gameMenu.MenuActivity;
+import com.example.mini.game.gameMenu.ResizeAnimation;
 import com.example.mini.game.launcher.GIFView;
 import com.example.mini.game.launcher.LauncherActivity;
 import com.example.mini.game.launcher.Song;
@@ -64,6 +65,7 @@ import java.util.List;
 public class GameActivity extends Activity implements SensorEventListener{
     protected CustomGlSurfaceView glSurfaceView;
     public View settingsView;
+    public RelativeLayout settingsViewContainerForAnimation;
     public ImageView imageView;
     public TextView textViewLoading;
     public TextView textViewSongName;
@@ -174,7 +176,9 @@ public class GameActivity extends Activity implements SensorEventListener{
         settingsView.setVisibility(View.GONE);
         pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getResources().getDisplayMetrics());
         intPixels = (int) pixels;
-        linearLayoutWithMenu.addView(settingsView,new LinearLayout.LayoutParams(intPixels*2,intPixels));
+        settingsViewContainerForAnimation = new RelativeLayout(this);
+        settingsViewContainerForAnimation.addView(settingsView,new LinearLayout.LayoutParams(intPixels*2,intPixels));
+        linearLayoutWithMenu.addView(settingsViewContainerForAnimation,new RelativeLayout.LayoutParams(intPixels*2,intPixels));
         relativeLayout.addView(linearLayoutWithMenu,new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,LinearLayout.LayoutParams.FILL_PARENT));
         // Get the background, which has been compiled to an AnimationDrawable object.
         AnimationDrawable frameAnimation = (AnimationDrawable) imageView.getBackground();
@@ -286,7 +290,12 @@ public class GameActivity extends Activity implements SensorEventListener{
         /*
         joystic
          */
+        float pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getResources().getDisplayMetrics());
+        int intPixels = (int) pixels;
         settingsView.setVisibility(View.VISIBLE);
+        ResizeAnimation anim = new ResizeAnimation(settingsViewContainerForAnimation, intPixels*2);
+        anim.setDuration(200);
+        settingsView.startAnimation(anim);
         this.glSurfaceView.gameRenderer.gameRunning = false;
         GlobalState.pauseAudio();
 
@@ -312,6 +321,9 @@ public class GameActivity extends Activity implements SensorEventListener{
 //        dlgAlert.create().show();
     }
     public void resumeButton_Click(View view){
+        ResizeAnimation anim = new ResizeAnimation(settingsViewContainerForAnimation, 1);
+        anim.setDuration(200);
+        settingsView.startAnimation(anim);
         settingsView.setVisibility(View.GONE);
         glSurfaceView.gameRenderer.gameRunning = true;
                         GlobalState.playAudio();
