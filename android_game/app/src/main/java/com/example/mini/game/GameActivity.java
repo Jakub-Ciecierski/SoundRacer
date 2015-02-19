@@ -331,6 +331,8 @@ public class GameActivity extends Activity implements SensorEventListener{
     public void settingsButton_Click(View view){
         ViewFlipper vf = (ViewFlipper) findViewById( R.id.viewFlipper );
         vf.setDisplayedChild(1);
+        vf.setInAnimation(this, R.anim.do_nothing);
+        vf.setOutAnimation(this, R.anim.push_left_out);
     }
     public void exitButton_Click(View view){
         returnToMenu();
@@ -408,6 +410,8 @@ public class GameActivity extends Activity implements SensorEventListener{
         //
         ViewFlipper vf = (ViewFlipper) findViewById( R.id.viewFlipper );
         vf.setDisplayedChild(0);
+        vf.setInAnimation(this, R.anim.push_left_in);
+        vf.setOutAnimation(this, R.anim.do_nothing);
 
     }
      /*
