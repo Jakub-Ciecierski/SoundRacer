@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -27,6 +28,7 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -36,7 +38,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.example.mini.game.audio.AudioAnalyser;
 import com.example.mini.game.audio.AudioPlayer;
@@ -59,6 +63,7 @@ import java.util.List;
 
 public class GameActivity extends Activity implements SensorEventListener{
     protected CustomGlSurfaceView glSurfaceView;
+    public View settingsView;
     public ImageView imageView;
     public TextView textViewLoading;
     public TextView textViewSongName;
@@ -159,6 +164,18 @@ public class GameActivity extends Activity implements SensorEventListener{
         linearLayout2.addView(textViewLoading, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, intPixels));
         linearLayout1.addView(linearLayout2, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         relativeLayout.addView(linearLayout1, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+        /*
+        adding menu to the view
+         */
+        LinearLayout linearLayoutWithMenu = new LinearLayout(this);
+        linearLayoutWithMenu.setGravity(Gravity.CENTER);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        settingsView = inflater.inflate(R.layout.in_game_settings,null,false);
+        settingsView.setVisibility(View.GONE);
+        pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getResources().getDisplayMetrics());
+        intPixels = (int) pixels;
+        linearLayoutWithMenu.addView(settingsView,new LinearLayout.LayoutParams(intPixels*2,intPixels));
+        relativeLayout.addView(linearLayoutWithMenu,new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,LinearLayout.LayoutParams.FILL_PARENT));
         // Get the background, which has been compiled to an AnimationDrawable object.
         AnimationDrawable frameAnimation = (AnimationDrawable) imageView.getBackground();
         // Start the animation (looped playback by default).
@@ -246,37 +263,67 @@ public class GameActivity extends Activity implements SensorEventListener{
 
     @Override
     public void onBackPressed() {
+        /*
+        getting setting from shared preferences
+         */
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        int sensitivity = prefs.getInt("movementSensitivity",-1);
+        int controller = prefs.getInt("controllerType",-1);
+        if(sensitivity != -1){
+            SeekBar seekBar = (SeekBar)findViewById(R.id.seekBarTouch);
+            seekBar.setProgress(sensitivity);
+        }
+        if(controller == 1){
+            RadioButton radioButtonTouch = (RadioButton)findViewById(R.id.touchScreenOn);
+            radioButtonTouch.setChecked(true);
+
+        }
+        else if (controller == 2)
+        {
+            RadioButton radioButtonAccelerometer = (RadioButton) findViewById(R.id.accelerometerOn);
+            radioButtonAccelerometer.setChecked(true);
+        }
+        /*
+        joystic
+         */
+        settingsView.setVisibility(View.VISIBLE);
         this.glSurfaceView.gameRenderer.gameRunning = false;
         GlobalState.pauseAudio();
 
-        final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-        dlgAlert.setMessage("Do you want to exit the game ?");
-        dlgAlert.setTitle("Exit");
-        dlgAlert.setPositiveButton("Ok",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        returnToMenu();
-                    }
-                });
-        dlgAlert.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        glSurfaceView.gameRenderer.gameRunning = true;
-                        GlobalState.playAudio();
-                    }
-                });
 
-        dlgAlert.setCancelable(false);
-        dlgAlert.create().show();
+//        final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+//        dlgAlert.setMessage("Do you want to exit the game ?");
+//        dlgAlert.setTitle("Exit");
+//        dlgAlert.setPositiveButton("Ok",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        returnToMenu();
+//                    }
+//                });
+//        dlgAlert.setNegativeButton("Cancel",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        glSurfaceView.gameRenderer.gameRunning = true;
+//                        GlobalState.playAudio();
+//                    }
+//                });
+//
+//        dlgAlert.setCancelable(false);
+//        dlgAlert.create().show();
     }
-
+    public void resumeButton_Click(View view){
+        settingsView.setVisibility(View.GONE);
+        glSurfaceView.gameRenderer.gameRunning = true;
+                        GlobalState.playAudio();
+    }
+    public void settingsButton_Click(View view){
+        ViewFlipper vf = (ViewFlipper) findViewById( R.id.viewFlipper );
+        vf.setDisplayedChild(1);
+    }
+    public void exitButton_Click(View view){
+        returnToMenu();
+    }
     private void returnToMenu(){
-        /*Intent intent = new Intent(this, MenuActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        GlobalState.shutDownSystem();
-        finish();*/
-
         Intent mStartActivity = new Intent(this, MenuActivity.class);
         int mPendingIntentId = 123456;
         PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -288,8 +335,8 @@ public class GameActivity extends Activity implements SensorEventListener{
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Log.i("ROTATION_VECTOR_SENSOR", "[0]: " + event.values[0] + " [1]: " + event.values[1]
-                + " [2]: " + event.values[2]);
+//        Log.i("ROTATION_VECTOR_SENSOR", "[0]: " + event.values[0] + " [1]: " + event.values[1]
+//                + " [2]: " + event.values[2]);
         if(event.values[1]<(-2)) {
             if(!GlobalState.isOnMove) {
                 shipMovement = new ShipMovement(MoveType.MOVE_LEFT);
@@ -331,6 +378,44 @@ public class GameActivity extends Activity implements SensorEventListener{
         textViewSongName.setText("Currently playing:\""+name+"\"");
         else
         textViewSongName.setText("");
+    }
+    /*
+    Settings menu handlers
+     */
+    public void applyButton_Click(View view){
+        SeekBar seekBar = (SeekBar)findViewById(R.id.seekBarTouch);
+        int value = seekBar.getProgress();
+        Float tmp =0.075f + (0.1f*((float)value/100));
+        ShipMovement.movementSensitivity = tmp;
+        /*
+                Saving ship movement sensitivity to shared preferences
+                 */
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putInt("movementSensitivity",value);
+        editor.apply();
+        //
+        ViewFlipper vf = (ViewFlipper) findViewById( R.id.viewFlipper );
+        vf.setDisplayedChild(0);
+
+    }
+     /*
+    setting in game controller:
+    -1- for touch
+    -2- for accelerometer
+    -3- for joystick
+     */
+    public void setAccelerometerControl(View view){
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putInt("controllerType",2);
+        editor.apply();
+        GlobalState.isTouch=false;
+
+    }
+    public void setTouchScreenControl(View view){
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putInt("controllerType",1);
+        editor.apply();
+        GlobalState.isTouch=true;
     }
 
 }
