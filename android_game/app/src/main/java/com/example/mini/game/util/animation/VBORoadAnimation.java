@@ -1,6 +1,8 @@
 package com.example.mini.game.util.animation;
 
 
+import android.util.Log;
+
 import com.example.mini.game.audio.BumperAnalyser;
 import com.example.mini.game.audio.analysis.Bump;
 import com.example.mini.game.shapes.basic.RoadObstacle;

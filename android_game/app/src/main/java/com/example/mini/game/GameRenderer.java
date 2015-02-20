@@ -180,17 +180,22 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
         if(gameRunning) {
             if(GlobalState.isAnalyserDone()) {
+                Log.i("GameLoop","Creating new Analyser");
                 GlobalState.createNextAudioAnalyser();
+                Log.i("GameLoop","After Creating new Analyser");
             }
 
             if(GlobalState.isPlayerDone()) {
                 if( !GlobalState.createNextAudioPlayer() ) {
-                    Log.i("GAME_RENDERER","Returning to Menu");
+                    Log.i("GameLoop","Returning to Menu");
                     gameRunning = false;
                     returnToMenu();
+                    Log.i("GameLoop","After Returning to Menu");
                 }
                 else {
+                    Log.i("GameLoop","Starting new audio");
                     GlobalState.startAudio();
+                    Log.i("GameLoop","After Starting new audio");
                 }
             }
         }

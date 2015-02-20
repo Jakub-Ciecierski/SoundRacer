@@ -48,7 +48,7 @@ public class BumperAnalyser {
 
     public static Bump getNextBumperObj() {
         if(currentReadIndexObj >= bumpsObj.size())
-            return null;
+            return new Bump(BumpType.NO_BUMP.getHeight());
         Bump bump= bumpsObj.get(currentReadIndexObj);
         // increment the pointer
         currentReadIndexObj++;
@@ -182,7 +182,7 @@ public class BumperAnalyser {
                     float prevValue = bumps.get(bumpPosition);
 
                     if(prevBump.getValue() < value) {
-                        bumpsObj.set(bumpPosition,new Bump(value));
+                        bumpsObj.set(bumpPosition,new Bump(value, prevBump.isValidObstacle()));
                         bumps.set(bumpPosition, value);
                     }
                 } catch(IndexOutOfBoundsException e) {
