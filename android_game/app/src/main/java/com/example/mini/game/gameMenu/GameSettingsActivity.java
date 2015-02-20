@@ -1,6 +1,8 @@
 package com.example.mini.game.gameMenu;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -22,7 +24,7 @@ import com.example.mini.game.logic.GlobalState;
 import com.example.mini.game.util.enums.MoveType;
 import com.example.mini.game.util.screenMovement.ShipMovement;
 
-public class GameSettingsActivity extends ActionBarActivity {
+public class GameSettingsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,16 +42,29 @@ public class GameSettingsActivity extends ActionBarActivity {
 
         // Start the animation (looped playback by default).
         frameAnimation.start();
-        RadioButton radioButton = (RadioButton) findViewById(R.id.accelerometerOn);
-        if(!GlobalState.isTouch){
-
-            radioButton.setSelected(true);
+        /*
+        getting setting from shared preferences
+         */
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        int sensitivity = prefs.getInt("movementSensitivity",-1);
+        int controller = prefs.getInt("controllerType",-1);
+        if(sensitivity != -1){
+            SeekBar seekBar = (SeekBar)findViewById(R.id.seekBarTouch);
+            seekBar.setProgress(sensitivity);
+        }
+        if(controller == 1){
+            RadioButton radioButtonTouch = (RadioButton)findViewById(R.id.touchScreenOn);
+            radioButtonTouch.setChecked(true);
 
         }
-        else
+        else if (controller == 2)
         {
-            radioButton.setSelected(false);
+            RadioButton radioButtonAccelerometer = (RadioButton) findViewById(R.id.accelerometerOn);
+            radioButtonAccelerometer.setChecked(true);
         }
+        /*
+        joystic
+         */
     }
     public void onBackPressed() {
     previousActivity();
@@ -66,6 +81,13 @@ public class GameSettingsActivity extends ActionBarActivity {
         int value = seekBar.getProgress();
         Float tmp =0.075f + (0.1f*((float)value/100));
         ShipMovement.movementSensitivity = tmp;
+        /*
+                Saving ship movement sensitivity to shared preferences
+                 */
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putInt("movementSensitivity",value);
+        editor.apply();
+        //
         Log.i("GameSettingsActivity",Integer.toString(seekBar.getProgress()));
         Log.i("GameSettingsActivity",Float.toString(tmp));
         Intent intent = new Intent(view.getContext(), MenuActivity.class);
@@ -74,10 +96,23 @@ public class GameSettingsActivity extends ActionBarActivity {
         this.overridePendingTransition(R.anim.push_right_in,R.anim.do_nothing);
         finish();
     }
+    /*
+    setting in game controller:
+    -1- for touch
+    -2- for accelerometer
+    -3- for joystick
+     */
     public void setAccelerometerControl(View view){
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putInt("controllerType",2);
+        editor.apply();
         GlobalState.isTouch=false;
+
     }
     public void setTouchScreenControl(View view){
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putInt("controllerType",1);
+        editor.apply();
         GlobalState.isTouch=true;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.mini.game.gameMenu;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -14,7 +15,7 @@ import android.view.WindowManager;
 import com.example.mini.game.R;
 import com.example.mini.game.launcher.LauncherActivity;
 
-public class StartGameActivity extends ActionBarActivity {
+public class StartGameActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +25,7 @@ public class StartGameActivity extends ActionBarActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_game);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+
     }
 
     @Override

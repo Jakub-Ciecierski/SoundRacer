@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="400dp"
+    android:layout_height="200dp"
+    android:id="@+id/viewFlipper">
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="400dp"
+        android:layout_height="200dp"
+        android:background="#333"
+        android:gravity="center">
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:onClick="resumeButton_Click"
+            android:text="resume"
+            android:background="@drawable/button"
+            style="@style/button_text"/>
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:onClick="settingsButton_Click"
+            android:text="settings"
+            android:background="@drawable/button"
+            style="@style/button_text"/>
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="exit"
+            android:onClick="exitButton_Click"
+            android:background="@drawable/button"
+            style="@style/button_text"/>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="400dp"
+        android:layout_height="200dp"
+        android:background="#333333">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:weightSum="20"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="45dp"
+                android:textSize="35dp"
+                android:text="Settings"
+                android:gravity="center"
+                android:textColor="#FFFFFF"
+                />
+            <ScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+                    <!--tools:context="com.example.mini.game.gameMenu.GameSettingsActivity"-->
+                    <!--<CheckBox-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="Enable vibrations"-->
+                    <!--android:id="@+id/vibrationsCheckBox"-->
+                    <!--android:textColor="#FFFFFF"/>-->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Controls"
+                        android:id="@+id/textView"
+                        android:textColor="#FFFFFF"/>
+
+                    <RadioGroup
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        >
+                        <RadioButton
+                            android:id="@+id/accelerometerOn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Accelerometer"
+                            android:checked="true"
+                            android:textColor="#FFFFFF"
+                            android:onClick="setAccelerometerControl"
+                            />
+                        <!--android:onClick="setAccelerometerControl"-->
+
+                        <RadioButton
+                            android:id="@+id/touchScreenOn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Touch screen"
+                            android:checked="false"
+                            android:textColor="#FFFFFF"
+                            android:onClick="setTouchScreenControl"
+                            />
+                        <!--android:onClick="setTouchScreenControl"-->
+                    </RadioGroup>
+
+                    <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                    <!--android:text="Accelerometer sensitivity"-->
+                    <!--android:id="@+id/textView2"-->
+                    <!--android:textColor="#FFFFFF"/>-->
+
+                    <!--<SeekBar-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:id="@+id/seekBarAcc" />-->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Movement Speed"
+                        android:id="@+id/textView3"
+                        android:textColor="#FFFFFF"/>
+
+                    <SeekBar
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/seekBarTouch"
+                        android:progress="50"/>
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right">
+                        <Button
+                            android:layout_width="125dp"
+                            android:layout_height="50dp"
+                            android:text="Apply"
+                            android:onClick="applyButton_Click"
+                            android:background="@drawable/button"
+                            style="@style/button_text"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </LinearLayout>
+</ViewFlipper>
