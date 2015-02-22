@@ -23,6 +23,7 @@ public class ShipStabilising implements Runnable {
                 ((Player.getCurrentAngle() <= 0) ? 2f : -2f));
 
         /* If we reached 0, stabilizing wont be needed */
+        // TODO odroznic skrecanie w lewo od skrecania w prawo i zrobic <= badz >=
         if (Player.getCurrentAngle() == 0.0f)
             MovementController.stabilising = false;
 

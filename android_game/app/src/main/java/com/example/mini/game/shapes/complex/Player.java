@@ -3,12 +3,19 @@ package com.example.mini.game.shapes.complex;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import com.example.mini.game.GameRenderer;
 import com.example.mini.game.util.loaders.ObjLoader;
 import com.example.mini.game.util.loaders.ShadersLoader;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+
+import static android.opengl.GLES20.GL_BLEND;
+import static android.opengl.GLES20.GL_ONE;
+import static android.opengl.GLES20.glBlendFunc;
+import static android.opengl.GLES20.glDisable;
+import static android.opengl.GLES20.glEnable;
 
 /**
  * Created by dybisz on 2014-12-08.
@@ -45,8 +52,8 @@ public class Player {
     private int a_TextureCoordinatesHandle;
     private int u_TransformationMatrixHandle;
     private int u_TextureSamplerHandle;
-
-
+    ParticleGenerator engine = new ParticleGenerator(GameRenderer.context, translate);
+    SpaceDrive spaceDrive = new SpaceDrive(translate);
     public Player() {
         /* Compile OpenGL program */
         this.program = ShadersLoader.createProgram(
@@ -106,6 +113,7 @@ public class Player {
     public void draw(float[] mvpMatrix) {
         GLES20.glUseProgram(program);
 
+
         /* Enable handle (I don't get it ) */
         GLES20.glEnableVertexAttribArray(a_VertexPositionHandle);
         GLES20.glEnableVertexAttribArray(a_TextureCoordinatesHandle);
@@ -119,6 +127,14 @@ public class Player {
         /* Safe bullshit */
         GLES20.glDisableVertexAttribArray(a_VertexPositionHandle);
         GLES20.glDisableVertexAttribArray(a_TextureCoordinatesHandle);
+
+
+        glDisable(GLES20.GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE);
+        //engine.draw(mvpMatrix);
+        spaceDrive.draw(mvpMatrix);
+        glDisable(GL_BLEND);
     }
 
     private void updatePosition() {
@@ -138,8 +154,9 @@ public class Player {
     }
 
     public static void rotateAroundZ(float a) {
-        if (a <= 35 && a >= -35)
+        if (a <= 35 && a >= -35) {
             rotate = new float[]{a, 0.0f, 0.0f, 1.0f};
+        }
     }
 
     public static float getCurrentAngle() {
@@ -157,4 +174,5 @@ public class Player {
     public static float getTranslationZ() {
         return translate[2];
     }
+
 }

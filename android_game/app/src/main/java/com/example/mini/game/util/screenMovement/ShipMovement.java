@@ -30,6 +30,7 @@ public class ShipMovement implements Runnable {
                         Player.getTranslationY(),
                         Player.getTranslationZ());
                 Player.rotateAroundZ(Player.getCurrentAngle() - 1);
+                //Player.engineRotate(1);
                 Log.i("ShipMovement", Float.toString(movementSensitivity));
                 break;
             case MOVE_RIGHT:
@@ -38,6 +39,7 @@ public class ShipMovement implements Runnable {
                         Player.getTranslationY(),
                         Player.getTranslationZ());
                 Player.rotateAroundZ(Player.getCurrentAngle()+1);
+                //Player.engineRotate(1);
                 Log.i("ShipMovement", Float.toString(movementSensitivity));
                 break;
         }

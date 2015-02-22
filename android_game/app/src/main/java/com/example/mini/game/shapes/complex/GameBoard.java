@@ -195,6 +195,8 @@ public class GameBoard {
 
     private SpaceDust spaceDust;
 
+    public static float GLOBAL_TIME = System.nanoTime();
+
 
     public GameBoard() {
         // do poprawki road
@@ -222,10 +224,11 @@ public class GameBoard {
             //road.draw(mvpMatrix);
             road.lightsFogDraw(mvpMatrix);
         }
+        spaceDust.fogDraw(mvpMatrix);
         if(PLAYER_RENDERING) {
             player.draw(mvpMatrix);
         }
-        spaceDust.fogDraw(mvpMatrix);
+
 
         incrementAnimationCounter();
     }
