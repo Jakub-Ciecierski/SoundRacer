@@ -37,7 +37,7 @@ import com.example.mini.game.logic.OnSwipeTouchListener;
 import java.util.ArrayList;
 
 
-public class LauncherActivity extends ActionBarActivity {
+public class LauncherActivity extends Activity {
 
     private ListView musicList;
     private ListView chosenMusicList;

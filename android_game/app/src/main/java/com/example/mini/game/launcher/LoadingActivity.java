@@ -1,5 +1,6 @@
 package com.example.mini.game.launcher;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -15,7 +16,7 @@ import com.example.mini.game.GameActivity;
 import com.example.mini.game.R;
 import com.example.mini.game.logic.GlobalState;
 
-public class LoadingActivity extends ActionBarActivity {
+public class LoadingActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
